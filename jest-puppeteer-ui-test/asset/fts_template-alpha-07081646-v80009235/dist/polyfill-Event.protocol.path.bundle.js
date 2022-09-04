@@ -1,0 +1,1 @@
+(window.webpackJsonp=window.webpackJsonp||[]).push([[13],{688:function(n,e){Object.defineProperty(Event.prototype,"path",{get:function(){for(var n=[],e=this.target;e;)n.push(e),e=e.parentElement;return-1===n.indexOf(window)&&-1===n.indexOf(document)&&n.push(document),-1===n.indexOf(window)&&n.push(window),n}})}}]);

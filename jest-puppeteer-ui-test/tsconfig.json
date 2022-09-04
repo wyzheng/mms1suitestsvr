@@ -1,0 +1,31 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "declaration": true,
+    "removeComments": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "allowSyntheticDefaultImports": true,
+    "target": "es2017",
+    "sourceMap": true,
+    "outDir": "./dist",
+    "baseUrl": "./",
+    "incremental": true,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "strictNullChecks": false,
+    "types": [
+      "node",
+      "jest",
+      "puppeteer"
+    ],
+    "typeRoots": [
+      "node_modules/@types"
+    ],
+//    "outDir": "build",
+//    "target": "es5",
+//    "allowSyntheticDefaultImports": true
+  }
+}
