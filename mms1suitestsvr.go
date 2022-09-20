@@ -15,7 +15,7 @@ import (
 
 func main() {
 
-	OssAttrID := 28498
+	OssAttrID := 19674
 
 	balancer := (&whttp.BalancerBuilder{
 		OssAttrID: OssAttrID,
@@ -48,7 +48,7 @@ func main() {
 	svr := &xhttp.Server{
 		Server: http.Server{
 			//临时端口号，上线后按正式分配到的端口填
-			Addr:    ":28498",
+			Addr:    ":19674",
 			Handler: mux,
 
 			ReadHeaderTimeout: 2 * time.Second,
@@ -60,7 +60,7 @@ func main() {
 	}
 
 	output := &xlog.HourSplitFileWriter{
-		OutputDir:  "/home/qspace/log/mms1suitestsvr/error",
+		OutputDir:  "/home/qspace/mms1suitestsvr/log",
 		NamePrefix: "mms1suitestsvr",
 		NameSuffix: ".log",
 

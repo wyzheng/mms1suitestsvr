@@ -1,5 +1,7 @@
 import fs from "fs";
 import got from "got";
+import {LoggerService} from "../logger/logger.service";
+
 
 export async function scrollDown() {
   await new Promise<void>((resolve, reject) => {
@@ -15,6 +17,7 @@ export async function scrollDown() {
       }
     }, 100);
   });
+
 }
 
 export function readTestJson(jsonFile: string){

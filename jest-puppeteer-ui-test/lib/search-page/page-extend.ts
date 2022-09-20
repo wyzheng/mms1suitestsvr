@@ -4,6 +4,8 @@ import { WebSearchPage } from "./web-search-page";
 import { PageAssetService } from "./service/page-asset.service";
 import {scrollDown} from "../utils/helper";
 import { WebSearchPageConfig } from "./interfaces/web-search-page-config";
+import {LoggerService} from "../logger/logger.service";
+import {Logger} from "log4js";
 
 /**
  * created by joyce on 2022/08/02
@@ -18,6 +20,12 @@ export class PageExtend {
   public url: string;
   public searchRes: WebSearchResponse;
   public webSearchPage: WebSearchPage;
+  private loggerService = new LoggerService();
+
+  private logger: Logger;
+  constructor() {
+    this.logger = this.loggerService.getLogger('puppeteer');
+  }
 
   public async allowBrowser(){
     this.browser = await Puppeteer.launch({
@@ -72,6 +80,8 @@ export class PageExtend {
     await webSearchPage.waitForRenderingDone();
     webSearchPage.inited = true;
 
+    this.logger.log("here comes a log")
+
     return this;
   }
 
@@ -79,7 +89,6 @@ export class PageExtend {
     if (req.isInterceptResolutionHandled()) {
       return;
     }
-
     const shouldBlockUrl = (url) => {
       for (const str of [
         'ubd.weixin.oa.com/cloudfunc/api/',
@@ -155,6 +164,7 @@ export class PageExtend {
         url: url,
         //url: this.assetService.getImageProxyUrl(url),
         headers: req.headers(),
+
       });
       return;
     }

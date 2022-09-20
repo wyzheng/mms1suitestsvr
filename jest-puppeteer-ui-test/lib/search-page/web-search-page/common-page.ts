@@ -2,12 +2,19 @@ import { HTTPRequest, Page, ScreenshotOptions} from "puppeteer";
 import EventEmitter from "events";
 import stripJsHandler from 'strip-js';
 import { writeFileSync } from "fs-extra";
+import {LoggerService} from "../../logger/logger.service";
+import {Logger} from "log4js";
 
 /**
  * common functions of a page
  */
 export class CommonPage {
+  private loggerService = new LoggerService();
+
+  private logger: Logger;
+
   constructor(public instance: Page) {
+    this.logger = this.loggerService.getLogger('puppeteer');
   }
 
   public async takeScreenshot(options: ScreenshotOptions): Promise<void> {

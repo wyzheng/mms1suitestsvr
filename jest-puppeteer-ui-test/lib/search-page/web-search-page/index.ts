@@ -4,6 +4,8 @@ import { readFileSync } from "fs";
 import { join } from "path";
 import { devices, HTTPRequest, Page } from "puppeteer";
 import { WebSearchPageConfig } from "../interfaces/web-search-page-config";
+import {LoggerService} from "../../logger/logger.service";
+import {Logger} from "log4js";
 
 const newwxjsPath = join(__dirname, `newwxjs.js`);
 const newwxjsContent = readFileSync(newwxjsPath, {
@@ -38,9 +40,12 @@ export class WebSearchPage extends CommonPage {
 
   private _dataReadyResolve: () => void = null;
 
+
+  //private logger: Logger;
   // alloc
   constructor (instance: Page) {
     super(instance);
+
   }
   // getter
   get key() {
