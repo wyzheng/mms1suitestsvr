@@ -1,7 +1,7 @@
 import { WebSearchPageConfig } from "../search-page/interfaces/web-search-page-config";
 import { WebSearchResponse } from "../search-page/interfaces/web-search-page";
 import { PageExtend } from "../search-page/page-extend";
-import {LoggerService} from "../logger/logger.service";
+
 
 const defaultConfig: WebSearchPageConfig = {
   lang: 'zh_CN',
@@ -33,14 +33,13 @@ const defaultConfig: WebSearchPageConfig = {
 };
 
 
-
 export async function setup(searchRes: WebSearchResponse) {
   let pageExtend = new PageExtend();
 
   return await pageExtend.allocPage({
     device: 'iPhone 11 Pro Max',
     config: defaultConfig,
-    context: "./asset/fts_template-alpha-07081646-v80009235",
+    context: "./asset/" + global.__TEMPLATE__,
     query: "哈哈",
     searchResult: searchRes,
     key: "1"

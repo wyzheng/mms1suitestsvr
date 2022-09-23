@@ -156,12 +156,11 @@ export class PageExtend {
       if (
         urlObject?.protocol === `data:`
       ) {
-
         req.continue();
         return;
       }
       req.continue({
-        url: url,
+        url: this.getProxyUrl(url),
         //url: this.assetService.getImageProxyUrl(url),
         headers: req.headers(),
 
@@ -173,6 +172,15 @@ export class PageExtend {
         referer: '*',
       }),
     });
+  }
+
+  private getProxyUrl(url: string) {
+    const urlObject = new URL(`http://example.com`);
+    urlObject.protocol = `http`;
+    urlObject.hostname = `shanghai-mmhttpproxy.woa.com`;
+    urlObject.port = '11113';
+    urlObject.searchParams.append(`url`, encodeURIComponent(url));
+    return urlObject.href;
   }
 
   private async eventHandler(func: string, params: Record<string, any>, ctx: WebSearchPage) {

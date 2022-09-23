@@ -1,29 +1,29 @@
+#FROM mirrors.tencent.com/mms1stest/mms1snoderun:base
 FROM mirrors.tencent.com/mms1stest/mms1snoderun:latest
 
 USER root
 
 ENV PATH="/root/.nvm/versions/node/v16.16.0/bin:$PATH"
 
-RUN mkdir -p /home/qspace/log/mms1suitestsvr/error
-
-RUN mkdir /app
+RUN mkdir -p /home/qspace/mms1suitestsvr/log
+RUN mkdir -p /home/qspace/mms1suitestsvr/etc
+RUN mkdir -p /home/qspace/mms1suitestsvr/bin
 
 WORKDIR /app
 
-COPY ./mms1suitestsvr /app
-RUN chmod 755 ./mms1suitestsvr
+COPY ./mms1suitestsvr /home/qspace/mms1suitestsvr/bin
+RUN chmod 777 /home/qspace/mms1suitestsvr/bin/mms1suitestsvr
 
 
-COPY ./jest-puppeteer-ui-test /app/jest-puppeteer-ui-test
+COPY ./jest-puppeteer-ui-test /home/qspace/mms1suitestsvr/bin/jest-puppeteer-ui-test
 
 
-WORKDIR /app/jest-puppeteer-ui-test
+WORKDIR /home/qspace/mms1suitestsvr/bin/jest-puppeteer-ui-test
 
 RUN npm config set registry https://mirrors.tencent.com/npm/ \
     && npm install \
     && npm install jest
 
-WORKDIR /app
+WORKDIR /home/qspace/mms1suitestsvr/bin
 
 CMD ["bash", "-c", "./mms1suitestsvr"]
-

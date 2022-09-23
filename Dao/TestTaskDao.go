@@ -31,8 +31,5 @@ func UpdateDataTask(id int, testTask *model.TestTask) error {
 		conditions,
 		testTask,
 	)
-	if err != nil {
-		xlog.Errorf("Update test task failed! %v", err)
-	}
 	return err
 }

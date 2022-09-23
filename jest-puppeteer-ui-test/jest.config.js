@@ -1,3 +1,6 @@
+var args = require('minimist')(process.argv.slice(2));
+const template = args.template
+
 module.exports = {
   testEnvironment: "jsdom",
   testMatch: ["**/__tests__/**/*.[jt]s?(x)", "**/?(*.)+(spec|test).[tj]s?(x)"],
@@ -7,4 +10,8 @@ module.exports = {
     "^.+\\.tsx?$": "ts-jest"
   },
   rootDir: ".",
+  globals:{
+    __TEMPLATE__: template,
+  }
 };
+

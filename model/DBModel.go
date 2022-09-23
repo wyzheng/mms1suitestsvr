@@ -10,8 +10,9 @@ type TestFile struct {
 
 type TestTask struct {
 	Id         *int    `json:"id" col:"id"`
-	Cases      *string `json:"cases" col:"cases"`
+	VersionId  *int    `json:"version_id" col:"version_id"`
 	Trigger    *string `json:"trigger" col:"trigger"`
 	Status     *string `json:"status" col:"status"`
 	UpdateTime *string `json:"update_time" col:"update_time"`
+	Template   *string `json:"template" col:"template"`
 }
