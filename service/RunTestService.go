@@ -9,7 +9,7 @@ import (
 )
 
 func RunTest(taskId int, templateName string) string {
-	cmd := exec.Command("bash", "-c", "--json --outputFile=./static/res/reporter.json --template="+templateName)
+	cmd := exec.Command("bash", "-c", "npx jest --json --outputFile=./static/res/reporter.json --template="+templateName)
 	cmd.Dir = "./jest-puppeteer-ui-test"
 	var stdout bytes.Buffer
 	var stderr bytes.Buffer
