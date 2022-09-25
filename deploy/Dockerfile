@@ -20,6 +20,9 @@ COPY ./jest-puppeteer-ui-test /home/qspace/mms1suitestsvr/bin/jest-puppeteer-ui-
 
 WORKDIR /home/qspace/mms1suitestsvr/bin/jest-puppeteer-ui-test
 
+RUN mkdir -p /home/qspace/mms1suitestsvr/bin/jest-puppeteer-ui-test/static/res
+
+
 RUN npm config set registry https://mirrors.tencent.com/npm/ \
     && npm install \
     && npm install jest
