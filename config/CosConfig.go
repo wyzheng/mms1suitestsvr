@@ -14,7 +14,7 @@ type CosConfig struct {
 }
 
 func GetCosConfig() (*CosConfig, error) {
-	configPath := fmt.Sprintf("/home/qspace/mms1suitest/etc/mms1suitestsvr.conf")
+	configPath := fmt.Sprintf("/home/qspace/mms1suitestsvr/etc/mms1suitestsvr.conf")
 	xlog.Debugf("Read cos config path : %s", configPath)
 	c, err := config.Parse(configPath)
 	if err != nil {
