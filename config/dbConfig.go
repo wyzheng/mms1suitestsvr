@@ -6,7 +6,7 @@ import (
 	"mmtestgocommon/database"
 )
 
-var Mms1suitestDB = database.InitDataBaseMysql("/home/qspace/epmmsearchuitestsvr/etc/cross_module_conf/mms1suitest.conf")
+var Mms1suitestDB = database.InitDataBaseMysql("/home/qspace/mms1suitest/etc/mms1suitestsvr.conf")
 
 var TestFileTable = "test_file"
 var TestTaskTable = "test_task"
