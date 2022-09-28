@@ -1,8 +1,7 @@
 import { Configuration } from "log4js";
 import { join } from "path";
 
-// const root = '/home/qspace/mms1suitestsvr/log/pptr';
-
+//const root = '/home/qspace/mms1suitestsvr/log/pptr';
 const root = '/home/qspace/mms1suitestsvr/log';
 
 const createCustomAppenders = (category = ''): Configuration['appenders'] => {
@@ -14,7 +13,7 @@ const createCustomAppenders = (category = ''): Configuration['appenders'] => {
             compress: false,
             keepFileExt: true,
             alwaysIncludePattern: true,
-            daysToKeep: 7,
+            numBackups: 7,
             layout: {
                 type: 'basic'
             },
@@ -26,7 +25,7 @@ const createCustomAppenders = (category = ''): Configuration['appenders'] => {
             compress: false,
             keepFileExt: true,
             alwaysIncludePattern: true,
-            daysToKeep: 7,
+            numBackups: 7,
             layout: {
                 type: 'basic',
             },

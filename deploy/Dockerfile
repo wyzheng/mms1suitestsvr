@@ -1,5 +1,5 @@
-#FROM mirrors.tencent.com/mms1stest/mms1snoderun:base
-FROM mirrors.tencent.com/mms1stest/mms1snoderun:latest
+FROM mirrors.tencent.com/mms1stest/mms1snoderun:base
+#FROM mirrors.tencent.com/mms1stest/mms1snoderun:latest
 
 USER root
 
@@ -8,6 +8,9 @@ ENV PATH="/root/.nvm/versions/node/v16.16.0/bin:$PATH"
 RUN mkdir -p /home/qspace/mms1suitestsvr/log
 RUN mkdir -p /home/qspace/mms1suitestsvr/etc
 RUN mkdir -p /home/qspace/mms1suitestsvr/bin
+
+RUN mkdir -p /home/qspace/mms1suitestsvr/bin/jest-puppeteer-ui-test/static/res
+RUN mkdir -p /home/qspace/mms1suitestsvr/bin/jest-puppeteer-ui-test/static/pic
 
 WORKDIR /app
 
@@ -20,7 +23,6 @@ COPY ./jest-puppeteer-ui-test /home/qspace/mms1suitestsvr/bin/jest-puppeteer-ui-
 
 WORKDIR /home/qspace/mms1suitestsvr/bin/jest-puppeteer-ui-test
 
-RUN mkdir -p /home/qspace/mms1suitestsvr/bin/jest-puppeteer-ui-test/static/res
 
 
 RUN npm config set registry https://mirrors.tencent.com/npm/ \

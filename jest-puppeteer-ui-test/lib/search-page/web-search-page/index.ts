@@ -87,6 +87,7 @@ export class WebSearchPage extends CommonPage {
     requestInterceptor: (req: HTTPRequest, ctx: string) => void;
     handler: (func: string, params: Record<string, any>, ctx: WebSearchPage) => void;
   }) {
+    this.logger.log(`init page with query` )
     // make sure only called once
     if (this._inited) {
       return;
@@ -152,6 +153,7 @@ export class WebSearchPage extends CommonPage {
     Object.keys(mergedConfig).forEach((key) => {
       urlObj.searchParams.append(key, mergedConfig[key]);
     });
+    this.logger.log(`generate the page retry: ${urlObj.href}`)
     await this.instance.goto(urlObj.href);
   }
   // load html

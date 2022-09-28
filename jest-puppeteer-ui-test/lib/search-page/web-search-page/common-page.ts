@@ -11,7 +11,7 @@ import {Logger} from "log4js";
 export class CommonPage {
   private loggerService = new LoggerService();
 
-  private logger: Logger;
+  public logger: Logger;
 
   constructor(public instance: Page) {
     this.logger = this.loggerService.getLogger('puppeteer');
@@ -41,15 +41,20 @@ export class CommonPage {
       await this.instance.setRequestInterception(true);
     }
     this.instance.on('request', (req) => {
+      this.logger.log(`request: ${req.url()}`);
       requestInterceptor?.(req);
     });
     this.instance.on('console', (msg) => {
+      this.logger.log(`console: ${msg.text()}`);
     });
     this.instance.on('pageerror', (evt) => {
+      this.logger.error(`page error: ${evt.message}`);
     });
     this.instance.on('requestfailed', (req) => {
+      this.logger.error(`request failed: ${req.url()}`);
     });
     this.instance.on('requestfinished', (req) => {
+      this.logger.log(`request finished: ${req.url()}`);
     });
   }
 

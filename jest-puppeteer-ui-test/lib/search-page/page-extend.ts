@@ -13,6 +13,7 @@ import {Logger} from "log4js";
  * set up fot jest combine puppeteer which is compatible with s1s.
  */
 
+const proxy_svr = "shenzhen-mmhttpproxy.woa.com:11113";
 
 export class PageExtend {
   public browser: Puppeteer.Browser;
@@ -36,6 +37,7 @@ export class PageExtend {
         '--disable-dev-shm-usage',
         '--shm-size=3gb',
         `--window-size=414,2000`,
+        `--proxy-server=${proxy_svr}`
       ],
       headless: true,
     });
@@ -79,8 +81,7 @@ export class PageExtend {
     });
     await webSearchPage.waitForRenderingDone();
     webSearchPage.inited = true;
-
-    this.logger.log("here comes a log")
+    this.logger.log(`here alloc a page`)
 
     return this;
   }
@@ -160,10 +161,10 @@ export class PageExtend {
         return;
       }
       req.continue({
-        url: this.getProxyUrl(url),
+        url: url,
+        //url: this.getProxyUrl(url),
         //url: this.assetService.getImageProxyUrl(url),
         headers: req.headers(),
-
       });
       return;
     }
@@ -180,6 +181,7 @@ export class PageExtend {
     urlObject.hostname = `shanghai-mmhttpproxy.woa.com`;
     urlObject.port = '11113';
     urlObject.searchParams.append(`url`, encodeURIComponent(url));
+    this.logger.error(urlObject.href)
     return urlObject.href;
   }
 
