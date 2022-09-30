@@ -2,6 +2,8 @@ import { PageExtend } from "../lib/search-page/page-extend";
 import { setup } from "../lib/utils/setup";
 import Puppeteer from "puppeteer";
 import { WebSearchResponse } from "../lib/search-page/interfaces/web-search-page";
+import {Page} from "puppeteer";
+import {addAttach} from "jest-html-reporters/helper";
 
 
 /**
@@ -39,8 +41,9 @@ describe("搜一搜demo2", () => {
      const image =  await page.screenshot({
         path: "./static/pic/test_1.png",
         fullPage: true
-      }).catch(()=>{})
+      })
       global.reporter.addAttachment("Screenshot", image, "image/png");
+     await addAttach({attach: image, description: "here is a screenshot.",})
     }
     catch(err){
       console.log(err);
@@ -58,42 +61,46 @@ describe("搜一搜demo2", () => {
       global.reporter.startStep("here start click");
       await page.waitForSelector('#search_result > div:nth-child(5) > div > div:nth-child(3) > div > div > div').catch(err => {
         console.log(err);
-      });
+      }).catch(()=>{});
       await page.click('#search_result > div:nth-child(5) > div > div:nth-child(3) > div > div > div').catch(err => {
         console.log(err);
-      });
+      }).catch(()=>{});
       global.reporter.endStep();
-      await page.waitForTimeout(700);
+      await page.waitForTimeout(700).catch(()=>{});
       let url = pageExtend.url;
       const page2 = await browser.newPage();
       let func: Function = page2["goto"];
-      await func.call(page2, url, {waitUntil: "networkidle0"});
-      await page2.waitForTimeout(7000);
-      //await page2.goto(url, {waitUntil: "networkidle0"})
-      // 滚动到页面底部，加载出所有图片
-      await page2.evaluate(async () => {
-        await new Promise<void>((resolve, reject) => {
-          let totalHeight = 0;
-          const distance = 100;
-          const timer = setInterval(() => {
-            const scrollHeight = document.body.scrollHeight;
-            window.scrollBy(0, distance);
-            totalHeight += distance;
-            if (totalHeight >= scrollHeight) {
-              clearInterval(timer);
-              resolve();
-            }
-          }, 100);
+      await func.call(page2, url, {waitUntil: "networkidle0"}).catch(()=>{});
+      if (page2 instanceof Page) {
+        await page2.waitForTimeout(7000).catch(()=>{});
+        await page2.evaluate(async () => {
+          await new Promise<void>((resolve, reject) => {
+            let totalHeight = 0;
+            const distance = 100;
+            const timer = setInterval(() => {
+              const scrollHeight = document.body.scrollHeight;
+              window.scrollBy(0, distance);
+              totalHeight += distance;
+              if (totalHeight >= scrollHeight) {
+                clearInterval(timer);
+                resolve();
+              }
+            }, 100);
+          });
+        }).catch(()=>{});
+        await page2.waitForTimeout(7000).catch(()=>{});
+        const screenshotBuffer = await page2.screenshot({
+          path: "./static/pic/test_3.png",
+          fullPage: true
         });
-      });
-      await page2.waitForTimeout(7000);
-      const screenshotBuffer = await page2.screenshot({
-        path: "./static/pic/test_3.png",
-        fullPage: true
-      })
-      global.reporter.addAttachment("Screenshot", screenshotBuffer, "image/png");
-      const tit = await page2.title();
-      expect(tit).toBe('人民日报：新版0-6岁儿童疫苗接种时间表！建议收藏');
+        global.reporter.addAttachment("Screenshot", screenshotBuffer, "image/png");
+        await addAttach({attach: screenshotBuffer, description: "here is a screenshot.",})
+        const tit = await page2.title().catch(()=>{});
+        //await page2.goto(url, {waitUntil: "networkidle0"})
+        // 滚动到页面底部，加载出所有图片
+        expect(tit).toBe('人民日报：新版0-6岁儿童疫苗接种时间表！建议收藏');
+      }
+
     }catch (e) {
       console.log(e);
     }

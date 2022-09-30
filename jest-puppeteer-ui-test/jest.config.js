@@ -1,5 +1,7 @@
 var args = require('minimist')(process.argv.slice(2));
+console.log(args)
 const template = args.template
+const resPath = args.resPath
 
 module.exports = {
   testEnvironment: "jsdom",
@@ -12,6 +14,17 @@ module.exports = {
   rootDir: ".",
   globals:{
     __TEMPLATE__: template,
-  }
+  },
+  reporters:[
+    "default",
+    [
+      "jest-html-reporters",
+      {
+        "pageTitle":"Jest Report",
+        "publicPath":`./static/res/${resPath}`,
+        "expand":true
+      }
+    ]
+  ],
 };
 

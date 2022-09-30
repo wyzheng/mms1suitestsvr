@@ -9,7 +9,7 @@ import (
 )
 
 func RunTest(taskId int, templateName string) string {
-	cmd := exec.Command("bash", "-c", "npx jest --json --outputFile=./static/res/reporter.json --template="+templateName)
+	cmd := exec.Command("bash", "-c", "npx jest --json --outputFile=./static/res/reporter.json --template="+templateName+" --resPath="+strconv.Itoa(taskId))
 	cmd.Dir = "./jest-puppeteer-ui-test"
 	var stdout bytes.Buffer
 	var stderr bytes.Buffer
@@ -27,9 +27,22 @@ func RunTest(taskId int, templateName string) string {
 
 	//存储测试结果到cos
 	fileContent, err := os.ReadFile("./jest-puppeteer-ui-test/static/res/reporter.json")
-	err = SetCosFile("s1s/"+strconv.Itoa(taskId)+"result.json", fileContent)
+	err = SetCosFile("s1s/"+strconv.Itoa(taskId)+"/result.json", fileContent)
 	if err != nil {
-		xlog.Errorf("[COS] seet test result into cos failed, file %v", err)
+		xlog.Errorf("[COS] set test result into cos failed, file %v", err)
+	}
+
+	//存储html结果到cos
+	cmd = exec.Command("bash", "-c", "tar -zcvf "+strconv.Itoa(taskId)+"report.tar.gz "+strconv.Itoa(taskId)+"/*")
+	cmd.Dir = "./jest-puppeteer-ui-test/static/res"
+
+	if err = cmd.Run(); err != nil {
+		xlog.Error(err)
+	}
+	fileContent, err = os.ReadFile("./jest-puppeteer-ui-test/static/res/" + strconv.Itoa(taskId) + "report.tar.gz")
+	err = SetCosFile("s1s/"+strconv.Itoa(taskId)+"/report.tar.gz", fileContent)
+	if err != nil {
+		xlog.Errorf("[COS] set html result into cos failed, file %v", err)
 	}
 
 	/*// 删除本地模板/case/结果文件
