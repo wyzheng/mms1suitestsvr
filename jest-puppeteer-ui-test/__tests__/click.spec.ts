@@ -43,7 +43,7 @@ describe("搜一搜demo2", () => {
         fullPage: true
       })
       global.reporter.addAttachment("Screenshot", image, "image/png");
-     await addAttach({attach: image, description: "here is a screenshot.",})
+     await addAttach({attach: image, description: "here is a screenshot."})
     }
     catch(err){
       console.log(err);

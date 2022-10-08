@@ -243,7 +243,7 @@ export class WebSearchPage extends CommonPage {
     // wait for 500ms (because render actually happens items by items)
     await this.instance.waitForTimeout(5000);
     // wait for remote resource loading
-    await this.networkIdlePromiseMaker(5000, 100000);
+    await this.networkIdlePromiseMaker(5000, 200000);
   }
 
   private async sendCallbackToJSBridge({

@@ -1,7 +1,10 @@
 import fs from "fs";
 import got from "got";
+import tunnel from "tunnel";
 import {LoggerService} from "../logger/logger.service";
 
+
+const logger = new LoggerService().getLogger();
 
 export async function scrollDown() {
   await new Promise<void>((resolve, reject) => {
@@ -70,11 +73,22 @@ export async function getHeightOfEle(page, selector) {
 }
 
 export async function getOCRRes(imagePath){
-  let r = await got("http://stream.weixin.qq.com/weapp/getOcrAccessToken");
+  let r = await got("https://stream.weixin.qq.com/weapp/getOcrAccessToken", {
+    agent:{
+      http: tunnel.httpsOverHttp({
+        proxy: {
+          host: '9.134.52.227',
+          port: '36000'
+        }
+      })
+    }
+  });
+  logger.log("here joyce log something*********");
+  logger.log(r.body);
 
   let buffer = fs.readFileSync(imagePath);
   let string = Buffer.from(buffer).toString('base64');
-  let url = "http://api.weixin.qq.com/wxa/servicemarket?access_token=" + r.body;
+  let url = "http://9.22.0.225:12361/wxa/servicemarket?access_token=" + r.body;
   let data = {
     "service": "wx79ac3de8be320b71",
     "api": "OcrAllInOne",
@@ -86,13 +100,14 @@ export async function getOCRRes(imagePath){
     }
   };
   let resp = await got( {method: 'post', url: url, body: JSON.stringify(data), decompress: false});
+  logger.log("here joyce log something*********");
+  logger.log(resp.body)
 
   let respData = resp.body.replace('\"', '"');
   let jsonRes = JSON.parse(respData);
   let ocrRes = JSON.parse(jsonRes.data);
 
   return ocrRes;
-
 }
 
 export async function getLineNum(path){
