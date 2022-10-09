@@ -75,10 +75,10 @@ export async function getHeightOfEle(page, selector) {
 export async function getOCRRes(imagePath){
   let r = await got("https://stream.weixin.qq.com/weapp/getOcrAccessToken", {
     agent:{
-      http: tunnel.httpsOverHttp({
+      https: tunnel.httpsOverHttp({
         proxy: {
-          host: '9.134.52.227',
-          port: '36000'
+          host: 'shanghai-mmhttpproxy.woa.com',
+          port: '11113'
         }
       })
     }

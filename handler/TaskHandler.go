@@ -67,11 +67,13 @@ func ExecTest(w http.ResponseWriter, r *http.Request) {
 		xlog.Errorf("[Dao] Update test task failed! %v", err)
 	}
 	//获取测试用例
-	caseFileName := "testFontWord.spec.ts"
-	err = service.GetTestCase(caseFileName, "./jest-puppeteer-ui-test/__tests__/"+caseFileName)
-	if err != nil {
-		xlog.Errorf("[COS] download test case from cos failed, file %v", err)
-		return
+	caseFiles := []string{"testFontWord.spec.ts", "testBiz.spec.ts"}
+	for i := range caseFiles {
+		err = service.GetTestCase(caseFiles[i], "./jest-puppeteer-ui-test/__tests__/"+caseFiles[i])
+		if err != nil {
+			xlog.Errorf("[COS] download test case %v from cos failed, file %v", caseFiles[i], err)
+			return
+		}
 	}
 	//执行测试任务，存储测试结果
 	go service.RunTest(taskId, templateName[0:pos])
