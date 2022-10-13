@@ -8,6 +8,7 @@ import (
 	"mmtestgocommon/database"
 )
 
+// InsertTestFile 增加一个测试用例文件
 func InsertTestFile(testFile *model.TestFile) (int, error) {
 	xlog.Debug("[DAO]:Insert a test file into db.")
 
@@ -19,6 +20,7 @@ func InsertTestFile(testFile *model.TestFile) (int, error) {
 	return id, err
 }
 
+// GetTestFileByName 获取测试文件对象
 func GetTestFileByName(name string) (*model.TestFile, error) {
 	xlog.Debugf("[DAO]:Get a test file from db by %s.", name)
 

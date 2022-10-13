@@ -7,6 +7,7 @@ import (
 	"mmtestgocommon/database"
 )
 
+// InsertTestTask 增加一条测试任务
 func InsertTestTask(testTask *model.TestTask) (int, error) {
 	xlog.Debug("[DAO]:Insert a test file into db.")
 
@@ -18,6 +19,7 @@ func InsertTestTask(testTask *model.TestTask) (int, error) {
 	return id, err
 }
 
+// UpdateDataTask 更新测试任务
 func UpdateDataTask(id int, testTask *model.TestTask) error {
 	xlog.Debugf("[DAO]:Update test task.")
 

@@ -18,6 +18,7 @@ import (
 	"time"
 )
 
+// ExecTest 执行测试任务
 func ExecTest(w http.ResponseWriter, r *http.Request) {
 	ww := w.(*xhttp.ResponseWriter)
 	resp := websvr.CommResp{}
@@ -80,6 +81,23 @@ func ExecTest(w http.ResponseWriter, r *http.Request) {
 
 	resp.Ret = define.E_SUCCESS
 	resp.Message = "test over!"
+
+	ww.MarshalJSON(resp)
+	return
+}
+
+// CaseArchive 归档测试用例
+func CaseArchive(w http.ResponseWriter, r *http.Request) {
+	ww := w.(*xhttp.ResponseWriter)
+	resp := websvr.CommResp{}
+	xlog.Debugf("[Handler] deal with a request.")
+
+	versionId := websvr.GetIntFromUri(r, "versionId")
+
+	service.ArchiveTeatCases(versionId)
+
+	resp.Ret = define.E_SUCCESS
+	resp.Message = "Archiving over!"
 
 	ww.MarshalJSON(resp)
 	return

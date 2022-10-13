@@ -8,8 +8,10 @@ import (
 	"strconv"
 )
 
+// RunTest 根据任务id和模板包名执行测试任务
 func RunTest(taskId int, templateName string) string {
-	cmd := exec.Command("bash", "-c", "npx jest --json --outputFile=./static/res/reporter.json --template="+templateName+" --resPath="+strconv.Itoa(taskId))
+	cmd := exec.Command("bash", "-c",
+		"npx jest --json --outputFile=./static/res/reporter.json --template="+templateName+" --resPath="+strconv.Itoa(taskId))
 	cmd.Dir = "./jest-puppeteer-ui-test"
 	var stdout bytes.Buffer
 	var stderr bytes.Buffer
@@ -55,4 +57,19 @@ func RunTest(taskId int, templateName string) string {
 	}*/
 
 	return stdout.String()
+}
+
+// ArchiveTeatCases 存档测试用例
+func ArchiveTeatCases(versionId int) {
+	cmd := exec.Command("bash", "-c", "tar -zcvf"+strconv.Itoa(versionId)+"-cases.tar.gz ./*")
+	cmd.Dir = "../jest-puppeteer-ui-test/__tests__"
+
+	if err := cmd.Run(); err != nil {
+		xlog.Error(err)
+	}
+	fileContent, err := os.ReadFile("../jest-puppeteer-ui-test/__tests__/" + strconv.Itoa(versionId) + "-cases.tar.gz")
+	err = SetCosFile("s1s/cases/"+strconv.Itoa(versionId)+"/cases.tar.gz", fileContent)
+	if err != nil {
+		xlog.Errorf("[COS] test cases archiving into cos failed, file %v", err)
+	}
 }

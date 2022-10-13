@@ -44,6 +44,15 @@ func main() {
 		Pattern:   "/cgi/ExecTest",
 	})
 
+	websvr.AddCgi(websvr.Cgi{
+		HandBuild: hb,
+		Mux:       mux,
+		CgiHandle: http.HandlerFunc(handler.CaseArchive),
+		CmdId:     2,
+		CgiName:   "CaseArchive",
+		Pattern:   "/cgi/CaseArchive",
+	})
+
 	// init svr
 	svr := &xhttp.Server{
 		Server: http.Server{

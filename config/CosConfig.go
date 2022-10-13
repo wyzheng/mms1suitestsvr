@@ -6,6 +6,9 @@ import (
 	"git.woa.com/wego/wego2/xlog"
 )
 
+/*
+CosConfig cos存储配置
+*/
 type CosConfig struct {
 	Url       string
 	Host      string
@@ -13,6 +16,7 @@ type CosConfig struct {
 	SecretKey string
 }
 
+// GetCosConfig 从配置文件中获取cos配置
 func GetCosConfig() (*CosConfig, error) {
 	configPath := fmt.Sprintf("/home/qspace/mms1suitestsvr/etc/mms1suitestsvr.conf")
 	xlog.Debugf("Read cos config path : %s", configPath)

@@ -1,9 +1,9 @@
-import { HTTPRequest, Page, ScreenshotOptions} from "puppeteer";
-import EventEmitter from "events";
+import { HTTPRequest, Page, ScreenshotOptions} from 'puppeteer';
+import EventEmitter from 'events';
 import stripJsHandler from 'strip-js';
-import { writeFileSync } from "fs-extra";
-import {LoggerService} from "../../logger/logger.service";
-import {Logger} from "log4js";
+import { writeFileSync } from 'fs-extra';
+import {LoggerService} from '../../logger/logger.service';
+import {Logger} from 'log4js';
 
 /**
  * common functions of a page

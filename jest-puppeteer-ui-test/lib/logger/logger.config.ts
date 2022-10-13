@@ -1,5 +1,5 @@
-import { Configuration } from "log4js";
-import { join } from "path";
+import { Configuration } from 'log4js';
+import { join } from 'path';
 
 //const root = '/home/qspace/mms1suitestsvr/log/pptr';
 const root = '/home/qspace/mms1suitestsvr/log';

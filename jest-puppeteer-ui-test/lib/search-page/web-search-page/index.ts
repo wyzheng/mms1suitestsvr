@@ -1,11 +1,10 @@
-import { CommonPage } from "./common-page";
-import { WebSearchResponse } from "../interfaces/web-search-page";
-import { readFileSync } from "fs";
-import { join } from "path";
-import { devices, HTTPRequest, Page } from "puppeteer";
-import { WebSearchPageConfig } from "../interfaces/web-search-page-config";
-import {LoggerService} from "../../logger/logger.service";
-import {Logger} from "log4js";
+import { CommonPage } from './common-page';
+import { WebSearchResponse } from '../interfaces/web-search-page';
+import { readFileSync } from 'fs';
+import { join } from 'path';
+import { devices, HTTPRequest, Page } from 'puppeteer';
+import { WebSearchPageConfig } from '../interfaces/web-search-page-config';
+
 
 const newwxjsPath = join(__dirname, `newwxjs.js`);
 const newwxjsContent = readFileSync(newwxjsPath, {
@@ -36,14 +35,14 @@ export class WebSearchPage extends CommonPage {
   // page default config
   private _pageConfig : WebSearchPageConfig = null;
   // device
-  private _device: string = "iPhone 11 Pro Max"
+  private _device: string = 'iPhone 11 Pro Max';
 
   private _dataReadyResolve: () => void = null;
 
 
   //private logger: Logger;
   // alloc
-  constructor (instance: Page) {
+  constructor(instance: Page) {
     super(instance);
 
   }
@@ -87,7 +86,7 @@ export class WebSearchPage extends CommonPage {
     requestInterceptor: (req: HTTPRequest, ctx: string) => void;
     handler: (func: string, params: Record<string, any>, ctx: WebSearchPage) => void;
   }) {
-    this.logger.log(`init page with query` )
+    this.logger.log(`init page with query` );
     // make sure only called once
     if (this._inited) {
       return;
@@ -153,7 +152,7 @@ export class WebSearchPage extends CommonPage {
     Object.keys(mergedConfig).forEach((key) => {
       urlObj.searchParams.append(key, mergedConfig[key]);
     });
-    this.logger.log(`generate the page retry: ${urlObj.href}`)
+    this.logger.log(`generate the page retry: ${urlObj.href}`);
     await this.instance.goto(urlObj.href);
   }
   // load html
@@ -331,7 +330,7 @@ export class WebSearchPage extends CommonPage {
   }
 
   public async jumpTest(url : string) {
-    await this.instance.goto(url,{timeout:300000, waitUntil:"networkidle0"});
+    await this.instance.goto(url, {timeout:300000, waitUntil:'networkidle0'});
     await this.instance.waitForNavigation();
     await this.waitForRenderingDone();
   }
