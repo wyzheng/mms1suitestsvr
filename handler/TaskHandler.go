@@ -92,9 +92,22 @@ func CaseArchive(w http.ResponseWriter, r *http.Request) {
 	resp := websvr.CommResp{}
 	xlog.Debugf("[Handler] deal with a request.")
 
-	versionId := websvr.GetIntFromUri(r, "versionId")
+	cTime := time.Now().Format("2006-01-02 15:04:05")
+	templateName := websvr.GetStringFromUri(r, "templateName")
+	user := websvr.GetStringFromUri(r, "user")
 
-	service.ArchiveTeatCases(versionId)
+	releaseRecord := &model.ReleaseRecord{
+		TemplateName: &templateName,
+		RecordTime:   &cTime,
+		User:         &user,
+	}
+
+	recordId, err := Dao.InsertReleaseRecord(releaseRecord)
+	if err != nil {
+		xlog.Errorf("[Dao] insert release record failed! %v", err)
+	}
+
+	service.ArchiveTeatCases(recordId)
 
 	resp.Ret = define.E_SUCCESS
 	resp.Message = "Archiving over!"

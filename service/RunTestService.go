@@ -61,6 +61,7 @@ func RunTest(taskId int, templateName string) string {
 
 // ArchiveTeatCases 存档测试用例
 func ArchiveTeatCases(versionId int) {
+
 	cmd := exec.Command("bash", "-c", "tar -zcvf"+strconv.Itoa(versionId)+"-cases.tar.gz ./*")
 	cmd.Dir = "../jest-puppeteer-ui-test/__tests__"
 

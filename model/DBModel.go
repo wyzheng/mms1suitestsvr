@@ -18,3 +18,11 @@ type TestTask struct {
 	UpdateTime *string `json:"update_time" col:"update_time"`
 	Template   *string `json:"template" col:"template"`
 }
+
+// ReleaseRecord 上线发布记录结构，定义上线记录的基本信息
+type ReleaseRecord struct {
+	Id           *int    `json:"id" col:"id"`
+	TemplateName *string `json:"template_name" col:"template_name"`
+	User         *string `json:"user" col:"user"`
+	RecordTime   *string `json:"record_time" col:"record_time"`
+}
