@@ -6,17 +6,17 @@ import { PageExtend } from "../search-page/page-extend";
 const defaultConfig: WebSearchPageConfig = {
   lang: 'zh_CN',
   fontRatio: 1,
-  scene: 201,
+  scene: 20,
   version: 80009077,
   qqFaceFolderPath: '',
   platform: 'iOS',
   netType: 'wifi',
   // here this param decided result page or not
-  type: 0,
+  type: 1,
   isHomePage: 1,
   query: ``,
-  isSug: 1,
-  isLocalSug: 1,
+  isSug: true,
+  isLocalSug: true,
   sceneActionType: 1,
   sessionId: '',
   subSessionId: '',
@@ -40,7 +40,7 @@ export async function setup(searchRes: WebSearchResponse) {
     device: 'iPhone 11 Pro Max',
     config: defaultConfig,
     context: "./asset/" + global.__TEMPLATE__,
-    query: "",
+    query: "哈哈",
     searchResult: searchRes,
     key: "1"
   })
