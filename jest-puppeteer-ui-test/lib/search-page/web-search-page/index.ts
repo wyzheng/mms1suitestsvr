@@ -4,6 +4,10 @@ import { readFileSync } from 'fs';
 import { join } from 'path';
 import { devices, HTTPRequest, Page } from 'puppeteer';
 import { WebSearchPageConfig } from '../interfaces/web-search-page-config';
+import ini from "ini";
+import fs from "fs";
+import {randomInt} from "crypto";
+import got from "got";
 
 
 const newwxjsPath = join(__dirname, `newwxjs.js`);
@@ -21,7 +25,7 @@ export class WebSearchPage extends CommonPage {
   // context (local path)
   private _context: string = '';
   // query
-  private _query: string = '';
+  public _query: string = '';
   // search result
   private _searchResult: WebSearchResponse = null;
   // inited
@@ -33,7 +37,7 @@ export class WebSearchPage extends CommonPage {
   // is data ready
   private _dataReady: boolean = false;
   // page default config
-  private _pageConfig : WebSearchPageConfig = null;
+  public _pageConfig : WebSearchPageConfig = null;
   // device
   private _device: string = 'iPhone 11 Pro Max';
 
@@ -69,7 +73,6 @@ export class WebSearchPage extends CommonPage {
     content,
     context,
     query,
-    searchResult,
     requestInterceptor,
     handler,
     device
@@ -80,7 +83,6 @@ export class WebSearchPage extends CommonPage {
     // properties
     context: string;
     query: string;
-    searchResult: WebSearchResponse;
     device: string
     // bindings
     requestInterceptor: (req: HTTPRequest, ctx: string) => void;
@@ -94,7 +96,7 @@ export class WebSearchPage extends CommonPage {
     this._key = key;
     this._context = context;
     this._query = query;
-    this._searchResult = searchResult;
+    //this._searchResult = searchResult;
     this._dataReady = false;
     this._pageConfig = config;
     this._device = device;
@@ -306,7 +308,7 @@ export class WebSearchPage extends CommonPage {
     }, message);
   }
 
-  public async search(query: string, searchResult: WebSearchResponse) {
+ /* public async search(query: string, searchResult: WebSearchResponse) {
     this._dataReady = false;
     this._dataReadyResolve = null;
     this._query = query;
@@ -314,7 +316,7 @@ export class WebSearchPage extends CommonPage {
     await this.sendEventToJSBridge(`onSearchInputConfirm`, {
       query,
     });
-  }
+  }*/
 
   public async onSearchDataReady() {
     const result = await this.sendEventToJSBridge(`onSearchDataReady`, {
@@ -333,6 +335,61 @@ export class WebSearchPage extends CommonPage {
     await this.instance.goto(url, {timeout:300000, waitUntil:'networkidle0'});
     await this.instance.waitForNavigation();
     await this.waitForRenderingDone();
+  }
+
+  public getIpPort(moudle: string) {
+    let ip_port_list = []
+    let env = ["shanghai", "shenzhen", "hk", "camel"];
+
+    for (const i in env) {
+      try {
+        let str = fs.readFileSync(`/home/qspace/route/${env[i]}/${moudle}_route.conf`).toString();
+        let info = ini.parse(str);
+        for (const server in info) {
+          if( "IP" in info[server] && "Port" in info[server]){
+            ip_port_list.push([info[server]["IP"], info[server]["Port"]]);
+          }else if("SVR_IP" in info[server] && "SVR_Port" in info[server]) {
+            ip_port_list.push([info[server]["SVR_IP"], info[server]["SVR_Port"]]);
+          }
+        }
+      }catch(err){
+        this.logger.error(`there is something wrong ${err}`);
+      }
+    }
+    if (ip_port_list.length > 0){
+      return ip_port_list[randomInt(1, 1000) % ip_port_list.length];
+    }
+    return [0, 0];
+  }
+
+  public getUrl(module: string, funcName: string){
+    let server = this.getIpPort(module);
+    if (server[0] != 0 && server[1] != 0){
+      return `http://${server[0]}:${server[1]}/${funcName}`;
+    }
+    return "";
+  }
+
+  public async mmSearch(url: string, data){
+    let uin = "3192443972";
+    let  header_dict = {
+      "Accept": "*/*",
+      "Content-Type": "application/json; charset=utf-8",
+      "Cookie": `uin=${uin};uid=${uin}`
+    };
+    let resp = await got( {method: 'post', url: url, body: JSON.stringify(data), decompress: false, headers: header_dict, timeout: 20000});
+
+    if (resp.statusCode == 200){
+      let rawData = resp.body;
+      return JSON.parse(rawData)
+    }
+  }
+
+  public async search(data) {
+    let url = this.getUrl("mmsearchossopenapi", "GetSearchResult")
+    let resp =  await this.mmSearch(url, data);
+    this._searchResult = resp;
+    return resp;
   }
 
 }

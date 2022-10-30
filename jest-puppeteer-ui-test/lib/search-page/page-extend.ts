@@ -22,6 +22,7 @@ export class PageExtend {
   public searchRes: WebSearchResponse;
   public webSearchPage: WebSearchPage;
   private loggerService = new LoggerService();
+  public extendInfo: string;
 
   private logger: Logger;
   constructor() {
@@ -31,7 +32,6 @@ export class PageExtend {
   public async allowBrowser(){
     this.browser = await Puppeteer.launch({
       args: [
-        '--no-sandbox',
         '--ignore-certificate-errors',
         '--disable-web-security',
         '--disable-dev-shm-usage',
@@ -52,14 +52,12 @@ export class PageExtend {
   async allocPage({
     context,
     query,
-    searchResult,
     key,
     config,
     device
   }: {
     context: string;
     query: string;
-    searchResult: WebSearchResponse;
     key: string;
     config: WebSearchPageConfig,
     device: string,
@@ -75,7 +73,6 @@ export class PageExtend {
       context,
       query,
       content,
-      searchResult,
       requestInterceptor: this.requestInterceptor.bind(this),
       handler: this.eventHandler.bind(this)
     });
@@ -175,20 +172,19 @@ export class PageExtend {
     });
   }
 
-  private getProxyUrl(url: string) {
-    const urlObject = new URL(`http://example.com`);
-    urlObject.protocol = `http`;
-    urlObject.hostname = `shanghai-mmhttpproxy.woa.com`;
-    urlObject.port = '11113';
-    urlObject.searchParams.append(`url`, encodeURIComponent(url));
-    this.logger.error(urlObject.href);
-    return urlObject.href;
-  }
 
   private async eventHandler(func: string, params: Record<string, any>, ctx: WebSearchPage) {
     if (func === `getSearchData` ) {
       // send back data
-      // todo change the searchResult
+      // 获取数据回包
+      let data = {
+        "src": 25,
+        "uin": 3192443972,
+        "query": params['query'],
+        "scene": params['scene'],
+        "business_type": params['businessType']
+      }
+      await ctx.search(data);
       if (ctx.inited === true){
         ctx.searchResult = this.searchRes;
       }
@@ -197,15 +193,25 @@ export class PageExtend {
     }
     if (func === 'startSearchItemDetailPage') {
       let url = params['jumpUrl'];
-      //console.log(url);
+      console.log(url);
       this.url = url;
     }
-
+    if (func === 'openWeAppPage' || func === 'profile'){
+      this.extendInfo = params['nickName'];
+      console.log(this.extendInfo);
+    }
+    if (func === 'openCustomerServiceChat'){
+      this.url = JSON.parse(params['extInfo']).url;
+      console.log(this.url);
+    }
+    if (func === 'openFinderProfile'){
+      this.extendInfo = params['userName'];
+    }
   }
 
-  public async click(selector: string, type: string) {
+  public async click(type: string) {
     let page: Page = this.webSearchPage.instance;
-    await page.waitForSelector(selector);
+    //await page.waitForSelector(selector);
     if (type === 'inner') {
       let searchRes: WebSearchResponse = {
         UpdateCode: 0,

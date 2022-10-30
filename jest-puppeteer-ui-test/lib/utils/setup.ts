@@ -33,15 +33,15 @@ const defaultConfig: WebSearchPageConfig = {
 };
 
 
-export async function setup(searchRes: WebSearchResponse) {
+export async function setup(query: string, scene: number) {
   let pageExtend = new PageExtend();
+  defaultConfig.scene = scene;
 
   return await pageExtend.allocPage({
     device: 'iPhone 11 Pro Max',
     config: defaultConfig,
     context: "./asset/" + global.__TEMPLATE__,
-    query: "哈哈",
-    searchResult: searchRes,
+    query: query,
     key: "1"
   })
 }

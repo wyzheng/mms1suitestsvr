@@ -337,6 +337,7 @@ export const bizClass = {
   },
 }
 
+// 字词box相关class
 export const fontWordClass = {
   //q=赢
   "FONT":{
@@ -397,3 +398,36 @@ export const fontWordClass = {
 
 
 }
+
+//广告相关class
+export const wxAdClass = {
+  //广告头部
+  head: 'div.ui-zone-ad__hd div.video-player__bd',
+  feedback: 'div.ad-zone-header__complaint-entry',
+  complaint: "div.complaint-content",
+  feedback_mask: 'div.mask.ad-complaint-popover',
+  extent: 'div.ad-zone-header__link-extent',
+  //广告信息
+  title: 'div.ad-sub-header__slot div.hd-title-content em',
+  loc: 'div.hd-option-wrapper div.hd-option.active__link',
+  phone: 'div.hd-option-wrapper div.hd-option.active__link:nth-of-type(2)',
+  helper: 'div.hd-option-wrapper div.hd-option.active__link:nth-of-type(3)',
+  // 账号（可能有多个，可能在不同位置）
+  account: 'div.ad-account-info__list div.account-info',
+  account_link: 'div.ad-account-info__list div.account-info a',
+  // 系列产品
+  tab_space: "div.product-series div.product-series__tabs > div",
+  active_tab: "div.product-series div.product-series__tabs div.product-series__tab__content--active",
+  product: "div.product-series div.ui-scroll__wrapper div.ui-scroll__item",
+  product_image: "div.product-series div.ui-scroll__wrapper div.ui-scroll__item div.product-info__image",
+  product_title: "div.product-series div.ui-scroll__wrapper div.ui-scroll__item div.product-info__title",
+  product_desc: 'div.product-series div.ui-scroll__wrapper div.ui-scroll__item div.product-info__desc',
+  // 更多账号
+  more_account: "div.ad-account-info__more-info.active__item",
+  //热门活动
+  activity: "div.activity-card-slide div.ui-scroll__item",
+  activity_body: "div.activity-card-slide div.ui-scroll__item div.video-player__bd",
+  activity_menus: "div.activity-card-slide div.ui-scroll__item div.menus div.menu-item",
+}
+
+
