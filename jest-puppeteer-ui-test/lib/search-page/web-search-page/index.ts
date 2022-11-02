@@ -381,12 +381,14 @@ export class WebSearchPage extends CommonPage {
 
     if (resp.statusCode == 200){
       let rawData = resp.body;
-      return JSON.parse(rawData)
+      return JSON.parse(rawData);
+    }else {
+      this.logger.error(`$$$$ there is something wrong`);
     }
   }
 
   public async search(data) {
-    let url = this.getUrl("mmsearchossopenapi", "GetSearchResult")
+    let url = this.getUrl("mmsearchossopenapisvr", "GetSearchResultLite")
     let resp =  await this.mmSearch(url, data);
     this._searchResult = resp;
     return resp;

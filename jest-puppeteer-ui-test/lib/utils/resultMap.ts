@@ -412,6 +412,12 @@ export const wxAdClass = {
   loc: 'div.hd-option-wrapper div.hd-option.active__link',
   phone: 'div.hd-option-wrapper div.hd-option.active__link:nth-of-type(2)',
   helper: 'div.hd-option-wrapper div.hd-option.active__link:nth-of-type(3)',
+  //电话相关
+  half_dialog: "div.ui-half-screen-dialog",
+  alert_dialog: "div.dialog__box.alert",
+  number: "div.ui-half-screen-dialog div.ui-half-screen-sheet-item.user-select-undefined span",
+  call_button: "div.ui-half-screen-dialog div.ui-half-screen-sheet-item.user-select-undefined a",
+  alert_number: "div.dialog__box.alert div.dialog__bd",
   // 账号（可能有多个，可能在不同位置）
   account: 'div.ad-account-info__list div.account-info',
   account_link: 'div.ad-account-info__list div.account-info a',
@@ -425,9 +431,10 @@ export const wxAdClass = {
   // 更多账号
   more_account: "div.ad-account-info__more-info.active__item",
   //热门活动
-  activity: "div.activity-card-slide div.ui-scroll__item",
+  activity: "div.activity-card-slide div.ui-scroll__item:nth-of-type(3)",
   activity_body: "div.activity-card-slide div.ui-scroll__item div.video-player__bd",
-  activity_menus: "div.activity-card-slide div.ui-scroll__item div.menus div.menu-item",
+  activity_menus: "div.activity-card-slide div.ui-scroll__item:nth-of-type(4) div.menu-item:nth-of-type(1)",
+  activity_button: "div.activity-card-slide div.ui-scroll__item a",
 }
 
 

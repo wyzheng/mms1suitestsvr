@@ -32,6 +32,7 @@ export class PageExtend {
   public async allowBrowser(){
     this.browser = await Puppeteer.launch({
       args: [
+        '--no-sandbox',
         '--ignore-certificate-errors',
         '--disable-web-security',
         '--disable-dev-shm-usage',
@@ -206,6 +207,9 @@ export class PageExtend {
     }
     if (func === 'openFinderProfile'){
       this.extendInfo = params['userName'];
+    }
+    if (func === "openADCanvas"){
+      this.extendInfo = params['canvasId'];
     }
   }
 

@@ -46,15 +46,10 @@ describe("微信商品品专广告测试", () => {
         await page.click(wxAdClass.head);
         await page.waitForTimeout(700);
         expect(pageExtend.extendInfo).toBe("唯品会特卖");
-        /*let page2 = await pageExtend.click("outer");
-        const screenshotBuffer = await page2.screenshot({
-          path: "./static/pic/test_3.png",
-          fullPage: true
-        })*/
-        //await addAttach({attach: screenshotBuffer, description: "here is the jump pic."});
     },50000);
 
     test("测试广告名称", async () => {
+        await page.bringToFront();
         let content = await page.evaluate(async (eleClass)  => {
             return  document.querySelector(eleClass.title).innerHTML;
         }, wxAdClass);
@@ -62,6 +57,7 @@ describe("微信商品品专广告测试", () => {
     },50000);
     
     test("测试广告名称点击", async () => {
+        await page.bringToFront();
         await page.waitForSelector(wxAdClass.title);
         let ele =  await page.$$(wxAdClass.title);
         let path = './static/pic/ad_title.png';
@@ -73,6 +69,7 @@ describe("微信商品品专广告测试", () => {
     },50000);
 
     test("测试广告账号(小程序账号)", async () => {
+        await page.bringToFront();
         await page.waitForSelector(wxAdClass.account);
         let ele =  await page.$(wxAdClass.account);
         let path = './static/pic/ad_account.png';
@@ -84,6 +81,7 @@ describe("微信商品品专广告测试", () => {
     },50000);
 
     test("测试广告账号进店按钮", async () => {
+        await page.bringToFront();
         await page.waitForSelector(wxAdClass.account_link);
         let ele =  await page.$(wxAdClass.account_link);
         let path = './static/pic/ad_account_link.png';
@@ -95,6 +93,7 @@ describe("微信商品品专广告测试", () => {
     },50000);
 
     test("测试广告账号（公众号账号）", async () => {
+        await page.bringToFront();
         let className = "div.ad-account-info__list div.ad-account-info__item.active__item:nth-of-type(2)";
         await page.waitForSelector(wxAdClass.account);
         let ele =  await page.$$(wxAdClass.account);
@@ -107,6 +106,7 @@ describe("微信商品品专广告测试", () => {
     },50000);
 
     test("测试地址按钮 -- info_loc_to_h5", async () => {
+        await page.bringToFront();
         await page.waitForSelector(wxAdClass.loc);
         let ele =  await page.$(wxAdClass.loc);
         let path = './static/pic/ad_loc.png';
@@ -125,6 +125,7 @@ describe("微信商品品专广告测试", () => {
 
     // todo 链接需要客户端支持
     test("测试在线客服 -- info_helper", async () => {
+        await page.bringToFront();
         await page.waitForSelector(wxAdClass.helper);
         let ele =  await page.$(wxAdClass.helper);
         let path = './static/pic/ad_helper.png';
@@ -142,6 +143,7 @@ describe("微信商品品专广告测试", () => {
 
     // todo 链接需要客户端支持
     test("测试更多 -- account_more", async () => {
+        await page.bringToFront();
         await page.waitForSelector(wxAdClass.more_account);
         let ele =  await page.$(wxAdClass.more_account);
         let path = './static/pic/ad_more.png';
@@ -158,6 +160,7 @@ describe("微信商品品专广告测试", () => {
     },50000);
 
     test("测试广告投诉按钮 -- header_complaint", async () => {
+        await page.bringToFront();
         //广告按钮
         await page.waitForSelector(wxAdClass.feedback);
         let ele =  await page.$(wxAdClass.feedback);
@@ -181,7 +184,7 @@ describe("微信商品品专广告测试", () => {
             fullPage: true
         })
         await addAttach({attach: screenshotBuffer, description: "here is the jump pic."});
-
+        await page.bringToFront();
         //再次点击收起投诉广告按钮
         await page.click(wxAdClass.feedback);
         await page.waitForTimeout(1000);
@@ -194,6 +197,7 @@ describe("微信商品品专广告测试", () => {
     },50000);
 
     test("测试外链点击", async () => {
+        await page.bringToFront();
         await page.waitForSelector(wxAdClass.extent);
         let ele =  await page.$(wxAdClass.extent);
         let path = './static/pic/ad_extent.png';
