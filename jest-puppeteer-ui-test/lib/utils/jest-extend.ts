@@ -1,7 +1,7 @@
 import { Page } from "puppeteer";
 
-expect.extend({
 
+expect.extend({
   async toHaveElement(received: Page, selector: string) {
     try {
       const item = await received.evaluate((selector) => {

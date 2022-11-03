@@ -1,14 +1,12 @@
-import { CommonPage } from './common-page';
-import { WebSearchResponse } from '../interfaces/web-search-page';
-import { readFileSync } from 'fs';
-import { join } from 'path';
-import { devices, HTTPRequest, Page } from 'puppeteer';
-import { WebSearchPageConfig } from '../interfaces/web-search-page-config';
+import { CommonPage } from "./common-page";
+import { WebSearchResponse } from "../interfaces/web-search-page";
+import fs, { readFileSync } from "fs";
+import { join } from "path";
+import { devices, HTTPRequest, Page } from "puppeteer";
+import { WebSearchPageConfig } from "../interfaces/web-search-page-config";
 import ini from "ini";
-import fs from "fs";
 import {randomInt} from "crypto";
 import got from "got";
-
 
 const newwxjsPath = join(__dirname, `newwxjs.js`);
 const newwxjsContent = readFileSync(newwxjsPath, {
@@ -25,7 +23,7 @@ export class WebSearchPage extends CommonPage {
   // context (local path)
   private _context: string = '';
   // query
-  public _query: string = '';
+  private _query: string = '';
   // search result
   private _searchResult: WebSearchResponse = null;
   // inited
@@ -37,16 +35,16 @@ export class WebSearchPage extends CommonPage {
   // is data ready
   private _dataReady: boolean = false;
   // page default config
-  public _pageConfig : WebSearchPageConfig = null;
+  private _pageConfig : WebSearchPageConfig = null;
   // device
-  private _device: string = 'iPhone 11 Pro Max';
+  public _device: string = "iPhone 11 Pro Max"
 
   private _dataReadyResolve: () => void = null;
 
 
   //private logger: Logger;
   // alloc
-  constructor(instance: Page) {
+  constructor (instance: Page) {
     super(instance);
 
   }
@@ -88,7 +86,7 @@ export class WebSearchPage extends CommonPage {
     requestInterceptor: (req: HTTPRequest, ctx: string) => void;
     handler: (func: string, params: Record<string, any>, ctx: WebSearchPage) => void;
   }) {
-    this.logger.log(`init page with query` );
+    this.logger.log(`init page with query` )
     // make sure only called once
     if (this._inited) {
       return;
@@ -96,7 +94,7 @@ export class WebSearchPage extends CommonPage {
     this._key = key;
     this._context = context;
     this._query = query;
-    //this._searchResult = searchResult;
+   // this._searchResult = searchResult;
     this._dataReady = false;
     this._pageConfig = config;
     this._device = device;
@@ -154,7 +152,7 @@ export class WebSearchPage extends CommonPage {
     Object.keys(mergedConfig).forEach((key) => {
       urlObj.searchParams.append(key, mergedConfig[key]);
     });
-    this.logger.log(`generate the page retry: ${urlObj.href}`);
+    this.logger.log(`generate the page retry: ${urlObj.href}`)
     await this.instance.goto(urlObj.href);
   }
   // load html
@@ -308,7 +306,7 @@ export class WebSearchPage extends CommonPage {
     }, message);
   }
 
- /* public async search(query: string, searchResult: WebSearchResponse) {
+  /*public async search(query: string, searchResult: WebSearchResponse) {
     this._dataReady = false;
     this._dataReadyResolve = null;
     this._query = query;
@@ -332,7 +330,7 @@ export class WebSearchPage extends CommonPage {
   }
 
   public async jumpTest(url : string) {
-    await this.instance.goto(url, {timeout:300000, waitUntil:'networkidle0'});
+    await this.instance.goto(url,{timeout:300000, waitUntil:"networkidle0"});
     await this.instance.waitForNavigation();
     await this.waitForRenderingDone();
   }
@@ -343,7 +341,7 @@ export class WebSearchPage extends CommonPage {
 
     for (const i in env) {
       try {
-        let str = fs.readFileSync(`/home/qspace/route/${env[i]}/${moudle}_route.conf`).toString();
+        let str = fs.readFileSync(`/home/qspace/etc/route/${env[i]}/${moudle}_route.conf`).toString();
         let info = ini.parse(str);
         for (const server in info) {
           if( "IP" in info[server] && "Port" in info[server]){
@@ -353,7 +351,7 @@ export class WebSearchPage extends CommonPage {
           }
         }
       }catch(err){
-        this.logger.error(`there is something wrong ${err}`);
+        this.logger.error(`$$$$$ there is something wrong ${err}`);
       }
     }
     if (ip_port_list.length > 0){
@@ -364,6 +362,7 @@ export class WebSearchPage extends CommonPage {
 
   public getUrl(module: string, funcName: string){
     let server = this.getIpPort(module);
+    this.logger.log(`http://${server[0]}:${server[1]}/${funcName}`);
     if (server[0] != 0 && server[1] != 0){
       return `http://${server[0]}:${server[1]}/${funcName}`;
     }
@@ -381,6 +380,7 @@ export class WebSearchPage extends CommonPage {
 
     if (resp.statusCode == 200){
       let rawData = resp.body;
+      this.logger.log(rawData);
       return JSON.parse(rawData);
     }else {
       this.logger.error(`$$$$ there is something wrong`);

@@ -337,7 +337,6 @@ export const bizClass = {
   },
 }
 
-// 字词box相关class
 export const fontWordClass = {
   //q=赢
   "FONT":{
@@ -399,7 +398,6 @@ export const fontWordClass = {
 
 }
 
-//广告相关class
 export const wxAdClass = {
   //广告头部
   head: 'div.ui-zone-ad__hd div.video-player__bd',
@@ -436,5 +434,3 @@ export const wxAdClass = {
   activity_menus: "div.activity-card-slide div.ui-scroll__item:nth-of-type(4) div.menu-item:nth-of-type(1)",
   activity_button: "div.activity-card-slide div.ui-scroll__item a",
 }
-
-
