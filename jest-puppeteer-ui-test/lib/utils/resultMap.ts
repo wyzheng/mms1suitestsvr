@@ -393,28 +393,27 @@ export const fontWordClass = {
     buttons: 'div.poem-box div.btns',
     button: 'div.poem-box div.btns div.ui-button div.ui-button-content'
   }
-
-
-
 }
 
 export const wxAdClass = {
   //广告头部
-  head: 'div.ui-zone-ad__hd div.video-player__bd',
+  head: 'div.ui-zone-ad__hd',
   feedback: 'div.ad-zone-header__complaint-entry',
   complaint: "div.complaint-content",
   feedback_mask: 'div.mask.ad-complaint-popover',
   extent: 'div.ad-zone-header__link-extent',
   //广告信息
+  headTitle: 'div.service-search-block-body  div:nth-child(1)',
   title: 'div.ad-sub-header__slot div.hd-title-content em',
+  tagContent: 'div.ad-sub-header__slot div.hd-title-content div.ui-tag-title',
   loc: 'div.hd-option-wrapper div.hd-option.active__link',
   phone: 'div.hd-option-wrapper div.hd-option.active__link:nth-of-type(2)',
   helper: 'div.hd-option-wrapper div.hd-option.active__link:nth-of-type(3)',
   //电话相关
   half_dialog: "div.ui-half-screen-dialog",
   alert_dialog: "div.dialog__box.alert",
-  number: "div.ui-half-screen-dialog div.ui-half-screen-sheet-item.user-select-undefined span",
-  call_button: "div.ui-half-screen-dialog div.ui-half-screen-sheet-item.user-select-undefined a",
+  number: "div.ui-half-screen-dialog div.ui-half-screen-sheet-item p.ui-text-source span",
+  call_button: "div.ui-half-screen-dialog div.ui-half-screen-sheet-item",
   alert_number: "div.dialog__box.alert div.dialog__bd",
   // 账号（可能有多个，可能在不同位置）
   account: 'div.ad-account-info__list div.account-info',

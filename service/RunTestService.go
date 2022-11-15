@@ -3,6 +3,7 @@ package service
 import (
 	"bytes"
 	"git.woa.com/wego/wego2/xlog"
+	"mms1suitestsvr/util"
 	"os"
 	"os/exec"
 	"strconv"
@@ -55,7 +56,10 @@ func RunTest(taskId int, templateName string) string {
 	if err = cmd.Run(); err != nil {
 		xlog.Error(err)
 	}*/
-
+	err = util.SendMsg(taskId)
+	if err != nil {
+		xlog.Errorf("[wechat work] send message error %v", err)
+	}
 	return stdout.String()
 }
 

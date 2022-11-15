@@ -23,6 +23,7 @@ export class PageExtend {
   public webSearchPage: WebSearchPage;
   private loggerService = new LoggerService();
   public extendInfo: string;
+  public weappPath: string;
 
   private logger: Logger;
   constructor() {
@@ -40,7 +41,7 @@ export class PageExtend {
         `--window-size=414,2000`,
         `--proxy-server=${proxy_svr}`
       ],
-      headless: true,
+      headless: false,
     });
 
     return this.browser;
@@ -185,6 +186,7 @@ export class PageExtend {
 
   private async eventHandler(func: string, params: Record<string, any>, ctx: WebSearchPage) {
     if (func === `getSearchData` ) {
+     console.log(params);
       // send back data
       // 获取数据回包
       let data = {
@@ -192,8 +194,15 @@ export class PageExtend {
         "uin": 3192443972,
         "query": params['query'],
         "scene": params['scene'],
-        "business_type": params['businessType']
+        "business_type": params['businessType'],
+        "ExtReqParams":[
+          {
+            "key": "ossSource",
+            "uint_value": 10003
+          }
+        ]
       }
+      console.log(data);
       await ctx.search(data);
       if (ctx.inited === true){
         ctx.searchResult = this.searchRes;
@@ -202,23 +211,37 @@ export class PageExtend {
       await ctx.waitForRenderingDone();
     }
     if (func === 'startSearchItemDetailPage') {
+      this.url = "";
       let url = params['jumpUrl'];
+      // 补充pass_ticket
+      if (url.indexOf('wsad.weixin.qq.com') > 0 || url.indexOf('search.weixin.qq.com') > 0){
+        url = url + "&pass_ticket=TBBNHOQ%2FJPvpvKRj4W9xy2nvn%2F8l0nMQl3pKptZ03IHyUa0zMOYv5jq%2BHo4SRAiK";
+      }
       console.log(url);
       this.url = url;
     }
-    if (func === 'openWeAppPage' || func === 'profile'){
-      this.extendInfo = params['nickName'];
-      console.log(this.extendInfo);
-    }
     if (func === 'openCustomerServiceChat'){
+      this.url = "";
       this.url = JSON.parse(params['extInfo']).url;
       console.log(this.url);
     }
-    if (func === 'openFinderProfile'){
+    if ( func === 'openFinderProfile' || func === 'profile'){
+      this.extendInfo = "";
       this.extendInfo = params['userName'];
     }
+    if(func === 'openWeAppPage'){
+      this.extendInfo = "";
+      this.extendInfo = params['userName'];
+      this.weappPath = params['relativeURL'];
+    }
     if (func === "openADCanvas"){
+      this.extendInfo = "";
       this.extendInfo = params['canvasId'];
+    }
+    if (func === "makePhoneCall"){
+      this.extendInfo = "";
+      this.extendInfo = params['phoneNumber'];
+      console.log(this.extendInfo);
     }
 
   }
@@ -241,13 +264,13 @@ export class PageExtend {
     }
     else if (type === "outer"){
       const page2 = await this.browser.newPage();
-      await page.emulate(devices[this.webSearchPage._device]);
+      await page2.emulate(devices["iPhone 11 Pro Max"]);
       let func: Function = page2["goto"];
       await func.call(page2, this.url, {waitUntil: "networkidle0"});
       await page2.waitForTimeout(7000);
-      await page2.evaluate(async () => {
+      /*await page2.evaluate(async () => {
         await scrollDown();
-      });
+      });*/
       await page2.waitForTimeout(7000);
       return page2;
     }

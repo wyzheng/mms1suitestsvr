@@ -28,24 +28,23 @@ describe("微信商品品专广告测试 -- wxadtestPicWeapp", () => {
             const image =  await page.screenshot({
                 path: "./static/pic/test_wxadPicWeapp.png",
                 fullPage: true
-            }).catch(()=>{})
-            global.reporter.addAttachment("Screenshot", image, "image/png");
+            })
+            await addAttach({attach: image, description: "页面截图"});
         }
         catch(err){
             console.log(err);
         }
-
     },50000);
-    //todo openADCanvas 应该可以置换出广告主名称啥的，这里后面再看看
+
     test("测试广告头部点击 -- zoneheader_click", async () => {
         await page.waitForSelector(wxAdClass.head);
         let ele =  await page.$(wxAdClass.head);
         let path = './static/pic/ad_head.png';
         const image =  await ele.screenshot({path: path});
-        await addAttach({attach: image, description: "here is the ad head."});
+        await addAttach({attach: image, description: "广告头部截图"});
         await page.click(wxAdClass.head);
         await page.waitForTimeout(700);
-        expect(pageExtend.extendInfo).toBe("唯品会特卖");
+        expect(pageExtend.extendInfo).toBe("2579583342");
     },50000);
     test("测试外链点击", async () => {
         await page.bringToFront();
@@ -53,29 +52,36 @@ describe("微信商品品专广告测试 -- wxadtestPicWeapp", () => {
         let ele =  await page.$(wxAdClass.extent);
         let path = './static/pic/ad_extent.png';
         const image =  await ele.screenshot({path: path});
-        await addAttach({attach: image, description: "here is the ad head."});
+        await addAttach({attach: image, description: "外链截图"});
         await page.click(wxAdClass.extent);
         await page.waitForTimeout(700);
-        expect(pageExtend.extendInfo).toBe("唯品会特卖");
+        expect(pageExtend.extendInfo).toBe("2579583342");
     },50000);
 
     test("测试广告名称 ", async () => {
         await page.bringToFront();
         let content = await page.evaluate(async (eleClass)  => {
-            return  document.querySelector(eleClass.title).innerHTML;
+            let item = document.querySelector(eleClass.title);
+            let color = getComputedStyle(item).color;
+            let inner = item.innerHTML;
+            let tagTitle = document.querySelector(eleClass.tagContent).innerHTML;
+            return  [color, inner, tagTitle];
         }, wxAdClass);
-        expect(content).toBe("WXAD测试号视频号主页");
+        //expect(content[0]).toBe("rgb(6, 174, 86)");
+        expect(content[1].split("<em>")[0]).toBe("WXAD测试号视频号主页");
+        expect(page).toHaveElement(wxAdClass.tagContent)
+        expect(content[2]).toBe("官方");
     },50000);
 
     // todo 如何置换出视频号名称？
     test("测试广告名称点击", async () => {
         await page.bringToFront();
-        await page.waitForSelector(wxAdClass.title);
-        let ele =  await page.$$(wxAdClass.title);
+        await page.waitForSelector(wxAdClass.headTitle);
+        let ele =  await page.$$(wxAdClass.headTitle);
         let path = './static/pic/ad_title.png';
         const image =  await ele.at(1).screenshot({path: path});
-        await addAttach({attach: image, description: "here is the ad head."});
-        await page.click(wxAdClass.title);
+        await addAttach({attach: image, description: "广告名称截图"});
+        await page.click(wxAdClass.headTitle);
         await page.waitForTimeout(700);
         expect(pageExtend.extendInfo).toBe("v2_060000231003b20faec8c7e28d1ecad2c900ea34b077192ae8bad1b4f00e998bfc98c5f05d66@finder");
     },50000);
@@ -89,7 +95,7 @@ describe("微信商品品专广告测试 -- wxadtestPicWeapp", () => {
         await addAttach({attach: image, description: "here is the ad head."});
         await page.click(wxAdClass.account);
         await page.waitForTimeout(700);
-        expect(pageExtend.extendInfo).toBe("唯品会特卖");
+        expect(pageExtend.extendInfo).toBe("gh_8ed2afad9972@app");
     },50000);
 
     test("测试广告账号进店按钮", async () => {
@@ -101,7 +107,7 @@ describe("微信商品品专广告测试 -- wxadtestPicWeapp", () => {
         await addAttach({attach: image, description: "here is the ad head."});
         await page.click(wxAdClass.account_link);
         await page.waitForTimeout(700);
-        expect(pageExtend.extendInfo).toBe("唯品会特卖");
+        expect(pageExtend.extendInfo).toBe("gh_8ed2afad9972@app");
     },50000);
 
     test("测试广告账号（公众号账号）", async () => {
@@ -114,7 +120,7 @@ describe("微信商品品专广告测试 -- wxadtestPicWeapp", () => {
         await addAttach({attach: image, description: "here is the ad head."});
         await page.click(className);
         await page.waitForTimeout(700);
-        expect(pageExtend.extendInfo).toBe("快乐测试123");
+        expect(pageExtend.extendInfo).toBe("gh_1e80bb81a1d2");
     },50000);
 
     test("测试地址按钮 -- info_loc_to_h5", async () => {
@@ -132,6 +138,7 @@ describe("微信商品品专广告测试 -- wxadtestPicWeapp", () => {
             fullPage: true
         })
         await addAttach({attach: screenshotBuffer, description: "here is the jump pic."});
+        expect(pageExtend.url).toContain("http://www.baidu.com");
         expect(await page2.title()).toBe("百度一下");
     },50000);
 
@@ -150,26 +157,12 @@ describe("微信商品品专广告测试 -- wxadtestPicWeapp", () => {
             path: "./static/pic/test_helper.png",
             fullPage: true
         })
-        await addAttach({attach: screenshotBuffer, description: "here is the jump pic."});
+        await addAttach({attach: image, description: "在线客服截图"});
+        await page.click(wxAdClass.helper);
+        await page.waitForTimeout(700);
+        expect(pageExtend.url).toBe("https://work.weixin.qq.com/kfid/kfc7f0d8acb45de1b0a");
     },50000);
 
-    // todo 链接需要客户端支持？
-    test("测试更多 -- account_more", async () => {
-        await page.bringToFront();
-        await page.waitForSelector(wxAdClass.more_account);
-        let ele =  await page.$(wxAdClass.more_account);
-        let path = './static/pic/ad_more.png';
-        const image =  await ele.screenshot({path: path});
-        await addAttach({attach: image, description: "here is the ad head."});
-        await page.click(wxAdClass.more_account);
-        await page.waitForTimeout(700);
-        let page2 = await pageExtend.click("outer");
-        const screenshotBuffer = await page2.screenshot({
-            path: "./static/pic/test_more.png",
-            fullPage: true
-        })
-        await addAttach({attach: screenshotBuffer, description: "here is the jump pic."});
-    },50000);
 
     test("测试广告投诉按钮 -- header_complaint", async () => {
         await page.bringToFront();
@@ -211,22 +204,95 @@ describe("微信商品品专广告测试 -- wxadtestPicWeapp", () => {
 
     test("测试产品系列tab点击", async () => {
         await page.bringToFront();
-        let tab_content = ["系列1", "系列2", "系列3", "系列4"]
-        let content =  await page.evaluate((className) => {
+        let tab_content = ["系列1", "系列2", "系列3", "系列4"];
+        let product_num = [4, 6, 4, 6];
+        /*let content =  await page.evaluate((className) => {
             let item = document.querySelector(className.active_tab);
             return item.innerHTML;
         }, wxAdClass)
         expect(content).toBe(tab_content[0]);
-        for (let i = 1; i < 4; i++) {
-            await page.waitForSelector(wxAdClass.tab_space + `:nth-child(${(4 * i) + 2})`);
-            await page.click(wxAdClass.tab_space + `:nth-child(${(4 * i) + 2})`);
-            await page.waitForTimeout(700);
+        let products = await page.$$(wxAdClass.product);
+        expect(products.length).toBe(product_num[0]);*/
+        for (let i = 0; i < 4; i++) {
+            if (i > 0){
+                await page.waitForSelector(wxAdClass.tab_space + `:nth-child(${(4 * i) + 2})`);
+                await page.click(wxAdClass.tab_space + `:nth-child(${(4 * i) + 2})`);
+                await page.waitForTimeout(700);
+            }
             let content =  await page.evaluate((className) => {
                 let item = document.querySelector(className.active_tab);
                 return item.innerHTML;
             }, wxAdClass, i)
+            let path_arr = [];
+            let products = await page.$$(wxAdClass.product);
+            for (let j = 0; j < products.length ; j++) {
+                await page.waitForSelector(wxAdClass.product + `:nth-of-type(${j + 1})`);
+                await page.click(wxAdClass.product + `:nth-of-type(${j + 1})`);
+                await page.waitForTimeout(700);
+                expect(path_arr.indexOf(pageExtend.weappPath)).toBe(-1);
+                if (path_arr.indexOf(pageExtend.weappPath) == -1){
+                    path_arr.push(pageExtend.weappPath)
+                }
+            }
+            console.log(path_arr);
+            expect(products.length).toBe(product_num[i]);
             expect(content).toBe(tab_content[i]);
         }
+    },50000);
+
+    test("测试联系电话按钮", async () => {
+        await page.bringToFront();
+        await page.waitForSelector(wxAdClass.phone);
+        let ele = await page.$(wxAdClass.phone);
+        await page.click(wxAdClass.phone);
+        let path = './static/pic/ad_phone.png';
+        let image =  await ele.screenshot({path: path});
+        await addAttach({attach: image, description: "联系电话"});
+        await page.waitForSelector(wxAdClass.half_dialog);
+        ele = await page.$(wxAdClass.half_dialog);
+        image =  await ele.screenshot({path: path});
+        await addAttach({attach: image, description: "联系电话弹窗"});
+        let phoneArr = ["17000001688", "17000001689", "0755-10016"];
+        await page.waitForSelector(wxAdClass.number);
+        let content = await page.evaluate(async (eleClass)  => {
+            let items = document.querySelectorAll(eleClass.number);
+            let number = [];
+            for (let i = 0; i < items.length; i++) {
+                number.push(items[i].innerHTML);
+            }
+            return number;
+        }, wxAdClass);
+
+        for (let i = 0; i < phoneArr.length; i++) {
+            expect(content[i]).toBe(phoneArr[i]);
+        }
+        for (let i = 0; i < phoneArr.length; i++) {
+            let selector = wxAdClass.call_button + `:nth-of-type(${i+1}) div.ui-half-screen-sheet-button-container a`;
+            let path = './static/pic/ad_call.png';
+            let ele = await page.$(selector);
+            await ele.screenshot({path: path});
+            await page.click(selector);
+            await page.waitForTimeout(1000);
+            expect(pageExtend.extendInfo).toBe(phoneArr[i]);
+            await page.click(wxAdClass.phone);
+        }
+    },50000);
+
+    test("测试更多 -- account_more", async () => {
+        await page.bringToFront();
+        await page.waitForSelector(wxAdClass.more_account);
+        let ele =  await page.$(wxAdClass.more_account);
+        let path = './static/pic/ad_more.png';
+        const image =  await ele.screenshot({path: path});
+        await addAttach({attach: image, description: "here is the ad head."});
+        await page.click(wxAdClass.more_account);
+        await page.waitForTimeout(700);
+        let page2 = await pageExtend.click("outer");
+        const screenshotBuffer = await page2.screenshot({
+            path: "./static/pic/test_more.png",
+            fullPage: true
+        })
+        await addAttach({attach: screenshotBuffer, description: "here is the jump pic."});
     },50000);
 
 })

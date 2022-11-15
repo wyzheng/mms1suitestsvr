@@ -101,7 +101,7 @@ export async function getOCRRes(imagePath){
   };
   let resp = await got( {method: 'post', url: url, body: JSON.stringify(data), decompress: false});
   logger.log("here joyce log something*********");
-  logger.log(resp.body)
+  logger.log(resp.body);
 
   let respData = resp.body.replace('\"', '"');
   let jsonRes = JSON.parse(respData);
@@ -124,3 +124,44 @@ export async function getLastItem(path){
   }
   return '...'
 }
+
+/**
+ *
+ * @param functionName AddBizContact 关注公众号  DelBizContact 取消关注
+ * @param bizUin  公众号uin
+ */
+export async function bizOperation(functionName, bizUin){
+  let url = `http://wxunitest.oa.com/mmbizcasehelper/mmbasedatabroker`
+  let data = {
+    "biz_uin": bizUin,
+    "usr_uin": 3192443972,
+  }
+  let req_data = {
+    "func_name": functionName,
+    "func_args": data
+  };
+  let resp = await got( {method: 'post', url: url, body: JSON.stringify(req_data), decompress: false});
+  logger.log("here addBizContact log something*********");
+  logger.log(resp.body);
+}
+
+/**
+ *
+ * @param finderName 被关注的人微信名
+ * @param optype  1 关注 / 2 取消关注
+ */
+export async function finderOperation(finderName, optype){
+  let url = "http://mmtest.oa.com/mmcasehelperidc/mmfinder"
+  let req_data = {
+    'func_name': 'SetFinderFollow',
+    'func_args': {
+      "username": 3192443972,
+      "finder_username": finderName,
+      "optype": optype
+    }
+  }
+  let resp = await got( {method: 'post', url: url, body: JSON.stringify(req_data), decompress: false});
+  logger.log("here addBizContact log something*********");
+  logger.log(resp.body);
+}
+
