@@ -369,10 +369,10 @@ export class WebSearchPage extends CommonPage {
     return "";
   }
 
-  /*public async mmSearch(url: string, data){
+  public async mmSearch(url: string, data){
     let uin = "3192443972";
     let  header_dict = {
-      "Accept": "*!/!*",
+      "Accept": "*/*",
       "Content-Type": "application/json; charset=utf-8",
       "Cookie": `uin=${uin};uid=${uin}`
     };
@@ -392,31 +392,7 @@ export class WebSearchPage extends CommonPage {
     let resp =  await this.mmSearch(url, data);
     this._searchResult = resp.rsp;
     return resp;
-  }*/
-
-  public async mmSearch(url: string, data){
-    let uin = "3192443972";
-    let  header_dict = {
-      "Accept": "*/*",
-      "Content-Type": "application/json; charset=utf-8",
-      "Cookie": "tapdsession=e1911bf3abbc62cfbee22ec2b152779d; t_u=882c902be955cc61%7C53fb9085e7b0ba04; t_uid=joycesong; blueking_language=zh-cn; sensorsdata2015jssdkcross=%7B%22distinct_id%22%3A%22joycesong%22%2C%22first_id%22%3A%22184181ebc2acc3-01f1882ea285059-19525635-2007040-184181ebc2bbad%22%2C%22props%22%3A%7B%22%24latest_traffic_source_type%22%3A%22%E7%9B%B4%E6%8E%A5%E6%B5%81%E9%87%8F%22%2C%22%24latest_search_keyword%22%3A%22%E6%9C%AA%E5%8F%96%E5%88%B0%E5%80%BC_%E7%9B%B4%E6%8E%A5%E6%89%93%E5%BC%80%22%2C%22%24latest_referrer%22%3A%22%22%7D%2C%22%24device_id%22%3A%22184181ebc2acc3-01f1882ea285059-19525635-2007040-184181ebc2bbad%22%7D; paas_perm_csrftoken=muNapxFa0vD1MYyRwRDBhNmTZnWc9VLdEDqAwwqquYjnuiOYVLF4IUdA4HfOG2VC; paas_perm_sessionid=4xvbottaeij8fj23pnbs5wa6t8630467; x_host_key_access_https=f51f059a71a512b500346a85e0809dbb3f985034_s; x-client-ssid=1843b3d6fa1-a795c52fa12fad2ac08f962692d7cc5be1abddec; x-tofapi-host-key=1843b3d6fa9-e2a601e9be8223e640130ada4a6350ba17f1266e; x_host_key_access=f51f059a71a512b500346a85e0809dbb3f985034_s; roles=undefined; x-imp-host-key=18440a27cff-95799201f3325dfc16a78ce511af4bceb162d4b9; DiggerTraceId=d59857c0-5c0b-11ed-8f5c-d19e43ae1ccb; wxitil_request_authid=131; wxitil_request_authkey=0; wxitil_auth_version=new; _login_name=joycesong; ERP_USERNAME=joycesong; PIXIEL_RATIO=2; FRM=new; WIN_WH=0_0; pkgsvr_csrftoken=2H21LMPRI9rmqLCST8IvAcdpKJqOSKKP; pkgsvr_sessionid=gggituqld5c7wvtuxx48lkwedz4q137n; _t_uid=1001483085; bk_uid=joycesong; bk_ticket=pF-buLmFQDnV24zDzAOJmkftZMbiI9sYEM6RZJXCJfI; RIO_TCOA_TICKET=tof:TOF4TeyJ2IjoiNCIsInRpZCI6IlJMNk9aZW1QbnNFaGo3SEtwNWNYU1JDNVVuSTBCOU1VIiwiaXNzIjoiMTAuOTkuMTUuMzYiLCJpYXQiOiIyMDIyLTExLTEzVDIxOjA2OjM3LjMxNTgwMDY2NSswODowMCIsImF1ZCI6IjIxOC4xOS4xMzkuMTk4IiwiaGFzaCI6IkM1MjZFNjhBRjdCQTVEODUxNzk4NzcwMjBCQzYyM0ZDOTUzREE5MERDQUUwMDk5RUIzQjcyQ0U1Q0Y3NjA5MEUiLCJuaCI6IkE1M0Y0NDI1NUE0QjBFNDlDNDkwMzcwMDQzNEVFMjZDRUYxQ0FDMzQ4OUU2NTgxODlGNEYxNTA1NkQyQkExRkMifQ; RIO_TCOA_TICKET_HTTPS=tof:TOF4TeyJ2IjoiNCIsInRpZCI6IlJMNk9aZW1QbnNFaGo3SEtwNWNYU1JDNVVuSTBCOU1VIiwiaXNzIjoiMTAuOTkuMTUuMzYiLCJpYXQiOiIyMDIyLTExLTEzVDIxOjA2OjM3LjMxNTgwMDY2NSswODowMCIsImF1ZCI6IjIxOC4xOS4xMzkuMTk4IiwiaGFzaCI6IkM1MjZFNjhBRjdCQTVEODUxNzk4NzcwMjBCQzYyM0ZDOTUzREE5MERDQUUwMDk5RUIzQjcyQ0U1Q0Y3NjA5MEUiLCJuaCI6IkE1M0Y0NDI1NUE0QjBFNDlDNDkwMzcwMDQzNEVFMjZDRUYxQ0FDMzQ4OUU2NTgxODlGNEYxNTA1NkQyQkExRkMifQ; km_u=28041baea0dad8fed7a6e45d39ae4c8ace0bd6e5a97ff7437eedfd7fc37307dcb51ce39a2dcd2af0; km_uid=joycesong"
-    };
-    let resp = await got( {method: 'post', url: url, body: JSON.stringify(data), decompress: false, headers: header_dict, timeout: 15000});
-    //setTimeout("", 2000 )
-    console.log(resp);
-    if (resp.statusCode == 200){
-      let rawData = resp.body;
-      this.logger.log(rawData);
-      return JSON.parse(rawData)
-    }
   }
 
-  public async search(data) {
-    let url = this.getUrl("mmsearchossopenapi", "GetSearchResult")
-    let url2 = "https://mmsearch.woa.com/newapi/comm_svrkit/mmsearchossopenapisvr/GetSearchResultLite"
-    let resp =  await this.mmSearch(url2, data);
-    this._searchResult = resp.data.rsp;
-    return resp.data.rsp;
-  }
 
 }
