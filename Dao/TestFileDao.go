@@ -43,3 +43,27 @@ func GetTestFileByName(name string) (*model.TestFile, error) {
 	}
 	return list[0].(*model.TestFile), err
 }
+
+// GetTestFiles 获取所有测试文件名称
+func GetTestFiles() ([]string, error) {
+	xlog.Debugf("[DAO]:Get a test file from db by %s.")
+
+	err, list := database.Query(
+		config.Mms1suitestDB,
+		config.TestFileTable,
+		nil,
+		&model.TestFile{},
+		"id",
+		false)
+
+	if len(list) == 0 {
+		return nil, errors.New("no test file of this name")
+	}
+	var dataList []string
+	for _, item := range list {
+		snap := &model.TestFile{}
+		snap = item.(*model.TestFile)
+		dataList = append(dataList, *snap.FileName)
+	}
+	return dataList, err
+}

@@ -68,7 +68,11 @@ func ExecTest(w http.ResponseWriter, r *http.Request) {
 		xlog.Errorf("[Dao] Update test task failed! %v", err)
 	}
 	//获取测试用例
-	caseFiles := []string{"testFontWord.spec.ts", "testBiz.spec.ts"}
+	caseFiles, err := Dao.GetTestFiles()
+	if err != nil {
+		xlog.Errorf("Get test file names failed! %v", err)
+	}
+
 	for i := range caseFiles {
 		err = service.GetTestCase(caseFiles[i], "./jest-puppeteer-ui-test/__tests__/"+caseFiles[i])
 		if err != nil {
