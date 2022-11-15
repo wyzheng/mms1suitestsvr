@@ -69,12 +69,14 @@ func ExecTest(w http.ResponseWriter, r *http.Request) {
 	}
 	//获取测试用例
 	caseFiles, err := Dao.GetTestFiles()
+
 	if err != nil {
 		xlog.Errorf("Get test file names failed! %v", err)
 	}
 
 	for i := range caseFiles {
 		err = service.GetTestCase(caseFiles[i], "./jest-puppeteer-ui-test/__tests__/"+caseFiles[i])
+		xlog.Debugf("Get test file %v", caseFiles[i])
 		if err != nil {
 			xlog.Errorf("[COS] download test case %v from cos failed, file %v", caseFiles[i], err)
 			return
@@ -84,7 +86,7 @@ func ExecTest(w http.ResponseWriter, r *http.Request) {
 	go service.RunTest(taskId, templateName[0:pos])
 
 	resp.Ret = define.E_SUCCESS
-	resp.Message = "test over!"
+	resp.Message = "testing!"
 
 	ww.MarshalJSON(resp)
 	return
