@@ -417,6 +417,7 @@ export const wxAdClass = {
   alert_number: "div.dialog__box.alert div.dialog__bd",
   // 账号（可能有多个，可能在不同位置）
   account: 'div.ad-account-info__list div.account-info',
+  account_tag: 'div.ad-account-info__list div.account-info div.ui-tag-title',
   account_link: 'div.ad-account-info__list div.account-info a',
   // 系列产品
   tab_space: "div.product-series div.product-series__tabs > div",

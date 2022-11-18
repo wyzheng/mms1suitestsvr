@@ -131,6 +131,7 @@ export async function getLastItem(path){
  * @param bizUin  公众号uin
  */
 export async function bizOperation(functionName, bizUin){
+  console.log("*************************")
   let url = `http://wxunitest.oa.com/mmbizcasehelper/mmbasedatabroker`
   let data = {
     "biz_uin": bizUin,
@@ -141,8 +142,10 @@ export async function bizOperation(functionName, bizUin){
     "func_args": data
   };
   let resp = await got( {method: 'post', url: url, body: JSON.stringify(req_data), decompress: false});
-  logger.log("here addBizContact log something*********");
-  logger.log(resp.body);
+ /* logger.log("here addBizContact log something*********");
+  logger.log(resp.body);*/
+  console.log("*************************")
+  console.log(resp.body)
 }
 
 /**
@@ -155,13 +158,14 @@ export async function finderOperation(finderName, optype){
   let req_data = {
     'func_name': 'SetFinderFollow',
     'func_args': {
-      "username": 3192443972,
+      "username": "searchkefu001",
       "finder_username": finderName,
       "optype": optype
     }
   }
   let resp = await got( {method: 'post', url: url, body: JSON.stringify(req_data), decompress: false});
-  logger.log("here addBizContact log something*********");
-  logger.log(resp.body);
+  /*logger.log("here addBizContact log something*********");
+  logger.log(resp.body);*/
+  console.log(resp.body)
 }
 

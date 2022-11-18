@@ -6,14 +6,15 @@ import (
 	"git.woa.com/wego/wego2/xhttp"
 	"git.woa.com/wego/wego2/xlog"
 	huge "github.com/dablelv/go-huge-util"
-	"mms1suitestsvr/Dao"
 	"mms1suitestsvr/config"
+	"mms1suitestsvr/dao"
 	"mms1suitestsvr/model"
 	"mms1suitestsvr/service"
 	"mms1suitestsvr/util"
 	"mmtestgocommon/define"
 	"mmtestgocommon/websvr"
 	"net/http"
+	"strconv"
 	"strings"
 	"time"
 )
@@ -63,12 +64,12 @@ func ExecTest(w http.ResponseWriter, r *http.Request) {
 		Template:   &templateName,
 	}
 
-	taskId, err := Dao.InsertTestTask(newTask)
+	taskId, err := dao.InsertTestTask(newTask)
 	if err != nil {
 		xlog.Errorf("[Dao] Update test task failed! %v", err)
 	}
 	//获取测试用例
-	caseFiles, err := Dao.GetTestFiles()
+	caseFiles, err := dao.GetTestFiles()
 
 	if err != nil {
 		xlog.Errorf("Get test file names failed! %v", err)
@@ -108,7 +109,7 @@ func CaseArchive(w http.ResponseWriter, r *http.Request) {
 		User:         &user,
 	}
 
-	recordId, err := Dao.InsertReleaseRecord(releaseRecord)
+	recordId, err := dao.InsertReleaseRecord(releaseRecord)
 	if err != nil {
 		xlog.Errorf("[Dao] insert release record failed! %v", err)
 	}
@@ -119,5 +120,42 @@ func CaseArchive(w http.ResponseWriter, r *http.Request) {
 	resp.Message = "Archiving over!"
 
 	ww.MarshalJSON(resp)
+	return
+}
+
+func GetTestTask(w http.ResponseWriter, r *http.Request) {
+	ww := w.(*xhttp.ResponseWriter)
+	resp := websvr.CommResp{}
+	xlog.Debugf("[Handler] deal with a request.")
+
+	taskArr, err := dao.GetTestTasks()
+	if err != nil {
+		xlog.Errorf("[Dao] get tasks failed! %v", err)
+	}
+
+	resp.Data = taskArr
+	resp.Ret = define.E_SUCCESS
+	resp.Message = "get all tasks!"
+
+	ww.MarshalJSON(resp)
+	return
+}
+
+func GetTestTaskReport(w http.ResponseWriter, r *http.Request) {
+	ww := w.(*xhttp.ResponseWriter)
+	xlog.Debugf("[Handler] deal with a request  GetTestTaskReport.")
+
+	taskId := websvr.GetIntFromUri(r, "id")
+
+	cosKey := "s1s/res/" + strconv.Itoa(taskId) + "/report.html"
+
+	html, err := service.GetCosFile(cosKey)
+	if err != nil {
+		htmlStr := config.DefaultReportContent
+		xlog.Errorf("GetFileFromCos error, err is %v", err)
+		ww.Write([]byte(htmlStr))
+		return
+	}
+	ww.Write(html)
 	return
 }

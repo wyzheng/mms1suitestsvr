@@ -1,4 +1,4 @@
-package Dao
+package dao
 
 import (
 	"git.woa.com/wego/wego2/xlog"

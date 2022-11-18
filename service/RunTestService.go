@@ -36,14 +36,14 @@ func RunTest(taskId int, templateName string) string {
 	}
 
 	//存储html结果到cos
-	cmd = exec.Command("bash", "-c", "tar -zcvf "+strconv.Itoa(taskId)+"report.tar.gz "+strconv.Itoa(taskId)+"/*")
+	/*cmd = exec.Command("bash", "-c", "tar -zcvf "+strconv.Itoa(taskId)+"report.tar.gz "+strconv.Itoa(taskId)+"/*")
 	cmd.Dir = "./jest-puppeteer-ui-test/static/res"
 
 	if err = cmd.Run(); err != nil {
 		xlog.Error(err)
-	}
-	fileContent, err = os.ReadFile("./jest-puppeteer-ui-test/static/res/" + strconv.Itoa(taskId) + "report.tar.gz")
-	err = SetCosFile("s1s/"+strconv.Itoa(taskId)+"/report.tar.gz", fileContent)
+	}*/
+	fileContent, err = os.ReadFile("./jest-puppeteer-ui-test/static/res/" + strconv.Itoa(taskId) + "jest_html_reporters.html")
+	err = SetCosFile("s1s/res/"+strconv.Itoa(taskId)+"/report.html", fileContent)
 	if err != nil {
 		xlog.Errorf("[COS] set html result into cos failed, file %v", err)
 	}

@@ -53,6 +53,23 @@ func main() {
 		Pattern:   "/cgi/CaseArchive",
 	})
 
+	websvr.AddCgi(websvr.Cgi{
+		HandBuild: hb,
+		Mux:       mux,
+		CgiHandle: http.HandlerFunc(handler.GetTestTask),
+		CmdId:     3,
+		CgiName:   "GetTestTask",
+		Pattern:   "/cgi/GetTestTask",
+	})
+	websvr.AddCgi(websvr.Cgi{
+		HandBuild: hb,
+		Mux:       mux,
+		CgiHandle: http.HandlerFunc(handler.GetTestTaskReport),
+		CmdId:     4,
+		CgiName:   "GetTestTaskReport",
+		Pattern:   "/cgi/GetTestTaskReport",
+	})
+
 	// init svr
 	svr := &xhttp.Server{
 		Server: http.Server{

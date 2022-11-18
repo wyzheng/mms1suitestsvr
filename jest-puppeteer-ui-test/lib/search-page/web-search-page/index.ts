@@ -73,7 +73,7 @@ export class WebSearchPage extends CommonPage {
     query,
     requestInterceptor,
     handler,
-    device
+    device,
   }: {
     config: WebSearchPageConfig;
     key: string;
@@ -111,8 +111,32 @@ export class WebSearchPage extends CommonPage {
     await this.load(content);
     await this.register(handler);
     await this.prepare();
-
   }
+
+  async changeWithQuery({query, content, requestInterceptor, handler}: {
+    query: string;
+    content: string;
+    requestInterceptor: (req: HTTPRequest, ctx: string) => void;
+    handler: (func: string, params: Record<string, any>, ctx: WebSearchPage) => void;}) {
+    this.logger.log(`change page with query` )
+    // make sure only called once
+    this._query = query;
+    // this._searchResult = searchResult;
+    this._dataReady = false;
+    await super.bind({
+      requestInterceptor: (req) => {
+        requestInterceptor?.(req, this._context);
+      },
+    });
+    await this.config({
+      isHomePage: 0,
+      query,
+    });
+    this.networkIdlePromiseMaker = this.createWaitForIdleNetworkFactory();
+    await this.load(content);
+    await this.prepare();
+  }
+
   // close
   async close() {
     await super.close();
@@ -316,9 +340,9 @@ export class WebSearchPage extends CommonPage {
     });
   }*/
 
-  public async onSearchDataReady() {
+  public async onSearchDataReady(params: Record<string, any>) {
     const result = await this.sendEventToJSBridge(`onSearchDataReady`, {
-      requestId: ``,
+      requestId: params.requestId,
       funcQuery: false,
       newQuery: true, // response.Offset <= 0,
       jsonRefer: 0,
@@ -372,7 +396,7 @@ export class WebSearchPage extends CommonPage {
   public async mmSearch(url: string, data){
     let uin = "3192443972";
     let  header_dict = {
-      "Accept": "*/*",
+      "Accept": "*!/!*",
       "Content-Type": "application/json; charset=utf-8",
       "Cookie": `uin=${uin};uid=${uin}`
     };
@@ -393,6 +417,5 @@ export class WebSearchPage extends CommonPage {
     this._searchResult = resp.rsp;
     return resp;
   }
-
 
 }

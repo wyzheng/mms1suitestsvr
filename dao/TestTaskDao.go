@@ -1,6 +1,7 @@
-package Dao
+package dao
 
 import (
+	"errors"
 	"git.woa.com/wego/wego2/xlog"
 	"mms1suitestsvr/config"
 	"mms1suitestsvr/model"
@@ -34,4 +35,28 @@ func UpdateDataTask(id int, testTask *model.TestTask) error {
 		testTask,
 	)
 	return err
+}
+
+// GetTestFiles 获取所有测试文件名称
+func GetTestTasks() ([]*model.TestTask, error) {
+	xlog.Debugf("[DAO]:Get a test file from db by %s.")
+
+	err, list := database.Query(
+		config.Mms1suitestDB,
+		config.TestTaskTable,
+		nil,
+		&model.TestTask{},
+		"id",
+		false)
+
+	if len(list) == 0 {
+		return nil, errors.New("no test file of this name")
+	}
+	var dataList []*model.TestTask
+	for _, item := range list {
+		snap := &model.TestTask{}
+		snap = item.(*model.TestTask)
+		dataList = append(dataList, snap)
+	}
+	return dataList, err
 }

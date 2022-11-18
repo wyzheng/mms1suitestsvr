@@ -24,6 +24,7 @@ export class PageExtend {
   private loggerService = new LoggerService();
   public extendInfo: string;
   public weappPath: string;
+  private context: string;
 
   private logger: Logger;
   constructor() {
@@ -69,6 +70,7 @@ export class PageExtend {
     const webSearchPage = new WebSearchPage(page);
     this.webSearchPage = webSearchPage;
     const content = await this.assetService.fetchEntryHtmlContent(context);
+    this.context = context;
     await webSearchPage.initWithQuery({
       device,
       config,
@@ -83,6 +85,13 @@ export class PageExtend {
     webSearchPage.inited = true;
     this.logger.log(`here alloc a page`)
 
+    return this;
+  }
+
+  async changePage(query){
+    const content = await this.assetService.fetchEntryHtmlContent(this.context);
+    await this.webSearchPage.changeWithQuery({query, content, requestInterceptor: this.requestInterceptor.bind(this), handler: this.eventHandler.bind(this)});
+    await this.webSearchPage.waitForRenderingDone();
     return this;
   }
 
@@ -187,7 +196,7 @@ export class PageExtend {
 
   private async eventHandler(func: string, params: Record<string, any>, ctx: WebSearchPage) {
     if (func === `getSearchData` ) {
-     console.log(params);
+     //console.log(params);
       // send back data
       // 获取数据回包
       let data = {
@@ -203,12 +212,12 @@ export class PageExtend {
           }
         ]
       }
-      console.log(data);
+      //console.log(data);
       await ctx.search(data);
-      if (ctx.inited === true){
+      /*if (ctx.inited === true){
         ctx.searchResult = this.searchRes;
-      }
-      await ctx.onSearchDataReady();
+      }*/
+      await ctx.onSearchDataReady(params);
       await ctx.waitForRenderingDone();
     }
     if (func === 'startSearchItemDetailPage') {
@@ -244,7 +253,6 @@ export class PageExtend {
       this.extendInfo = params['phoneNumber'];
       console.log(this.extendInfo);
     }
-
   }
 
   public async click(type: string) {

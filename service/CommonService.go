@@ -10,7 +10,6 @@ func GetCosFile(cosKey string) ([]byte, error) {
 	xlog.Debugf("GetCosFile cosKey is %s", cosKey)
 	byteContext, err := util.GetFileFromCosByKey(cosKey)
 	if err != nil {
-		xlog.Errorf("GetFileFromCos error, err is %v", err)
 		return nil, err
 	}
 	return byteContext, nil

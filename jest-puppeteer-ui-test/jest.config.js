@@ -1,5 +1,4 @@
 var args = require('minimist')(process.argv.slice(2));
-console.log(args)
 const template = args.template
 const resPath = args.resPath
 
@@ -22,7 +21,8 @@ module.exports = {
       {
         "pageTitle":"Jest Report",
         "publicPath":`./static/res/${resPath}`,
-        "expand":true
+        "expand":true,
+        "inlineSource": true
       }
     ]
   ],
