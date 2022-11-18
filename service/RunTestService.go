@@ -30,7 +30,7 @@ func RunTest(taskId int, templateName string) string {
 
 	//存储测试结果到cos
 	fileContent, err := os.ReadFile("./jest-puppeteer-ui-test/static/res/reporter.json")
-	err = SetCosFile("s1s/"+strconv.Itoa(taskId)+"/result.json", fileContent)
+	err = SetCosFile("s1s/res/"+strconv.Itoa(taskId)+"/result.json", fileContent)
 	if err != nil {
 		xlog.Errorf("[COS] set test result into cos failed, file %v", err)
 	}
@@ -42,7 +42,7 @@ func RunTest(taskId int, templateName string) string {
 	if err = cmd.Run(); err != nil {
 		xlog.Error(err)
 	}*/
-	fileContent, err = os.ReadFile("./jest-puppeteer-ui-test/static/res/" + strconv.Itoa(taskId) + "jest_html_reporters.html")
+	fileContent, err = os.ReadFile("./jest-puppeteer-ui-test/static/res/" + strconv.Itoa(taskId) + "/jest_html_reporters.html")
 	err = SetCosFile("s1s/res/"+strconv.Itoa(taskId)+"/report.html", fileContent)
 	if err != nil {
 		xlog.Errorf("[COS] set html result into cos failed, file %v", err)
