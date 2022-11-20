@@ -54,16 +54,7 @@ export default {
   },
   mounted() {
     let _this = this;
-
-    if (_this.$route.query.id !== undefined) {
-      _this.searchKey = "id";
-      _this.searchValue = Number(_this.$route.query.id);
-      console.log(_this.searchValue)
-      _this.getDataTaskByName();
-    } else {
-      this.getAllDataTask();
-    }
-
+    _this.getAllDataTask();
   },
   methods: {
     pathTo(id) {

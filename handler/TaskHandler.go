@@ -159,3 +159,20 @@ func GetTestTaskReport(w http.ResponseWriter, r *http.Request) {
 	ww.Write(html)
 	return
 }
+func GetTestCases(w http.ResponseWriter, r *http.Request) {
+	ww := w.(*xhttp.ResponseWriter)
+	resp := websvr.CommResp{}
+	xlog.Debugf("[Handler] deal with a request.")
+
+	taskArr, err := dao.GetAllTestFiles()
+	if err != nil {
+		xlog.Errorf("[Dao] get tasks failed! %v", err)
+	}
+
+	resp.Data = taskArr
+	resp.Ret = define.E_SUCCESS
+	resp.Message = "get all test cases!"
+
+	ww.MarshalJSON(resp)
+	return
+}

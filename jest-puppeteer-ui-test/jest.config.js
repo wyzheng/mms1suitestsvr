@@ -22,7 +22,7 @@ module.exports = {
         "pageTitle":"Jest Report",
         "publicPath":`./static/res/${resPath}`,
         "expand":true,
-        "inlineSource": true
+        "inlineSource":true
       }
     ]
   ],

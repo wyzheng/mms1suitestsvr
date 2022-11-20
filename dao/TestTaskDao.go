@@ -37,7 +37,7 @@ func UpdateDataTask(id int, testTask *model.TestTask) error {
 	return err
 }
 
-// GetTestFiles 获取所有测试文件名称
+// GetTestTasks 获取所有测试文件名称
 func GetTestTasks() ([]*model.TestTask, error) {
 	xlog.Debugf("[DAO]:Get a test file from db by %s.")
 
