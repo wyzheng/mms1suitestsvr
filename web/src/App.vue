@@ -32,15 +32,24 @@
             <span>用例管理</span>
           </router-link>
         </a-menu-item>
-        <a-menu-item key="2">
-          <router-link to="/testTask">
-            <a-icon type="dashboard" />
-            <span>测试任务</span>
+        <a-sub-menu
+          key="2"
+        >
+          <span slot="title">
+            <router-link to="/testTask" style="color: white">
+            <a-icon type="file" />
+            <span >测试结果展示</span>
           </router-link>
-        </a-menu-item>
+          </span>
+          <a-menu-item key="ui_test"><router-link to="/res/uiTestResult">UI测试结果</router-link></a-menu-item>
+          <a-menu-item key="interface_test"><router-link to="/res/interfaceTestResult">接口测试结果</router-link></a-menu-item>
+          <a-menu-item key="dial_test"><router-link to="/res/dialTestResult">拨测结果</router-link></a-menu-item>
+        </a-sub-menu>
+
       </a-menu>
     </a-layout-sider>
     <a-layout>
+
       <a-layout-content style="margin: 0 16px">
         <div :style="{ padding: '5px', background: '#fff', minHeight: '360px' }">
           <router-view class="view"></router-view>
@@ -73,44 +82,8 @@ export default {
     getSelectedKeys : function () {
       console.log(window.location.href);
       let url = window.location.href;
-      if (url.search("Dashboard") !== -1)
-        return {key:"1", box:""};
-      if (url.search("DataFlow") !== -1)
-        return {key:'2',box:'sub1'};
-      if (url.search("FeatureConsistency") !== -1)
-        return {key:'10',box:''};
-      if (url.search("FeatureDistribution") !== -1)
-        return {key:'99',box:'sub1'};
-      if (url.search("FeaturePlatform") !== -1)
-        return {key:'56',box:'sub1'};
-      if (url.search("Feature") !== -1)
-        return {key:'3',box:'sub1'};
-      if (url.search("Model") !== -1)
-        return {key:'4',box:'sub1'};
-      if (url.search("BinConfig") !== -1)
-        return {key:'5',box:'sub3'};
-      if (url.search("NewCi") != -1)
-        return {key:'6',box:'sub3'};
-      if (url.search("HistoryTrend") !== -1)
-        return {key:'7',box:'sub4'};
-      if (url.search("CommonConfig") !== -1)
-        return {key:'8',box:'sub4'};
-      if (url.search("DocQuality") !== -1)
-        return {key:'12',box:''};
-      if (url.search("AppManager") != -1)
-        return {key:"41",box:''};
-      if (url.search("AppList") != -1)
-        return {key:"42",box:''};
-      if (url.search("AlarmManager") != -1)
-        return {key:"43",box:""};
-      if (url.search("BusinessList") != -1)
-        return {key:"offline_biz",box:"offline"};
-      if (url.search("ModelList") != -1)
-        return {key:"offline_biz",box:"offline"};
-      if (url.search("ModelConfig") != -1)
-        return {key:"offline_biz",box:"offline"};
-      if (url.search("FileGit") != -1)
-        return {key:"file_git",box:"offline"};
+      if (url.search("reportDetail") !== -1)
+        return {key:"ui_test", box:""};
       return {key:'1',box:''};
     }
   },

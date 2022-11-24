@@ -11,6 +11,11 @@ module.exports = {
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
     proxyTable: {
+      '/cgi/backend' : {
+        target:'http://9.134.52.227:19678',
+        changeOrigin:true,
+        secure: false
+      },
       '/cgi' : {
         target:'http://9.134.52.227:19674',
         changeOrigin:true,
@@ -19,7 +24,7 @@ module.exports = {
     },
 
     // Various Dev Server settings
-    host: '0.0.0.0', // can be overwritten by process.env.HOST
+    host: 'localhost', // can be overwritten by process.env.HOST
     port: 8080, // can be overwritten by process.env.PORT, if port is in use, a free one will be determined
     autoOpenBrowser: false,
     errorOverlay: true,
