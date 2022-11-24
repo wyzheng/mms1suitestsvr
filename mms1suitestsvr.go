@@ -116,8 +116,6 @@ func main() {
 	log.SetOutput(output)
 
 	fmt.Fprintf(os.Stderr,
-		"****************************\nStart epheimdallchecksvr!\n****************************\n")
+		"****************************\nStart mms1suitestsvr!\n****************************\n")
 	log.Fatal(svr.ListenAndServe())
-	fmt.Printf(
-		"****************************\nStop epheimdallchecksvr!\n****************************\n")
 }
