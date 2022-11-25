@@ -20,6 +20,19 @@ module.exports = {
         target:'http://9.134.52.227:19674',
         changeOrigin:true,
         secure: false
+      },
+      '/lipstick': {
+        target: 'http://lipstick.woa.com',
+        changeOrigin:true,
+        secure: false,
+        pathRewrite: {
+          '^/lipstick/': '' // 路径重写
+        }
+      },
+      '/static':{
+        target: 'http://iostream.woa.com:18883',
+        changeOrigin:true,
+        secure: false
       }
     },
 
