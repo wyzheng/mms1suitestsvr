@@ -20,7 +20,15 @@ module.exports = {
         target:'http://9.134.52.227:19674',
         changeOrigin:true,
         secure: false
-      }
+      },
+      '/interfaceTest' : {
+        target:'http://9.134.186.157:8056',
+        changeOrigin:true,
+        secure: false,
+        pathRewrite:{
+          "^/interfaceTest": ""
+        }
+      },
     },
 
     // Various Dev Server settings

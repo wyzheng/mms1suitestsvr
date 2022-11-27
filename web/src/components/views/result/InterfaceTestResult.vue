@@ -2,26 +2,13 @@
   <a-table :dataSource="dataSource" :columns="columns" />
 </template>
 <script>
-  export default {
-    setup() {
-      return {
-        dataSource: [
-          {
-            key: '1',
-            query: '自然堂',
-            type: '广告',
-            sub_type: '品专广告',
-            is_recalled: '是',
-          },
-          {
-            key: '2',
-            query: '装修',
-            type: '广告',
-            sub_type: '竞价广告',
-            is_recalled: '是',
-          },
-        ],
+  import axios from "axios";
 
+  export default {
+    name: 'InterfaceTestResult',
+    data () {
+      return {
+        dataSource: [],
         columns: [
           {
             title: 'query',
@@ -29,7 +16,7 @@
             key: 'query',
           },
           {
-            title: 'box类型',
+            title: '主类型',
             dataIndex: 'type',
             key: 'type',
           },
@@ -44,7 +31,25 @@
             key: 'is_recalled',
           },
         ],
-      };
+      }
     },
+    mounted() {
+      let _this = this;
+      _this.getAllData();
+    },
+    methods: {
+      getAllData: function () {
+        let _this = this;
+        axios({
+          method: "get",
+          url: "/interfaceTest",
+        }).then(function (response) {
+          _this.dataSource = response.data
+        }).catch(function (error) {
+          console.log(error);
+          _this.$message.error("加载数据失败！");
+        });
+      }
+    }
   };
 </script>
