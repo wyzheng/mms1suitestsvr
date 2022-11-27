@@ -1,22 +1,50 @@
 <template>
-<div>
-  <a-card :bordered="true">
-    <a-row style="margin-bottom: 2%; margin-left: 2%">
-      <a-col :span="6">
-        <span> 接口测试结果展示 </span>
-      </a-col>
-    </a-row>
-
-  </a-card>
-</div>
+  <a-table :dataSource="dataSource" :columns="columns" />
 </template>
-
 <script>
-export default {
-  name: "InterfaceTestResult"
-}
+  export default {
+    setup() {
+      return {
+        dataSource: [
+          {
+            key: '1',
+            query: '自然堂',
+            type: '广告',
+            sub_type: '品专广告',
+            is_recalled: '是',
+          },
+          {
+            key: '2',
+            query: '装修',
+            type: '广告',
+            sub_type: '竞价广告',
+            is_recalled: '是',
+          },
+        ],
+
+        columns: [
+          {
+            title: 'query',
+            dataIndex: 'query',
+            key: 'query',
+          },
+          {
+            title: 'box类型',
+            dataIndex: 'type',
+            key: 'type',
+          },
+          {
+            title: '子类型',
+            dataIndex: 'sub_type',
+            key: 'sub_type',
+          },
+          {
+            title: '是否召回',
+            dataIndex: 'is_recalled',
+            key: 'is_recalled',
+          },
+        ],
+      };
+    },
+  };
 </script>
-
-<style scoped>
-
-</style>
