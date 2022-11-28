@@ -4,7 +4,7 @@ import Puppeteer from "puppeteer";
 import {PageExtend} from "../lib/search-page/page-extend";
 import {wxAdClass } from "../lib/utils/resultMap";
 import { addAttach, addMsg } from "jest-html-reporters/helper";
-import { errorCounting, finderOperation, superView } from "../lib/utils/helper";
+import { errorCounting, finderOperation, getHeightOfEle, superView } from "../lib/utils/helper";
 
 let page: Puppeteer.Page ;
 let browser:  Puppeteer.Browser;
@@ -42,10 +42,9 @@ describe("微信品专广告测试 -- wxadtestPicH5", () => {
   })
 
   test("截图", async () => {
-    await page.waitForTimeout(1000);
     try {
       await addMsg({context: undefined, message: `当前结果页面截图。`});
-      jest.useRealTimers();
+      await page.waitForTimeout(1000);
       const image =  await page.screenshot({
         path: "./static/pic/test_PicH5.png",
         fullPage: true
@@ -100,6 +99,12 @@ describe("微信品专广告测试 -- wxadtestPicH5", () => {
       let path = './static/pic/ad_extent.png';
       const image =  await ele.screenshot({path: path});
       await addAttach({attach: image, description: "外链截图"});
+
+      let content = await page.evaluate(async (eleClass)  => {
+        return document.querySelector(eleClass.extent_content).innerHTML;
+      }, wxAdClass);
+      expect(content).toBe("了解更多");
+
       await page.click(wxAdClass.extent);
       await page.waitForTimeout(700);
       let page2 = await pageExtend.click("outer");
@@ -111,6 +116,53 @@ describe("微信品专广告测试 -- wxadtestPicH5", () => {
       expect(pageExtend.url).toContain("http://www.baidu.com");
       expect(await page2.title()).toBe("百度一下");
     }catch (e) {
+      if (e.constructor.name == "JestAssertionError"){
+        fail++;
+      }else {
+        err++;
+      }
+      throw e;
+    }
+  },50000);
+
+  test("测试广告投诉按钮 -- header_complaint", async () => {
+    try {
+      await addMsg({context: undefined, message: `测试广告反馈，点击广告标出现广告反馈弹窗，点击广告投诉按钮，落地页正常。`});
+      await page.bringToFront();
+      //广告按钮
+      await page.waitForSelector(wxAdClass.feedback);
+      let ele =  await page.$(wxAdClass.feedback);
+      let path = './static/pic/ad_feedback.png';
+      let image =  await ele.screenshot({path: path});
+      await addAttach({attach: image, description: "反馈按钮"});
+      await page.click(wxAdClass.feedback);
+
+      //投诉广告按钮
+      await page.waitForTimeout(700);
+      await page.waitForSelector(wxAdClass.complaint);
+      ele =  await page.$(wxAdClass.complaint);
+      path = './static/pic/ad_complaint.png';
+      image =  await ele.screenshot({path: path});
+      await addAttach({attach: image, description: "投诉弹窗"});
+      await page.click(wxAdClass.complaint);
+      await page.waitForTimeout(1000);
+      let page2 = await pageExtend.click("outer");
+      const screenshotBuffer = await page2.screenshot({
+        path: "./static/pic/test_feedback.png",
+        fullPage: true
+      })
+      await addAttach({attach: screenshotBuffer, description: "广告投诉落地页"});
+
+      await page.bringToFront();
+      //再次点击收起投诉广告按钮
+      await page.click(wxAdClass.feedback);
+      await page.waitForTimeout(1000);
+      let display =  await page.evaluate((className) => {
+        let item = document.querySelector(className.feedback_mask);
+        return getComputedStyle(item).display;
+      }, wxAdClass)
+      expect(display).toBe("none");
+    }catch (e){
       if (e.constructor.name == "JestAssertionError"){
         fail++;
       }else {
@@ -132,10 +184,17 @@ describe("微信品专广告测试 -- wxadtestPicH5", () => {
         let tagTitle = document.querySelector(eleClass.tagContent).innerHTML;
         return  [color, inner, tagTitle];
       }, wxAdClass);
-      //expect(content[0]).toBe("rgb(6, 174, 86)");
       expect(content[1].split("<em>")[0]).toBe("唯品会小程序");
       expect(page).toHaveElement(wxAdClass.tagContent)
       expect(content[2]).toBe("官方");
+
+      //测试两个组件在一行
+      let title_Height = await getHeightOfEle(page, wxAdClass.headSpan);
+      let tag_Height = await getHeightOfEle(page, wxAdClass.headSpan + ':nth-of-type(3)');
+      console.log(title_Height);
+      console.log(tag_Height);
+      expect(title_Height).toBeCloseTo(tag_Height, 2);
+
     }catch (e) {
       if (e.constructor.name == "JestAssertionError"){
         fail++;
@@ -168,61 +227,6 @@ describe("微信品专广告测试 -- wxadtestPicH5", () => {
     }
   },50000);
 
-  test("测试广告账号（视频号账号）", async () => {
-    try {
-      await addMsg({context: undefined, message: `测试视频号账号点击，目标账号正确。`});
-      await page.bringToFront();
-      await page.waitForSelector(wxAdClass.account);
-      let ele =  await page.$(wxAdClass.account);
-      let path = './static/pic/ad_finder.png';
-      const image =  await ele.screenshot({path: path});
-      await addAttach({attach: image, description: "账号截图"});
-      await page.click(wxAdClass.account);
-      await page.waitForTimeout(700);
-      expect(pageExtend.extendInfo).toBe("v2_060000231003b20faec8c7e28d1ecad2c900ea34b077192ae8bad1b4f00e998bfc98c5f05d66@finder");
-    }catch (e) {
-      if (e.constructor.name == "JestAssertionError"){
-        fail++;
-      }else {
-        err++;
-      }
-      throw e;
-    }
-  },50000);
-
-  test("视频号账号关注", async () => {
-    try {
-      await addMsg({context: undefined, message: `测试视频号账号关注后，显示"已关注"标签。`});
-      await page.bringToFront();
-      await finderOperation("v2_060000231003b20faec8c7e28d1ecad2c900ea34b077192ae8bad1b4f00e998bfc98c5f05d66@finder", 1);
-      await page.click(wxAdClass.select_tab);
-      await page.waitForTimeout(1700);
-
-      //await addMsg({context: undefined, message: `关注视频号`});
-
-      let image = await page.screenshot();
-      await addAttach({attach: image, description: "页面截图"});
-
-      let content = await page.evaluate(async (eleClass)  => {
-        let item = document.querySelector("div.ad-account-info__list div.ad-account-info__item.active__item div.ui-tag-title");
-        return item.innerHTML;
-      }, wxAdClass);
-      let ele =  await page.$(wxAdClass.account);
-      image =  await ele.screenshot({path: './static/pic/ad_gzh1.png'});
-      await addAttach({attach: image, description: "视频号号账号已关注截图"});
-      await finderOperation("v2_060000231003b20faec8c7e28d1ecad2c900ea34b077192ae8bad1b4f00e998bfc98c5f05d66@finder", 2);
-      expect(content).toBe("已关注");
-      //expect(content).toBe("已关注");
-    }catch (e) {
-      if (e.constructor.name == "JestAssertionError") {
-        fail++;
-      } else {
-        err++;
-      }
-      throw e;
-    }
-  },50000);
-
   test("测试地址按钮", async () => {
     try {
       await addMsg({context: undefined, message: `测试地址按钮，点击跳转到唯品会特卖小程序。`});
@@ -245,7 +249,6 @@ describe("微信品专广告测试 -- wxadtestPicH5", () => {
     }
   },50000);
 
-  // todo 链接需要客户端支持
   test("测试在线客服", async () => {
     try {
       await addMsg({context: undefined, message: `测试在线客服按钮，点击跳转目标链接正确。`});
@@ -319,44 +322,15 @@ describe("微信品专广告测试 -- wxadtestPicH5", () => {
     }
   },50000);
 
-  test("测试广告投诉按钮 -- header_complaint", async () => {
+  test("测试账号地址、客服、电话配置信息显示在一行", async () => {
     try {
-      await addMsg({context: undefined, message: `测试广告反馈，点击广告标出现广告反馈弹窗，点击广告投诉按钮，落地页正常。`});
-      await page.bringToFront();
-      //广告按钮
-      await page.waitForSelector(wxAdClass.feedback);
-      let ele =  await page.$(wxAdClass.feedback);
-      let path = './static/pic/ad_feedback.png';
-      let image =  await ele.screenshot({path: path});
-      await addAttach({attach: image, description: "here is the ad head."});
-      await page.click(wxAdClass.feedback);
-
-      //投诉广告按钮
-      await page.waitForTimeout(700);
-      await page.waitForSelector(wxAdClass.complaint);
-      ele =  await page.$(wxAdClass.complaint);
-      path = './static/pic/ad_complaint.png';
-      image =  await ele.screenshot({path: path});
-      await addAttach({attach: image, description: "here is the ad head."});
-      await page.click(wxAdClass.complaint);
-      await page.waitForTimeout(1000);
-      let page2 = await pageExtend.click("outer");
-      const screenshotBuffer = await page2.screenshot({
-        path: "./static/pic/test_feedback.png",
-        fullPage: true
-      })
-      await addAttach({attach: screenshotBuffer, description: "here is the jump pic."});
-
-      await page.bringToFront();
-      //再次点击收起投诉广告按钮
-      await page.click(wxAdClass.feedback);
-      await page.waitForTimeout(1000);
-      let display =  await page.evaluate((className) => {
-        let item = document.querySelector(className.feedback_mask);
-        return getComputedStyle(item).display;
-      }, wxAdClass)
-      expect(display).toBe("none");
-    }catch (e){
+      let loc_height =  await getHeightOfEle(page, wxAdClass.loc);
+      let helper_height =  await getHeightOfEle(page, wxAdClass.helper);
+      let phone_height =  await getHeightOfEle(page, wxAdClass.phone);
+      expect(loc_height).toBeCloseTo(helper_height, 2);
+      expect(helper_height).toBeCloseTo(phone_height, 2);
+      expect(phone_height).toBeCloseTo(loc_height, 2);
+    }catch (e) {
       if (e.constructor.name == "JestAssertionError"){
         fail++;
       }else {
@@ -366,8 +340,72 @@ describe("微信品专广告测试 -- wxadtestPicH5", () => {
     }
   },50000);
 
+  test("测试广告账号（视频号账号）", async () => {
+    try {
+      await addMsg({context: undefined, message: `测试视频号账号点击，目标账号正确。`});
+      await page.bringToFront();
+      await page.waitForSelector(wxAdClass.account);
+      let ele =  await page.$(wxAdClass.account);
+      let path = './static/pic/ad_finder.png';
+      const image =  await ele.screenshot({path: path});
+      await addAttach({attach: image, description: "账号截图"});
 
-  test("测试活动点击", async () => {
+      let content = await page.evaluate(async (eleClass)  => {
+        let title = document.querySelector(eleClass.account_title).innerHTML;
+        let desc = document.querySelector(eleClass.account_desc).innerHTML;
+        return  [title, desc];
+      }, wxAdClass);
+      expect(content[0]).toBe("WXAD测试号");
+      expect(content[1]).toBe("视频号");
+
+      await page.click(wxAdClass.account);
+      await page.waitForTimeout(700);
+      expect(pageExtend.extendInfo).toBe("v2_060000231003b20faec8c7e28d1ecad2c900ea34b077192ae8bad1b4f00e998bfc98c5f05d66@finder");
+    }catch (e) {
+      if (e.constructor.name == "JestAssertionError"){
+        fail++;
+      }else {
+        err++;
+      }
+      throw e;
+    }
+  },50000);
+
+  test("视频号账号关注", async () => {
+    try {
+      await addMsg({context: undefined, message: `测试视频号账号关注后，显示"已关注"标签。`});
+      await page.bringToFront();
+      await finderOperation("v2_060000231003b20faec8c7e28d1ecad2c900ea34b077192ae8bad1b4f00e998bfc98c5f05d66@finder", 1, "wxid_dl6z2p8aq2vt12");
+      await page.click(wxAdClass.select_tab);
+      await page.waitForTimeout(1700);
+
+      await addMsg({context: undefined, message: `关注视频号`});
+
+      let image = await page.screenshot();
+      await addAttach({attach: image, description: "页面截图"});
+
+      let content = await page.evaluate(async (eleClass)  => {
+        let item = document.querySelector("div.ad-account-info__list div.ad-account-info__item.active__item div.ui-tag-title");
+        return item.innerHTML;
+      }, wxAdClass);
+      let ele =  await page.$(wxAdClass.account);
+      image =  await ele.screenshot({path: './static/pic/ad_gzh1.png'});
+      await addAttach({attach: image, description: "视频号号账号已关注截图"});
+      await finderOperation("v2_060000231003b20faec8c7e28d1ecad2c900ea34b077192ae8bad1b4f00e998bfc98c5f05d66@finder", 2, "wxid_dl6z2p8aq2vt12");
+      expect(content).toBe("已关注");
+      //expect(content).toBe("已关注");
+    }catch (e) {
+      if (e.constructor.name == "JestAssertionError") {
+        fail++;
+      } else {
+        err++;
+      }
+      throw e;
+    }
+  },50000);
+
+
+  test("测试活动", async () => {
     try {
       await addMsg({context: undefined, message: `测试活动按钮点击，点击跳转到`});
       await page.bringToFront();
