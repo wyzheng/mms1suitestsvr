@@ -402,9 +402,11 @@ export const wxAdClass = {
   complaint: "div.complaint-content",
   feedback_mask: 'div.mask.ad-complaint-popover',
   extent: 'div.ad-zone-header__link-extent',
+  extent_content: 'div.ad-zone-header__link-extent div.ad-zone-header__link__text',
   //广告信息
   headTitle: 'div.service-search-block-body  div:nth-child(1)',
   title: 'div.ad-sub-header__slot div.hd-title-content em',
+  headSpan: 'div.ad-sub-header__slot div.hd-title-content h2.hd-title span',
   tagContent: 'div.ad-sub-header__slot div.hd-title-content div.ui-tag-title',
   loc: 'div.hd-option-wrapper div.hd-option.active__link',
   phone: 'div.hd-option-wrapper div.hd-option.active__link:nth-of-type(2)',
@@ -436,4 +438,15 @@ export const wxAdClass = {
 
   //垂搜tab
   select_tab: "#search_result > div.unit__outer > div > div > div.unit__item"
+}
+
+export function adAccountClass(index){
+  // 账号（可能有多个，可能在不同位置）
+  return{
+    account: `div.ad-account-info__list div.ad-account-info__item:nth-of-type(${index}) div.account-info`,
+    account_tag: `div.ad-account-info__list div.ad-account-info__item:nth-of-type(${index}) div.account-info div.ui-tag-title`,
+    account_link: `div.ad-account-info__list div.ad-account-info__item:nth-of-type(${index}) div.account-info a`,
+    account_title: `div.ad-account-info__list div.ad-account-info__item:nth-of-type(${index}) div.account-info div.account-info__title`,
+    account_desc: `div.ad-account-info__list div.ad-account-info__item:nth-of-type(${index}) div.account-info div.account-info__desc`,
+  }
 }
