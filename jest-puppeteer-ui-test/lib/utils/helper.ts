@@ -2,6 +2,7 @@ import fs from "fs";
 import got from "got";
 import tunnel from "tunnel";
 import {LoggerService} from "../logger/logger.service";
+import sha1 from 'sha1'
 
 
 const logger = new LoggerService().getLogger();
@@ -169,3 +170,55 @@ export async function finderOperation(finderName, optype){
   console.log(resp.body)
 }
 
+
+export async function adBinding(aid, wuid){
+
+}
+
+
+export function errorCounting(e, err, fail){
+  if (e.constructor.name == "JestAssertionError"){
+    fail++;
+    throw e;
+  }else {
+    err++;
+  }
+  return [err, fail];
+}
+
+export function genToken(){
+  let secret = "dfZ2bnrTHfperANtWZGdnx0HRwE1W92n";
+  let client = "wx_ad_efficiency";
+  let timestamp = Date.now();
+  let sign = sha1(client + secret + timestamp);
+  let token = sign.toString('base64');
+  return token;
+}
+
+export async function superView(aid, wxid){
+  let url = "https://jiqimao.woa.com/eib/power_preview/bind_audience";
+  let req_data = {
+    "aid": aid,
+    "period_seconds": 1800,
+    "bind_source_type": "BIND_SOURCE_TYPE_JIQIMAO",
+    "operator_id": "joycesong",
+    "wxid": "searchkefu001",
+    "wx_bind_type": "2",
+  }
+  let header_dict = {
+    "Content-Type": "application/json",
+    "token": genToken()
+  }
+
+  let resp = await got( {method: 'post', url: url, body: JSON.stringify(req_data), decompress: false, headers: header_dict, timeout: 20000});
+  if (resp.statusCode == 200){
+    if (JSON.parse(resp.body).code === 0){
+      let rawData = resp.body;
+      this.logger.log(rawData);
+      return true;
+    }
+  }else {
+    this.logger.error(`$$$$ there is something wrong`);
+  }
+  return false;
+}
