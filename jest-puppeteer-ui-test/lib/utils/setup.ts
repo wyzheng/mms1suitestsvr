@@ -33,7 +33,7 @@ const defaultConfig: WebSearchPageConfig = {
 };
 
 
-export async function setup(query: string, scene: number) {
+export async function setup(query: string, scene: number, uin: number) {
   let pageExtend = new PageExtend();
   defaultConfig.scene = scene;
 
@@ -42,6 +42,7 @@ export async function setup(query: string, scene: number) {
     config: defaultConfig,
     context: "./asset/" + global.__TEMPLATE__,
     query: query,
-    key: "1"
+    key: "1",
+    uin: uin,
   })
 }

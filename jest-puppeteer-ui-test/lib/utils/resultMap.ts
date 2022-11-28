@@ -433,4 +433,7 @@ export const wxAdClass = {
   activity_body: "div.activity-card-slide div.ui-scroll__item div.video-player__bd",
   activity_menus: "div.activity-card-slide div.ui-scroll__item:nth-of-type(4) div.menu-item:nth-of-type(1)",
   activity_button: "div.activity-card-slide div.ui-scroll__item a",
+
+  //垂搜tab
+  select_tab: "#search_result > div.unit__outer > div > div > div.unit__item"
 }
