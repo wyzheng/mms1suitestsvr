@@ -138,7 +138,7 @@ export default {
         headers: {"Secret":"svrkithooklab"}
       }).then(function (response) {
         if (200 === response.status) {
-          _this.oa_ticket = response.data;
+          _this.oa_ticket = response.data.replace(/[\s\n\t]+$/g, "");
         } else {
           _this.$message.error(`查询拨测结果失败！Ret：${response.status}`);
         }
