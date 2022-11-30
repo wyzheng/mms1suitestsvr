@@ -190,13 +190,14 @@ export function genToken(){
 }
 
 export async function superView(aid, wxid){
-  let url = "https://jiqimao.woa.com/eib/power_preview/bind_audience";
+  let url = "http://jiqimao.woa.com/eib/power_preview/bind_audience";
   let req_data = {
     "aid": aid,
+    "uid": 17194315,
     "period_seconds": 1800,
     "bind_source_type": "BIND_SOURCE_TYPE_JIQIMAO",
     "operator_id": "joycesong",
-    "wxid": "searchkefu001",
+    "wxid": wxid,
     "wx_bind_type": "2",
   }
   let header_dict = {
@@ -208,11 +209,11 @@ export async function superView(aid, wxid){
   if (resp.statusCode == 200){
     if (JSON.parse(resp.body).code === 0){
       let rawData = resp.body;
-      this.logger.log(rawData);
+      //this.logger.log(rawData);
       return true;
     }
   }else {
-    this.logger.error(`$$$$ there is something wrong`);
+    //this.logger.error(`$$$$ there is something wrong`);
   }
   return false;
 }
