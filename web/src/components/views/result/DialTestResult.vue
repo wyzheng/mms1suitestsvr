@@ -2,6 +2,7 @@
   <div>
     <h2>{{ msg }}</h2>
     <hr>
+
     <a-card :bordered="true">
       <a-row style="margin-bottom: 2%; margin-left: 2%">
         <a-col :span="12">
@@ -34,6 +35,7 @@
           <span> 拨测结果 </span>
         </a-col>
       </a-row>
+
       <vxe-table
         border
         stripe
@@ -73,9 +75,11 @@
         :layouts="['PrevPage', 'JumpNumber', 'NextPage', 'FullJump', 'Sizes', 'Total']"
         @page-change="handlePageChange">
       </vxe-pager>
+
     </a-card>
   </div>
 </template>
+
 <script>
 import axios from 'axios';
 import { Modal } from 'ant-design-vue';
@@ -135,7 +139,6 @@ export default {
       }).then(function (response) {
         if (200 === response.status) {
           _this.oa_ticket = response.data.replace(/[\s\n\t]+$/g, "");
-          console.log(_this.oa_ticket);
         } else {
           _this.$message.error(`查询拨测结果失败！Ret：${response.status}`);
         }
@@ -168,7 +171,6 @@ export default {
     getDailTestResult: function () {
       let _this = this;
       _this.is_loading = true;
-      console.log(_this.oa_ticket);
       axios({
         method: "post",
         url: "/lipstick/rule/list",
@@ -185,10 +187,14 @@ export default {
           //   _this.tablePage.pageSize = response.data.page_size;
           //   _this.is_loading = false
           // }, 1000)
+
+
           _this.taskData = response.data.rules;
           _this.tablePage.totalResult = response.data.total;
           _this.tablePage.pageSize = response.data.page_size;
           _this.is_loading = false
+
+
           // _this.allData = response.data.rules;
           // _this.taskData = _this.allData.slice((_this.tablePage.currentPage - 1) * _this.tablePage.pageSize, _this.tablePage.currentPage * _this.tablePage.pageSize)
         } else {
@@ -205,5 +211,7 @@ export default {
   }
 }
 </script>
+
 <style scoped>
+
 </style>
