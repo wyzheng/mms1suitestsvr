@@ -183,9 +183,11 @@ export function errorCounting(e, err, fail){
 export function genToken(){
   let secret = "dfZ2bnrTHfperANtWZGdnx0HRwE1W92n";
   let client = "wx_ad_efficiency";
-  let timestamp = Date.now();
+  let timestamp = Math.floor(Date.now() / 1000);
   let sign = sha1(client + secret + timestamp);
-  let token = sign.toString('base64');
+  let buffer = new Buffer(client + "," + timestamp + "," + sign);
+  let token = buffer.toString('base64');
+  console.log(token);
   return token;
 }
 
