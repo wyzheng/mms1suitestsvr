@@ -12,3 +12,11 @@ type CosRes struct {
 	Cost     *int    `json:"cost"`
 	Url      *string `json:"url"`
 }
+
+// 测试任务的json结果保存
+type TestRes struct {
+	NumFailedTestSuites *int `json:"numFailedTestSuites"`
+	NumFailedTests      *int `json:"numFailedTests"`
+	NumPassedTestSuites *int `json:"numPassedTestSuites"`
+	NumPassedTests      *int `json:"numPassedTests"`
+}

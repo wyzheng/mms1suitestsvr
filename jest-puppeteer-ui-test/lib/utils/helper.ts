@@ -125,54 +125,48 @@ export async function getLastItem(path){
   }
   return '...'
 }
-
 /**
  *
  * @param functionName AddBizContact 关注公众号  DelBizContact 取消关注
  * @param bizUin  公众号uin
+ * @param uin 用户uin
  */
-export async function bizOperation(functionName, bizUin){
+export async function bizOperation(functionName, bizUin, uin){
   console.log("*************************")
   let url = `http://wxunitest.oa.com/mmbizcasehelper/mmbasedatabroker`
   let data = {
     "biz_uin": bizUin,
-    "usr_uin": 3192443972,
+    "usr_uin": uin,
   }
   let req_data = {
     "func_name": functionName,
     "func_args": data
   };
   let resp = await got( {method: 'post', url: url, body: JSON.stringify(req_data), decompress: false});
- /* logger.log("here addBizContact log something*********");
-  logger.log(resp.body);*/
-  console.log("*************************")
-  console.log(resp.body)
+   logger.log("here addBizContact log something*********");
+   logger.log(resp.body);
+
 }
 
 /**
  *
  * @param finderName 被关注的人微信名
  * @param optype  1 关注 / 2 取消关注
+ * @param userName 用户账号名
  */
-export async function finderOperation(finderName, optype){
+export async function finderOperation(finderName, optype, userName){
   let url = "http://mmtest.oa.com/mmcasehelperidc/mmfinder"
   let req_data = {
     'func_name': 'SetFinderFollow',
     'func_args': {
-      "username": "searchkefu001",
+      "username": userName,
       "finder_username": finderName,
       "optype": optype
     }
   }
   let resp = await got( {method: 'post', url: url, body: JSON.stringify(req_data), decompress: false});
-  /*logger.log("here addBizContact log something*********");
-  logger.log(resp.body);*/
-  console.log(resp.body)
-}
-
-
-export async function adBinding(aid, wuid){
-
+  logger.log("here addBizContact log something*********");
+  logger.log(resp.body);
 }
 
 

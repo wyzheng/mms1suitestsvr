@@ -15,6 +15,7 @@ type TestTask struct {
 	VersionId  *int    `json:"version_id" col:"version_id"`
 	Trigger    *string `json:"trigger" col:"trigger"`
 	Status     *string `json:"status" col:"status"`
+	TestResult *string `json:"test_result" col:"test_result"`
 	UpdateTime *string `json:"update_time" col:"update_time"`
 	Template   *string `json:"template" col:"template"`
 }

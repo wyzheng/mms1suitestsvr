@@ -99,8 +99,6 @@ describe("微信商品品专广告测试", () => {
         }
     },50000);
 
-
-
     test("测试广告投诉按钮 -- header_complaint", async () => {
         try {
             await addMsg({context: undefined, message: `测试广告反馈，点击广告标出现广告反馈弹窗，点击广告投诉按钮，落地页正常。`});

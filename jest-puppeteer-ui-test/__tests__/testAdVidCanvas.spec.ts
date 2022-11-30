@@ -149,7 +149,7 @@ describe("微信品专广告测试 -- wxadtestVidCanvas", () => {
       await addMsg({context: undefined, message: `公众号点击关注后显示"已关注"tag。`});
       await page.bringToFront();
       //公众号关注
-      await bizOperation("AddBizContact", 3094043316);
+      await bizOperation("AddBizContact", 3094043316, 3191187942);
       await page.click(wxAdClass.select_tab);
       await page.waitForTimeout(1700);
 
@@ -159,13 +159,13 @@ describe("微信品专广告测试 -- wxadtestVidCanvas", () => {
       await addAttach({attach: image, description: "页面截图"});
 
       let content = await page.evaluate(async (eleClass)  => {
-        let item = document.querySelector("div.ad-account-info__list div.ad-account-info__item.active__item:nth-of-type(2) div.ui-tag-title");
+        let item = document.querySelector("div.ad-account-info__list div.ad-account-info__item.active__item div.ui-tag-title");
         return item.innerHTML;
       }, wxAdClass);
       let ele =  await page.$(wxAdClass.account);
       image =  await ele.screenshot({path: './static/pic/ad_gzh1.png'});
       await addAttach({attach: image, description: "公众号账号已关注截图"});
-      await bizOperation("DelBizContact", 3094043316);
+      await bizOperation("DelBizContact", 3094043316, 3191187942);
       expect(content).toBe("已关注");
     }catch (e) {
       if (e.constructor.name == "JestAssertionError"){

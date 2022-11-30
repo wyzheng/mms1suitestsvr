@@ -37,7 +37,7 @@ func UpdateDataTask(id int, testTask *model.TestTask) error {
 	return err
 }
 
-// GetTestTasks 获取所有测试文件名称
+// GetTestTasks 获取所有测试任务
 func GetTestTasks() ([]*model.TestTask, error) {
 	xlog.Debugf("[DAO]:Get a test file from db by %s.")
 
@@ -59,4 +59,25 @@ func GetTestTasks() ([]*model.TestTask, error) {
 		dataList = append(dataList, snap)
 	}
 	return dataList, err
+}
+
+func GetTestTaskById(id int) (*model.TestTask, error) {
+	xlog.Debugf("[DAO]:Get a task from db by %s.", id)
+
+	conditions := make(map[string]interface{})
+	conditions["id"] = id
+
+	err, list := database.Query(
+		config.Mms1suitestDB,
+		config.TestTaskTable,
+		conditions,
+		&model.TestTask{},
+		"id",
+		false)
+
+	if len(list) == 0 {
+		return nil, errors.New("no test file of this name")
+	}
+
+	return list[0].(*model.TestTask), err
 }

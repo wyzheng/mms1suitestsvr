@@ -2,11 +2,16 @@ package service
 
 import (
 	"bytes"
+	"fmt"
 	"git.woa.com/wego/wego2/xlog"
+	"mms1suitestsvr/config"
+	"mms1suitestsvr/dao"
+	"mms1suitestsvr/model"
 	"mms1suitestsvr/util"
 	"os"
 	"os/exec"
 	"strconv"
+	"time"
 )
 
 // RunTest 根据任务id和模板包名执行测试任务
@@ -34,6 +39,9 @@ func RunTest(taskId int, templateName string) string {
 	if err != nil {
 		xlog.Errorf("[COS] set test result into cos failed, file %v", err)
 	}
+	// 解析成功失败数目：
+	res := util.JsonDecode(fileContent)
+	var testRes = fmt.Sprintf("%v_%v_%v_%v", *res.NumFailedTestSuites, *res.NumPassedTestSuites, *res.NumFailedTests, *res.NumPassedTests)
 
 	//存储html结果到cos
 	cmd = exec.Command("bash", "-c", "tar -zcvf "+strconv.Itoa(taskId)+"report.tar.gz "+strconv.Itoa(taskId)+"/*")
@@ -58,10 +66,13 @@ func RunTest(taskId int, templateName string) string {
 	if err = cmd.Run(); err != nil {
 		xlog.Error(err)
 	}*/
+
 	err = util.SendMsg(taskId)
 	if err != nil {
 		xlog.Errorf("[wechat work] send message error %v", err)
 	}
+	//更新测试状态
+	UpdateTestTask(taskId, &testRes)
 	return stdout.String()
 }
 
@@ -78,5 +89,24 @@ func ArchiveTeatCases(versionId int) {
 	err = SetCosFile("s1s/cases/"+strconv.Itoa(versionId)+"/cases.tar.gz", fileContent)
 	if err != nil {
 		xlog.Errorf("[COS] test cases archiving into cos failed, file %v", err)
+	}
+}
+
+func UpdateTestTask(id int, res *string) {
+	task, err := dao.GetTestTaskById(id)
+
+	cTime := time.Now().Format("2006-01-02 15:04:05")
+	newTask := &model.TestTask{
+		VersionId:  task.VersionId,
+		Trigger:    task.Trigger,
+		UpdateTime: &cTime,
+		Status:     &config.S_TAST_FINISH,
+		Template:   task.Template,
+		TestResult: res,
+	}
+
+	err = dao.UpdateDataTask(id, newTask)
+	if err != nil {
+		xlog.Errorf("[sql] update task failed, file %v", err)
 	}
 }

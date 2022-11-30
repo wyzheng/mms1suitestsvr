@@ -1,18 +1,19 @@
 package util
 
 import (
+	"encoding/json"
 	"errors"
 	"fmt"
 	"git.woa.com/wego/wego2/xlog"
 	huge "github.com/dablelv/go-huge-util"
+	"mms1suitestsvr/model"
 	comm_define "mmtestgocommon/define"
 	comm_model "mmtestgocommon/model"
 	comm_tools "mmtestgocommon/tools"
 	"strings"
 )
 
-// 解压文件
-
+// UnzipFile 解压文件
 func UnzipFile(source string, dest string) error {
 	err := huge.Unzip(source, dest)
 	if err != nil {
@@ -21,9 +22,7 @@ func UnzipFile(source string, dest string) error {
 	return err
 }
 
-/**
- * @Description 拼接用户组
- **/
+// AssembleUser 拼接用户组
 func AssembleUser(user string, msgType string) string {
 	defaultWatcher := []string{"joycesong"}
 	if !comm_tools.IsStrContain(defaultWatcher, user) {
@@ -37,9 +36,7 @@ func AssembleUser(user string, msgType string) string {
 	return strings.Join(defaultWatcher, ";")
 }
 
-/**
- * @Description 发送告警
- **/
+// SendMsg 发送测试完成消息
 func SendMsg(taskId int) error {
 	msg := comm_model.RtxMessage{}
 	user := "joycesong"
@@ -48,8 +45,8 @@ func SendMsg(taskId int) error {
 	msg.Title = "超级品专广告UI自动化测试"
 
 	msg.MsgInfo = fmt.Sprintf(
-		"任务%v已完成",
-		taskId)
+		"任务%v已完成，点击查看测试报告：http://9.134.52.227:8080/#/reportDetail?id=%v",
+		taskId, taskId)
 
 	ret := comm_tools.SendRtx(msg)
 	if ret != comm_define.E_SUCCESS {
@@ -57,4 +54,14 @@ func SendMsg(taskId int) error {
 	}
 
 	return nil
+}
+
+// JsonDecode 字符串解析json结构体
+func JsonDecode(content []byte) *model.TestRes {
+	var jsonRes model.TestRes
+	err := json.Unmarshal(content, &jsonRes)
+	if err != nil {
+		xlog.Errorf("[utils] json result decode error, err is %v", err)
+	}
+	return &jsonRes
 }

@@ -33,12 +33,20 @@ module.exports = {
         target: 'http://iostream.woa.com:18883',
         changeOrigin:true,
         secure: false
-      }
+      },
+      '/interfaceTest' : {
+        target:'http://9.134.186.157:8056',
+        changeOrigin:true,
+        secure: false,
+        pathRewrite:{
+          "^/interfaceTest": ""
+        }
+      },
     },
 
     // Various Dev Server settings
-    host: 'localhost', // can be overwritten by process.env.HOST
-    port: 8080, // can be overwritten by process.env.PORT, if port is in use, a free one will be determined
+    host: '0.0.0.0', // can be overwritten by process.env.HOST
+    port: 8181, // can be overwritten by process.env.PORT, if port is in use, a free one will be determined
     autoOpenBrowser: false,
     errorOverlay: true,
     notifyOnErrors: true,
