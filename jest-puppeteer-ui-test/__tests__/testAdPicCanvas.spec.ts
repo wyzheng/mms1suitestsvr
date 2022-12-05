@@ -9,6 +9,7 @@ import fs from "fs";
 let page: Puppeteer.Page ;
 let browser:  Puppeteer.Browser;
 let pageExtend: PageExtend;
+
 let resArr = [];
 let num = 0;
 let pass = 0;
