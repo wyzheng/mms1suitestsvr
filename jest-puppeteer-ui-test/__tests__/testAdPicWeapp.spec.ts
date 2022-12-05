@@ -3,7 +3,7 @@ import Puppeteer from "puppeteer";
 import {PageExtend} from "../lib/search-page/page-extend";
 import { adAccountClass, wxAdClass } from "../lib/utils/resultMap";
 import {addAttach, addMsg} from "jest-html-reporters/helper";
-import { bizOperation, errorCounting, getHeightOfEle, superView } from "../lib/utils/helper";
+import { bizOperation, getHeightOfEle, superView } from "../lib/utils/helper";
 
 let page: Puppeteer.Page ;
 let browser:  Puppeteer.Browser;
