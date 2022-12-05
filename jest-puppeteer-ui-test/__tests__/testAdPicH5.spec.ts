@@ -4,7 +4,6 @@ import {PageExtend} from "../lib/search-page/page-extend";
 import { adActivityClass, wxAdClass } from "../lib/utils/resultMap";
 import { addAttach, addMsg } from "jest-html-reporters/helper";
 import { errorCounting, finderOperation, getHeightOfEle, superView } from "../lib/utils/helper";
-import fs from "fs";
 
 let page: Puppeteer.Page ;
 let browser:  Puppeteer.Browser;
