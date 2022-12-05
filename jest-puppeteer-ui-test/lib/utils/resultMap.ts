@@ -451,3 +451,13 @@ export function adAccountClass(index){
     account_desc: `div.ad-account-info__list div.ad-account-info__item:nth-of-type(${index}) div.account-info div.account-info__desc`,
   }
 }
+
+export function adActivityClass(aId,mId){
+  // 活动（可能有多个，可能在不同位置）
+  return{
+    activity: `div.activity-card-slide div.ui-scroll__item:nth-of-type(${aId})`,
+    activity_body: `div.activity-card-slide div.ui-scroll__item:nth-of-type(${aId}) div.video-player__bd`,
+    activity_menus: `div.activity-card-slide div.ui-scroll__item:nth-of-type(${aId}) div.menu-item:nth-of-type(${mId})`,
+    activity_button: `div.activity-card-slide div.ui-scroll__item:nth-of-type(${aId}) a`,
+  }
+}
