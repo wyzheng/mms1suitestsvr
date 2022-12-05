@@ -38,7 +38,7 @@ describe("微信品专广告", () => {
         const path = "./static/res/result.txt"
         fs.writeFile(path, str ,{mode:0o666, flag:'a'},(err)=>{
             if (err){
-                console.log('文件写入失败',err)
+                console.log('文件写入失败', err)
             }else{
                 console.log('文件写入成功')
             }
