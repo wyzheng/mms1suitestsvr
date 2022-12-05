@@ -1,7 +1,7 @@
 import {setup} from "../lib/utils/setup";
 import Puppeteer from "puppeteer";
 import {PageExtend} from "../lib/search-page/page-extend";
-import { adAccountClass, adActivityClass, wxAdClass } from "../lib/utils/resultMap";
+import { adActivityClass, wxAdClass } from "../lib/utils/resultMap";
 import { addAttach, addMsg } from "jest-html-reporters/helper";
 import { bizOperation, getHeightOfEle, superView } from "../lib/utils/helper";
 
