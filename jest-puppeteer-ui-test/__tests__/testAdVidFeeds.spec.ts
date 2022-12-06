@@ -582,6 +582,38 @@ describe("微信品专广告", () => {
     }
   },50000);
 
+  test("> 点击热门活动3，验证是否正确跳转到\"苏宁拼购\"小程序", async () => {
+    try {
+      await addMsg({
+        context: undefined,
+        message: ` 测试步骤：\n  1. 输入搜索query=wxadtestVidFeeds,发起搜索\n  2. 点击热门活动第3个活动，检查跳转目标为"苏宁拼购"小程序`
+      });
+      await page.bringToFront();
+      await page.waitForSelector(adActivityClass(3, 0).activity);
+      await page.hover(adActivityClass(3, 0).activity);
+      await page.waitForTimeout(700);
+      let ele =  await page.$(adActivityClass(3, 0).activity);
+      let path = './static/pic/ad_activity.png';
+      const image =  await ele.screenshot({path: path});
+      await addAttach({attach: image, description: "活动"});
+
+      await page.click(adActivityClass(3, 0).activity);
+      await page.waitForTimeout(700);
+      expect(pageExtend.extendInfo).toBe("gh_0e4ed2286545@app");
+    }catch (e) {
+      if (e.constructor.name == "JestAssertionError"){
+        fail++;
+      }else {
+        err++;
+        await addMsg({
+          context: undefined,
+          message: `测试任务出错...`
+        });
+      }
+      throw e;
+    }
+  },50000);
+
   test("> 测试结果汇总", async () => {
     num = num - 1;
     pass = num - fail - err;
