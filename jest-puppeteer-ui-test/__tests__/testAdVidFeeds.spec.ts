@@ -592,10 +592,6 @@ describe("微信品专广告", () => {
       await page.waitForSelector(adActivityClass(3, 0).activity);
       await page.hover(adActivityClass(3, 0).activity);
       await page.waitForTimeout(700);
-      let ele =  await page.$(adActivityClass(3, 0).activity);
-      let path = './static/pic/ad_activity.png';
-      const image =  await ele.screenshot({path: path});
-      await addAttach({attach: image, description: "活动"});
 
       await page.click(adActivityClass(3, 0).activity);
       await page.waitForTimeout(700);
