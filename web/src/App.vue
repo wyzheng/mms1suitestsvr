@@ -22,8 +22,8 @@
         </a-col>
       </a-row>
       <a-menu theme="dark"
-              :defaultSelectedKeys="[selectedKey.key]"
-              :defaultOpenKeys="[selectedKey.box]"
+              :defaultSelectedKeys="!collapsed ? selectedKey.key : ''"
+              :defaultOpenKeys="!collapsed ? selectedKey.box : ''"
               mode="inline"
               style="padding-top: 20px">
         <a-menu-item key="1">
@@ -82,9 +82,28 @@ export default {
     getSelectedKeys : function () {
       console.log(window.location.href);
       let url = window.location.href;
-      if (url.search("reportDetail") !== -1)
-        return {key:"ui_test", box:""};
-      return {key:'1',box:''};
+      let urlArr = url.split("?")[0].split("/")
+      console.log(urlArr);
+
+      // 测试用例部分
+      if (urlArr.indexOf("testCases") !== -1)
+        return {key:["1"], box: ["1"]};
+
+      // 测试结果部分
+      if (urlArr.indexOf("testTask") !== -1)
+        return {key:[], box: ["2"]};
+      if (urlArr.indexOf("res") !== -1)
+      {
+        if (urlArr.indexOf("uiTestResult") !== -1)
+          return {key:["ui_test"],box: ["2"]};
+        if (urlArr.indexOf("interfaceTestResult") !== -1)
+          return {key:["interface_test"],box: ["2"]};
+        if (urlArr.indexOf("dialTestResult") !== -1)
+          return {key:["dial_test"],box: ["2"]};
+        return {key:[],box: ["2"]};
+      }
+
+      return {key:[], box: ["2"]};
     }
   },
 

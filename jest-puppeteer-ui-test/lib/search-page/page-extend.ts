@@ -24,6 +24,7 @@ export class PageExtend {
   private loggerService = new LoggerService();
   public extendInfo: string;
   public weappPath: string;
+  public uin: number;
 
   private logger: Logger;
   constructor() {
@@ -57,15 +58,19 @@ export class PageExtend {
     query,
     key,
     config,
-    device
+    device,
+    uin
   }: {
     context: string;
     query: string;
     key: string;
     config: WebSearchPageConfig,
     device: string,
+    uin: number
   }) {
+    this.uin = uin;
     const page = await (await this.allowBrowser()).newPage();
+    await page.waitForTimeout(30000);
     const webSearchPage = new WebSearchPage(page);
     this.webSearchPage = webSearchPage;
     const content = await this.assetService.fetchEntryHtmlContent(context);
@@ -81,8 +86,7 @@ export class PageExtend {
     });
     await webSearchPage.waitForRenderingDone();
     webSearchPage.inited = true;
-    this.logger.log(`here alloc a page`)
-
+    this.logger.log(`here alloc a page`);
     return this;
   }
 
@@ -192,7 +196,7 @@ export class PageExtend {
       // 获取数据回包
       let data = {
         "src": 25,
-        "uin": 3192443972,
+        "uin": this.uin,
         "query": params['query'],
         "scene": params['scene'],
         "business_type": params['businessType'],

@@ -402,10 +402,12 @@ export const wxAdClass = {
   complaint: "div.complaint-content",
   feedback_mask: 'div.mask.ad-complaint-popover',
   extent: 'div.ad-zone-header__link-extent',
+  extent_content: 'div.ad-zone-header__link-extent div.ad-zone-header__link__text',
   //广告信息
   headTitle: 'div.service-search-block-body  div:nth-child(1)',
   title: 'div.ad-sub-header__slot div.hd-title-content em',
   tagContent: 'div.ad-sub-header__slot div.hd-title-content div.ui-tag-title',
+  headSpan: 'div.ad-sub-header__slot div.hd-title-content h2.hd-title span',
   loc: 'div.hd-option-wrapper div.hd-option.active__link',
   phone: 'div.hd-option-wrapper div.hd-option.active__link:nth-of-type(2)',
   helper: 'div.hd-option-wrapper div.hd-option.active__link:nth-of-type(3)',
@@ -416,9 +418,11 @@ export const wxAdClass = {
   call_button: "div.ui-half-screen-dialog div.ui-half-screen-sheet-item",
   alert_number: "div.dialog__box.alert div.dialog__bd",
   // 账号（可能有多个，可能在不同位置）
-  account: 'div.ad-account-info__list div.account-info',
-  account_tag: 'div.ad-account-info__list div.account-info div.ui-tag-title',
-  account_link: 'div.ad-account-info__list div.account-info a',
+  account: `div.ad-account-info__list div.account-info`,
+  account_tag: `div.ad-account-info__list div.account-info div.ui-tag-title`,
+  account_link: `div.ad-account-info__list div.account-info a`,
+  account_title: `div.ad-account-info__list div.account-info div.account-info__title`,
+  account_desc: `div.ad-account-info__list div.account-info div.account-info__desc`,
   // 系列产品
   tab_space: "div.product-series div.product-series__tabs > div",
   active_tab: "div.product-series div.product-series__tabs div.product-series__tab__content--active",
@@ -431,6 +435,29 @@ export const wxAdClass = {
   //热门活动
   activity: "div.activity-card-slide div.ui-scroll__item:nth-of-type(3)",
   activity_body: "div.activity-card-slide div.ui-scroll__item div.video-player__bd",
-  activity_menus: "div.activity-card-slide div.ui-scroll__item:nth-of-type(4) div.menu-item:nth-of-type(1)",
+  activity_menus: "div.activity-card-slide div.ui-scroll__item:nth-of-type(3) div.menu-item:nth-of-type(1)",
   activity_button: "div.activity-card-slide div.ui-scroll__item a",
+
+  select_tab: "#search_result > div.unit__outer > div > div > div.unit__item:nth-of-type(2)",
+}
+
+export function adAccountClass(index){
+  // 账号（可能有多个，可能在不同位置）
+  return{
+    account: `div.ad-account-info__list div.ad-account-info__item:nth-of-type(${index}) div.account-info`,
+    account_tag: `div.ad-account-info__list div.ad-account-info__item:nth-of-type(${index}) div.account-info div.ui-tag-title`,
+    account_link: `div.ad-account-info__list div.ad-account-info__item:nth-of-type(${index}) div.account-info a`,
+    account_title: `div.ad-account-info__list div.ad-account-info__item:nth-of-type(${index}) div.account-info div.account-info__title`,
+    account_desc: `div.ad-account-info__list div.ad-account-info__item:nth-of-type(${index}) div.account-info div.account-info__desc`,
+  }
+}
+
+export function adActivityClass(aId,mId){
+  // 活动（可能有多个，可能在不同位置）
+  return{
+    activity: `div.activity-card-slide div.ui-scroll__item:nth-of-type(${aId})`,
+    activity_body: `div.activity-card-slide div.ui-scroll__item:nth-of-type(${aId}) div.video-player__bd`,
+    activity_menus: `div.activity-card-slide div.ui-scroll__item:nth-of-type(${aId}) div.menu-item:nth-of-type(${mId})`,
+    activity_button: `div.activity-card-slide div.ui-scroll__item:nth-of-type(${aId}) a`,
+  }
 }
