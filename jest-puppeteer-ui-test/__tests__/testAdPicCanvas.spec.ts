@@ -29,19 +29,32 @@ describe("微信品专广告", () => {
         if (!page.isClosed()) {
             browser.close();
         }
+        let str = "wxadtestPicCanvas_"
+        for (const item in resArr) {
+            str += resArr[item] + "_"
+        }
+        str += "\n";
+        const path = "./static/res/result.txt"
+        fs.writeFile(path, str ,{mode:0o666, flag:'a'},(err)=>{
+            if (err){
+                console.log('文件写入失败',err)
+            }else{
+                console.log('文件写入成功')
+            }
+        })
     });
     beforeEach(() => {
         num = num + 1;
     })
 
     test("> q=wxadtestPicCanvas，验证混排结果页品专广告是否召回", async () => {
+        await addMsg({
+            context: undefined,
+            message: ` 测试步骤：\n  1. 输入搜索query=wxadtestPicCanvas,发起搜索\n  2. 检查混排页是否召回品专广告`
+        });
         let num = 3;
         while(num != 0){
             try {
-                await addMsg({
-                    context: undefined,
-                    message: ` 测试步骤：\n  1. 输入搜索query=wxadtestPicCanvas,发起搜索\n  2. 检查混排页是否召回品专广告`
-                });
                 const image =  await page.screenshot({
                     path: "./static/pic/test_wxad.png"
                 })
@@ -68,13 +81,13 @@ describe("微信品专广告", () => {
     },50000);
 
     test("> 点击广告头部，验证是否正确跳转到\"唯品会特卖\"小程序", async () => {
+        await addMsg({
+            context: undefined,
+            message: ` 测试步骤：\n  1. 输入搜索query=wxadtestPicCanvas,发起搜索\n  2. 点击品专广告头部区域，检查跳转目标为"唯品会特卖"小程序`
+        });
         let num = 3;
         while(num != 0){
             try {
-                await addMsg({
-                    context: undefined,
-                    message: ` 测试步骤：\n  1. 输入搜索query=wxadtestPicCanvas,发起搜索\n  2. 点击品专广告头部区域，检查跳转目标为"唯品会特卖"小程序`
-                });
                 await page.waitForSelector(wxAdClass.head);
                 let ele =  await page.$(wxAdClass.head);
                 let path = './static/pic/ad_head.png';
@@ -103,13 +116,13 @@ describe("微信品专广告", () => {
     },50000);
 
     test("> 验证\"进入小程序 \"外链文案是否正确；点击外链，验证是否正确跳转\"唯品会特卖\"小程序", async () => {
+        await addMsg({
+            context: undefined,
+            message: ` 测试步骤：\n  1. 输入搜索query=wxadtestPicCanvas,发起搜索\n  2. 检查广告头部展示"进入小程序"外链\n  3. 点击"进入小程序"，检查跳转目标为"唯品会特卖"小程序`
+        });
         let num = 3;
         while(num != 0){
             try {
-                await addMsg({
-                    context: undefined,
-                    message: ` 测试步骤：\n  1. 输入搜索query=wxadtestPicCanvas,发起搜索\n  2. 检查广告头部展示"进入小程序"外链\n  3. 点击"进入小程序"，检查跳转目标为"唯品会特卖"小程序`
-                });
                 await page.bringToFront();
                 await page.waitForSelector(wxAdClass.extent);
                 let ele =  await page.$(wxAdClass.extent);
@@ -145,13 +158,13 @@ describe("微信品专广告", () => {
 
 
     test("> 验证广告反馈图标、弹窗展示正常，点击广告图标，验证是否正确跳转到广告投诉落地页", async () => {
+        await addMsg({
+            context: undefined,
+            message: ` 测试步骤：\n  1. 输入搜索query=wxadtestPicCanvas,发起搜索\n  2. 检查广告头部展示"广告"反馈图标\n  3. 点击"广告"图标，展示"投诉广告"弹窗 \n  4. 点击"投诉广告"，跳转到广告投诉落地页\n  5. 再次点击"广告"反馈图标，收起"投诉广告"弹窗`
+        });
         let num = 3;
         while(num != 0){
             try {
-                await addMsg({
-                    context: undefined,
-                    message: ` 测试步骤：\n  1. 输入搜索query=wxadtestPicCanvas,发起搜索\n  2. 检查广告头部展示"广告"反馈图标\n  3. 点击"广告"图标，展示"投诉广告"弹窗 \n  4. 点击"投诉广告"，跳转到广告投诉落地页\n  5. 再次点击"广告"反馈图标，收起"投诉广告"弹窗`
-                });
                 await page.bringToFront();
                 //广告按钮
                 await page.waitForSelector(wxAdClass.feedback);
@@ -205,13 +218,13 @@ describe("微信品专广告", () => {
     },50000);
 
     test("> 验证广告名称为\"快乐测试123\"，验证\"官方\"标签是否正常显示", async () => {
+        await addMsg({
+            context: undefined,
+            message: ` 测试步骤：\n  1. 输入搜索query=wxadtestPicCanvas,发起搜索\n  2. 查看广告名称为"快乐测试123"\n  3. 广告名称后展示"官方"标签，两者一行展示`
+        });
         let num = 3;
         while(num != 0){
             try {
-                await addMsg({
-                    context: undefined,
-                    message: ` 测试步骤：\n  1. 输入搜索query=wxadtestPicCanvas,发起搜索\n  2. 查看广告名称为"快乐测试123"\n  3. 广告名称后展示"官方"标签，两者一行展示`
-                });
                 await page.bringToFront();
                 let content = await page.evaluate(async (eleClass)  => {
                     let item = document.querySelector(eleClass.title);
@@ -253,13 +266,13 @@ describe("微信品专广告", () => {
     },50000);
 
     test("> 点击广告名称，验证是否正确跳转到\"快乐测试123\"公众号", async () => {
+        await addMsg({
+            context: undefined,
+            message: ` 测试步骤：\n  1. 输入搜索query=wxadtestPicCanvas,发起搜索\n  2. 点击广告名称区域，检查跳转目标为"快乐测试123"公众号`
+        });
         let num = 3;
         while(num != 0){
             try {
-                await addMsg({
-                    context: undefined,
-                    message: ` 测试步骤：\n  1. 输入搜索query=wxadtestPicCanvas,发起搜索\n  2. 点击广告名称区域，检查跳转目标为"快乐测试123"公众号`
-                });
                 await page.bringToFront();
                 await page.waitForSelector(wxAdClass.headTitle);
                 let ele =  await page.$$(wxAdClass.headTitle);
@@ -289,13 +302,13 @@ describe("微信品专广告", () => {
     },50000);
 
     test("> 点击门店地址按钮，验证是否正确跳转到百度首页", async () => {
+        await addMsg({
+            context: undefined,
+            message: ` 测试步骤：\n  1. 输入搜索query=wxadtestPicCanvas,发起搜索\n  2. 点击测试门店地址按钮，检查跳转目标为自定义H5页面 -- 百度首页`
+        });
         let num = 3;
         while(num != 0){
             try {
-                await addMsg({
-                    context: undefined,
-                    message: ` 测试步骤：\n  1. 输入搜索query=wxadtestPicCanvas,发起搜索\n  2. 点击测试门店地址按钮，检查跳转目标为自定义H5页面 -- 百度首页`
-                });
                 await page.bringToFront();
                 await page.waitForSelector(wxAdClass.loc);
                 let ele =  await page.$(wxAdClass.loc);
@@ -332,13 +345,13 @@ describe("微信品专广告", () => {
     },50000);
 
     test("> 点击在线客服按钮，验证链接配置是否正确", async () => {
+        await addMsg({
+            context: undefined,
+            message: ` 测试步骤：\n  1. 输入搜索query=wxadtestPicCanvas,发起搜索\n  2. 点击在线客服按钮，检查跳转url正确`
+        });
         let num = 3;
         while(num != 0){
             try {
-                await addMsg({
-                    context: undefined,
-                    message: ` 测试步骤：\n  1. 输入搜索query=wxadtestPicCanvas,发起搜索\n  2. 点击在线客服按钮，检查跳转url正确`
-                });
                 await page.bringToFront();
                 await page.waitForSelector(wxAdClass.helper);
                 let ele =  await page.$(wxAdClass.helper);
@@ -368,13 +381,13 @@ describe("微信品专广告", () => {
     },50000);
 
     test("> 点击联系电话按钮，验证弹窗展示正确、联系电话是否显示正确", async () => {
+        await addMsg({
+            context: undefined,
+            message: ` 测试步骤：\n  1. 输入搜索query=wxadtestPicCanvas,发起搜索\n  2. 点击联系电话按钮，显示联系电话弹窗\n  3. 检查联系电话为："17000001689", "0755-10016"\n  4. 点击联系电话呼叫按钮，检查当前呼叫电话正确`
+        });
         let num = 3;
         while(num != 0){
             try {
-                await addMsg({
-                    context: undefined,
-                    message: ` 测试步骤：\n  1. 输入搜索query=wxadtestPicCanvas,发起搜索\n  2. 点击联系电话按钮，显示联系电话弹窗\n  3. 检查联系电话为："17000001689", "0755-10016"\n  4. 点击联系电话呼叫按钮，检查当前呼叫电话正确`
-                });
                 await page.bringToFront();
                 await page.waitForSelector(wxAdClass.phone);
                 let ele = await page.$(wxAdClass.phone);
@@ -432,13 +445,13 @@ describe("微信品专广告", () => {
     },50000);
 
     test("> 验证广告\"门店地址\"、\"联系电话\"、 \"在线客服\"按钮是否在一行展示", async () => {
+        await addMsg({
+            context: undefined,
+            message: ` 测试步骤：\n  1. 输入搜索query=wxadtestPicCanvas,发起搜索\n  2.查看"门店地址"、"联系电话"、 "在线客服"按钮一行展示`
+        });
         let num = 3;
         while(num != 0){
             try {
-                await addMsg({
-                    context: undefined,
-                    message: ` 测试步骤：\n  1. 输入搜索query=wxadtestPicCanvas,发起搜索\n  2.查看"门店地址"、"联系电话"、 "在线客服"按钮一行展示`
-                });
                 let loc_height =  await getHeightOfEle(page, wxAdClass.loc);
                 let helper_height =  await getHeightOfEle(page, wxAdClass.helper);
                 let phone_height =  await getHeightOfEle(page, wxAdClass.phone);
@@ -470,13 +483,13 @@ describe("微信品专广告", () => {
 
 
     test("> 验证广告小程序账号信息展示正确；点击小程序账号，验证是否正确跳转到\"唯品会特卖\"小程序", async () => {
+        await addMsg({
+            context: undefined,
+            message: ` 测试步骤：\n  1. 输入搜索query=wxadtestPicCanvas,发起搜索\n  2. 查看小程序账号信息，标题为"唯品会特卖"，底部显示"小程序"\n  3. 点击小程序账号主体，检查跳转目标为唯品会特卖小程序`
+        });
         let num = 3;
         while(num != 0){
             try {
-                await addMsg({
-                    context: undefined,
-                    message: ` 测试步骤：\n  1. 输入搜索query=wxadtestPicCanvas,发起搜索\n  2. 查看小程序账号信息，标题为"唯品会特卖"，底部显示"小程序"\n  3. 点击小程序账号主体，检查跳转目标为唯品会特卖小程序`
-                });
                 await page.bringToFront();
                 await page.waitForSelector(wxAdClass.account);
                 let ele =  await page.$(wxAdClass.account);
@@ -515,13 +528,13 @@ describe("微信品专广告", () => {
     },50000);
 
     test("> 点击广告账号行动按钮，验证是否正确跳转到\"唯品会特卖\"小程序", async () => {
+        await addMsg({
+            context: undefined,
+            message: ` 测试步骤：\n  1. 输入搜索query=wxadtestPicCanvas,发起搜索\n  2.小程序账号行动按钮文案展示为：进店\n  3. 点击进店按钮，检查跳转目标为唯品会特卖小程序`
+        });
         let num = 3;
         while(num != 0){
             try {
-                await addMsg({
-                    context: undefined,
-                    message: ` 测试步骤：\n  1. 输入搜索query=wxadtestPicCanvas,发起搜索\n  2.小程序账号行动按钮文案展示为：进店\n  3. 点击进店按钮，检查跳转目标为唯品会特卖小程序`
-                });
                 await page.bringToFront();
                 await page.waitForSelector(wxAdClass.account_link);
                 let ele =  await page.$(wxAdClass.account_link);
@@ -557,13 +570,13 @@ describe("微信品专广告", () => {
     },50000);
 
     test("> 验证广告公众号账号信息展示正确，点击公众号账号，验证是否正确跳转到\"快乐测试123\"公众号", async () => {
+        await addMsg({
+            context: undefined,
+            message: ` 测试步骤：\n  1. 输入搜索query=wxadtestPicCanvas,发起搜索\n  2. 查看公众号账号信息，标题为"快乐测试123"，底部显示"公众号"\n  3. 点击账号主体，检查跳转目标为快乐测试123公众号`
+        });
         let num = 3;
         while(num != 0){
             try {
-                await addMsg({
-                    context: undefined,
-                    message: ` 测试步骤：\n  1. 输入搜索query=wxadtestPicCanvas,发起搜索\n  2. 查看公众号账号信息，标题为"快乐测试123"，底部显示"公众号"\n  3. 点击账号主体，检查跳转目标为快乐测试123公众号`
-                });
                 await page.bringToFront();
                 let className = adAccountClass(2).account;
                 await page.waitForSelector(wxAdClass.account);
@@ -603,14 +616,14 @@ describe("微信品专广告", () => {
     },50000);
 
     test("> 关注公众号，验证公众号账号是否正常显示\"已关注\"标签", async () => {
+        //公众号关注
+        await addMsg({
+            context: undefined,
+            message: ` 测试步骤：\n  1. 输入搜索query=wxadtestPicCanvas,发起搜索\n  2.关注公众号，刷新结果页，公众号账号显示"已关注"标签`
+        });
         let num = 3;
         while(num != 0){
             try {
-                //公众号关注
-                await addMsg({
-                    context: undefined,
-                    message: ` 测试步骤：\n  1. 输入搜索query=wxadtestPicCanvas,发起搜索\n  2.关注公众号，刷新结果页，公众号账号显示"已关注"标签`
-                });
                 await page.bringToFront();
                 await bizOperation("AddBizContact", 3094043316, 3190188057);
                 await page.click(wxAdClass.select_tab);
@@ -645,13 +658,13 @@ describe("微信品专广告", () => {
     },50000);
 
     test("> 验证产品系列配置产品个数是否为4个；分别点击单个产品，验证是否正确跳转到\"唯品会特卖\"小程序的不同页面", async () => {
+        await addMsg({
+            context: undefined,
+            message: ` 测试步骤：\n  1. 输入搜索query=wxadtestPicCanvas,发起搜索\n  2.检查广告配置产品个数为4个\n  3. 分别点击每个产品，跳转到"唯品会特卖"会小程序，检查落地页url不同`
+        });
         let num = 3;
         while(num != 0) {
             try {
-                await addMsg({
-                    context: undefined,
-                    message: ` 测试步骤：\n  1. 输入搜索query=wxadtestPicCanvas,发起搜索\n  2.检查广告配置产品个数为4个\n  3. 分别点击每个产品，跳转到"唯品会特卖"会小程序，检查落地页url不同`
-                });
 
                 let ele = await page.$("div.product-series");
                 let image = await ele.screenshot({ path: './static/pic/ad_gzh1.png' });
@@ -690,13 +703,13 @@ describe("微信品专广告", () => {
     },50000);
 
     test("> 点击更多账号按钮，验证是否正确跳转到更多账号落地页", async () => {
+        await addMsg({
+            context: undefined,
+            message: ` 测试步骤：\n  1. 输入搜索query=wxadtestPicCanvas,发起搜索\n  2.点击"更多官方账号"，检查更多账号落地页正确`
+        });
         let num = 3;
         while(num != 0){
             try {
-                await addMsg({
-                    context: undefined,
-                    message: ` 测试步骤：\n  1. 输入搜索query=wxadtestPicCanvas,发起搜索\n  2.点击"更多官方账号"，检查更多账号落地页正确`
-                });
                 await page.bringToFront();
                 await page.waitForSelector(wxAdClass.more_account);
                 let ele =  await page.$(wxAdClass.more_account);

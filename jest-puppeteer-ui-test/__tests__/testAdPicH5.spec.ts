@@ -39,13 +39,13 @@ describe("微信品专广告", () => {
   })
 
   test("> q=wxadtestPicH5，验证混排结果页品专广告是否召回", async () => {
+    await addMsg({
+      context: undefined,
+      message: ` 测试步骤：\n  1. 输入搜索query=wxadtestPicH5,发起搜索\n  2. 检查混排页是否召回品专广告`
+    });
     let num = 3;
     while(num != 0){
       try {
-        await addMsg({
-          context: undefined,
-          message: ` 测试步骤：\n  1. 输入搜索query=wxadtestPicH5,发起搜索\n  2. 检查混排页是否召回品专广告`
-        });
         await page.waitForTimeout(1000);
         const image =  await page.screenshot({
           path: "./static/pic/test_PicH5.png"
@@ -73,13 +73,13 @@ describe("微信品专广告", () => {
 
 
   test("> 点击广告头部，验证是否正确跳转到百度首页 ", async () => {
+    await addMsg({
+      context: undefined,
+      message: ` 测试步骤：\n  1. 输入搜索query=wxadtestPicH5,发起搜索\n  2. 点击品专广告头部区域，检查跳转目标为H5页面（百度首页）`
+    });
     let num = 3;
     while(num != 0){
       try {
-        await addMsg({
-          context: undefined,
-          message: ` 测试步骤：\n  1. 输入搜索query=wxadtestPicH5,发起搜索\n  2. 点击品专广告头部区域，检查跳转目标为H5页面（百度首页）`
-        });
         await page.waitForSelector(wxAdClass.head);
         let ele =  await page.$(wxAdClass.head);
         let path = './static/pic/ad_head.png';
@@ -115,13 +115,13 @@ describe("微信品专广告", () => {
 
 
   test("> 验证\"了解更多 \"外链文案是否正确；点击外链，验证是否正确跳转到百度首页", async () => {
+    await addMsg({
+      context: undefined,
+      message: ` 测试步骤：\n  1. 输入搜索query=wxadtestPicH5,发起搜索\n  2. 检查广告头部展示"了解更多"外链\n  3. 点击"了解更多"，检查跳转目标为H5页面（百度首页）`
+    });
     let num = 3;
     while(num != 0){
       try {
-        await addMsg({
-          context: undefined,
-          message: ` 测试步骤：\n  1. 输入搜索query=wxadtestPicH5,发起搜索\n  2. 检查广告头部展示"了解更多"外链\n  3. 点击"了解更多"，检查跳转目标为H5页面（百度首页）`
-        });
         await page.bringToFront();
         await page.waitForSelector(wxAdClass.extent);
         let ele =  await page.$(wxAdClass.extent);
@@ -163,13 +163,13 @@ describe("微信品专广告", () => {
   },50000);
 
   test("> 验证广告反馈图标、弹窗展示正常，点击广告图标，验证是否正确跳转到广告投诉落地页", async () => {
+    await addMsg({
+      context: undefined,
+      message: ` 测试步骤：\n  1. 输入搜索query=wxadtestPicH5,发起搜索\n  2. 检查广告头部展示"广告"反馈图标\n  3. 点击"广告"图标，展示"投诉广告"弹窗 \n  4. 点击"投诉广告"，跳转到广告投诉落地页\n  5. 再次点击"广告"反馈图标，收起"投诉广告"弹窗`
+    });
     let num = 3;
     while(num != 0){
       try {
-        await addMsg({
-          context: undefined,
-          message: ` 测试步骤：\n  1. 输入搜索query=wxadtestPicH5,发起搜索\n  2. 检查广告头部展示"广告"反馈图标\n  3. 点击"广告"图标，展示"投诉广告"弹窗 \n  4. 点击"投诉广告"，跳转到广告投诉落地页\n  5. 再次点击"广告"反馈图标，收起"投诉广告"弹窗`
-        });
         await page.bringToFront();
         //广告按钮
         await page.waitForSelector(wxAdClass.feedback);
@@ -225,13 +225,13 @@ describe("微信品专广告", () => {
 
 
   test("> 验证广告名称为\"唯品会小程序\"，验证\"官方\"标签是否正常显示", async () => {
+    await addMsg({
+      context: undefined,
+      message: ` 测试步骤：\n  1. 输入搜索query=wxadtestPicH5,发起搜索\n  2. 查看广告名称为"唯品会小程序"\n  3. 广告名称后展示"官方"标签，两者一行展示`
+    });
     let num = 3;
     while(num != 0){
       try {
-        await addMsg({
-          context: undefined,
-          message: ` 测试步骤：\n  1. 输入搜索query=wxadtestPicH5,发起搜索\n  2. 查看广告名称为"唯品会小程序"\n  3. 广告名称后展示"官方"标签，两者一行展示`
-        });
         await page.bringToFront();
         let content = await page.evaluate(async (eleClass)  => {
           let item = document.querySelector(eleClass.title);
@@ -274,13 +274,13 @@ describe("微信品专广告", () => {
   },50000);
 
   test("> 点击广告名称，验证是否正确跳转到\"唯品会特卖\"小程序", async () => {
+    await addMsg({
+      context: undefined,
+      message: ` 测试步骤：\n  1. 输入搜索query=wxadtestPicH5,发起搜索\n  2. 点击广告名称区域，检查跳转目标为"唯品会特卖"小程序`
+    });
     let num = 3;
     while(num != 0){
       try {
-        await addMsg({
-          context: undefined,
-          message: ` 测试步骤：\n  1. 输入搜索query=wxadtestPicH5,发起搜索\n  2. 点击广告名称区域，检查跳转目标为"唯品会特卖"小程序`
-        });
         await page.bringToFront();
         await page.waitForSelector(wxAdClass.headTitle);
         let ele =  await page.$(wxAdClass.headTitle);
@@ -310,13 +310,13 @@ describe("微信品专广告", () => {
   },50000);
 
   test("> 点击门店地址按钮，验证是否正确跳转到\"唯品会特卖\"小程序", async () => {
+    await addMsg({
+      context: undefined,
+      message: ` 测试步骤：\n  1. 输入搜索query=wxadtestPicH5,发起搜索\n  2. 点击测试门店地址按钮，检查跳转目标为"唯品会特卖"小程序`
+    });
     let num = 3;
     while(num != 0){
       try {
-        await addMsg({
-          context: undefined,
-          message: ` 测试步骤：\n  1. 输入搜索query=wxadtestPicH5,发起搜索\n  2. 点击测试门店地址按钮，检查跳转目标为"唯品会特卖"小程序`
-        });
         await page.bringToFront();
         await page.waitForSelector(wxAdClass.loc);
         let ele =  await page.$(wxAdClass.loc);
@@ -346,13 +346,13 @@ describe("微信品专广告", () => {
   },50000);
 
   test("> 点击在线客服按钮，验证跳转链接配置是否正确", async () => {
+    await addMsg({
+      context: undefined,
+      message: ` 测试步骤：\n  1. 输入搜索query=wxadtestPicH5,发起搜索\n  2. 点击在线客服按钮，检查跳转url正确`
+    });
     let num = 3;
     while(num != 0){
       try {
-        await addMsg({
-          context: undefined,
-          message: ` 测试步骤：\n  1. 输入搜索query=wxadtestPicH5,发起搜索\n  2. 点击在线客服按钮，检查跳转url正确`
-        });
         await page.bringToFront();
         await page.waitForSelector(wxAdClass.helper);
         let ele =  await page.$(wxAdClass.helper);
@@ -382,13 +382,13 @@ describe("微信品专广告", () => {
   },50000);
 
   test("> 点击联系电话按钮，验证是否正确展示弹窗及对应联系电话", async () => {
+    await addMsg({
+      context: undefined,
+      message: ` 测试步骤：\n  1. 输入搜索query=wxadtestPicH5,发起搜索\n  2. 点击联系电话按钮，显示联系电话弹窗\n  3. 检查联系电话为："0755-10016"\n  4. 点击联系电话呼叫按钮，检查当前呼叫电话正确`
+    });
     let num = 3;
     while(num != 0){
       try {
-        await addMsg({
-          context: undefined,
-          message: ` 测试步骤：\n  1. 输入搜索query=wxadtestPicH5,发起搜索\n  2. 点击联系电话按钮，显示联系电话弹窗\n  3. 检查联系电话为："0755-10016"\n  4. 点击联系电话呼叫按钮，检查当前呼叫电话正确`
-        });
         await page.bringToFront();
         await page.waitForSelector(wxAdClass.phone);
         let ele = await page.$(wxAdClass.phone);
@@ -447,13 +447,13 @@ describe("微信品专广告", () => {
   },50000);
 
   test("> 验证广告\"门店地址\"、\"联系电话\"、 \"在线客服\"按钮是否在一行展示", async () => {
+    await addMsg({
+      context: undefined,
+      message: ` 测试步骤：\n  1. 输入搜索query=wxadtestPicH5,发起搜索\n  2.查看"门店地址"、"联系电话"、 "在线客服"按钮一行展示`
+    });
     let num = 3;
     while(num != 0){
       try {
-        await addMsg({
-          context: undefined,
-          message: ` 测试步骤：\n  1. 输入搜索query=wxadtestPicH5,发起搜索\n  2.查看"门店地址"、"联系电话"、 "在线客服"按钮一行展示`
-        });
         let loc_height =  await getHeightOfEle(page, wxAdClass.loc);
         let helper_height =  await getHeightOfEle(page, wxAdClass.helper);
         let phone_height =  await getHeightOfEle(page, wxAdClass.phone);
@@ -484,13 +484,13 @@ describe("微信品专广告", () => {
   },50000);
 
   test("> 验证广告视频号账号信息展示正确；点击账号，验证是否正确跳转到\"WXAD测试号\"视频号", async () => {
+    await addMsg({
+      context: undefined,
+      message: ` 测试步骤：\n  1. 输入搜索query=wxadtestPicH5,发起搜索\n  2. 查看视频号账号信息，标题为"WXAD测试号"，底部显示"视频号"\n  3. 点击视频号账号主体，检查跳转目标为"WXAD测试号"视频号`
+    });
     let num = 3;
     while(num != 0){
       try {
-        await addMsg({
-          context: undefined,
-          message: ` 测试步骤：\n  1. 输入搜索query=wxadtestPicH5,发起搜索\n  2. 查看视频号账号信息，标题为"WXAD测试号"，底部显示"视频号"\n  3. 点击视频号账号主体，检查跳转目标为"WXAD测试号"视频号`
-        });
         await page.bringToFront();
         await page.waitForSelector(wxAdClass.account);
         let ele =  await page.$(wxAdClass.account);
@@ -529,13 +529,13 @@ describe("微信品专广告", () => {
   },50000);
 
   test("> 关注视频号账号，验证账号\"已关注\"标签是否正常显示", async () => {
+    await addMsg({
+      context: undefined,
+      message: ` 测试步骤：\n  1. 输入搜索query=wxadtestPicH5,发起搜索\n  2.关注视频号，刷新结果页，视频号账号显示"已关注"标签`
+    });
     let num = 3;
     while(num != 0){
       try {
-        await addMsg({
-          context: undefined,
-          message: ` 测试步骤：\n  1. 输入搜索query=wxadtestPicH5,发起搜索\n  2.关注视频号，刷新结果页，视频号账号显示"已关注"标签`
-        });
         await page.bringToFront();
         await finderOperation("v2_060000231003b20faec8c7e28d1ecad2c900ea34b077192ae8bad1b4f00e998bfc98c5f05d66@finder", 1, "wxid_dl6z2p8aq2vt12");
         await page.click(wxAdClass.select_tab);
@@ -574,13 +574,13 @@ describe("微信品专广告", () => {
 
 
  test("> 点击热门活动1，验证是否正确跳转到百度首页", async () => {
+   await addMsg({
+     context: undefined,
+     message: ` 测试步骤：\n  1. 输入搜索query=wxadtestPicH5,发起搜索\n  2. 点击热门活动第1个活动，检查跳转目标为H5页面（百度首页）`
+   });
    let num = 3;
    while(num != 0) {
      try {
-       await addMsg({
-         context: undefined,
-         message: ` 测试步骤：\n  1. 输入搜索query=wxadtestPicH5,发起搜索\n  2. 点击热门活动第1个活动，检查跳转目标为H5页面（百度首页）`
-       });
        await page.bringToFront();
        await page.waitForSelector(adActivityClass(1, 0).activity);
        await page.hover(adActivityClass(1, 0).activity);
@@ -619,13 +619,13 @@ describe("微信品专广告", () => {
   },50000);
 
   test("> 点击热门活动2，验证是否正确跳转到百度首页", async () => {
+    await addMsg({
+      context: undefined,
+      message: ` 测试步骤：\n  1. 输入搜索query=wxadtestPicH5,发起搜索\n  2. 点击热门活动第2个活动，检查跳转目标为H5页面（百度首页）`
+    });
     let num = 3;
     while(num != 0){
       try {
-        await addMsg({
-          context: undefined,
-          message: ` 测试步骤：\n  1. 输入搜索query=wxadtestPicH5,发起搜索\n  2. 点击热门活动第2个活动，检查跳转目标为H5页面（百度首页）`
-        });
         await page.bringToFront();
         await page.waitForSelector(adActivityClass(2, 0).activity);
         await page.hover(adActivityClass(2, 0).activity);
@@ -664,13 +664,13 @@ describe("微信品专广告", () => {
   },50000);
 
   test("> 点击热门活动3，验证是否正确跳转到\"唯品会特卖\"小程序", async () => {
+    await addMsg({
+      context: undefined,
+      message: ` 测试步骤：\n  1. 输入搜索query=wxadtestPicH5,发起搜索\n  2. 点击热门活动第3个活动，检查跳转目标为"唯品会特卖"小程序`
+    });
     let num = 3;
     while(num != 0){
       try {
-        await addMsg({
-          context: undefined,
-          message: ` 测试步骤：\n  1. 输入搜索query=wxadtestPicH5,发起搜索\n  2. 点击热门活动第3个活动，检查跳转目标为"唯品会特卖"小程序`
-        });
         await page.bringToFront();
         await page.waitForSelector(adActivityClass(3, 0).activity);
         await page.hover(adActivityClass(3, 0).activity);
@@ -703,13 +703,13 @@ describe("微信品专广告", () => {
   },50000);
 
   test("> 点击热门活动3左侧菜单，验证是否正确跳转到百度首页", async () => {
+    await addMsg({
+      context: undefined,
+      message: ` 测试步骤：\n  1. 输入搜索query=wxadtestPicH5,发起搜索\n  2.点击第3条热门活动左侧菜单，检查跳转目标为H5页面（百度首页）`
+    });
     let num = 3;
     while(num != 0){
       try {
-        await addMsg({
-          context: undefined,
-          message: ` 测试步骤：\n  1. 输入搜索query=wxadtestPicH5,发起搜索\n  2.点击第3条热门活动左侧菜单，检查跳转目标为H5页面（百度首页）`
-        });
         await page.bringToFront();
         await page.waitForSelector(adActivityClass(3, 1).activity_menus);
         await page.hover(adActivityClass(3, 1).activity_menus);
@@ -746,13 +746,13 @@ describe("微信品专广告", () => {
   },50000);
 
   test("> 点击热门活动3右侧菜单，验证是否正确跳转广告原生页", async () => {
+    await addMsg({
+      context: undefined,
+      message: ` 测试步骤：\n  1. 输入搜索query=wxadtestPicH5,发起搜索\n  2.点击第3条热门活动右侧菜单，检查跳转目标广告原生页，校验canvansid`
+    });
     let num = 3;
     while(num != 0){
       try {
-        await addMsg({
-          context: undefined,
-          message: ` 测试步骤：\n  1. 输入搜索query=wxadtestPicH5,发起搜索\n  2.点击第3条热门活动右侧菜单，检查跳转目标广告原生页，校验canvansid`
-        });
         await page.bringToFront();
         await page.waitForSelector(adActivityClass(3, 2).activity_menus);
         await page.hover(adActivityClass(3, 2).activity_menus);
@@ -784,13 +784,13 @@ describe("微信品专广告", () => {
   },50000);
 
   test("> 点击热门活动4，验证是否正确跳转到百度首页", async () => {
+    await addMsg({
+      context: undefined,
+      message: ` 测试步骤：\n  1. 输入搜索query=wxadtestPicH5,发起搜索\n  2. 点击热门活动第4个活动，检查跳转目标为H5页面（百度首页）`
+    });
     let num = 3;
     while(num != 0){
       try {
-        await addMsg({
-          context: undefined,
-          message: ` 测试步骤：\n  1. 输入搜索query=wxadtestPicH5,发起搜索\n  2. 点击热门活动第4个活动，检查跳转目标为H5页面（百度首页）`
-        });
         await page.bringToFront();
         await page.waitForSelector(adActivityClass(4, 0).activity);
         await page.hover(adActivityClass(4, 0).activity);
@@ -828,13 +828,13 @@ describe("微信品专广告", () => {
   },50000);
 
   test("> 点击热门活动4左侧菜单，验证是否正确跳转到\"唯品会特卖\"小程序", async () => {
+    await addMsg({
+      context: undefined,
+      message: ` 测试步骤：\n  1. 输入搜索query=wxadtestPicH5,发起搜索\n  2.点击第4条热门活动左侧菜单，检查跳转目标为"唯品会特卖"小程序`
+    });
     let num = 3;
     while(num != 0){
       try {
-        await addMsg({
-          context: undefined,
-          message: ` 测试步骤：\n  1. 输入搜索query=wxadtestPicH5,发起搜索\n  2.点击第4条热门活动左侧菜单，检查跳转目标为"唯品会特卖"小程序`
-        });
         await page.bringToFront();
         await page.waitForSelector(adActivityClass(4, 1).activity_menus);
         await page.hover(adActivityClass(4, 1).activity_menus);
@@ -866,13 +866,13 @@ describe("微信品专广告", () => {
   },50000);
 
   test("> 点击热门活动4右侧菜单，验证是否正确跳转到广告原生页", async () => {
+    await addMsg({
+      context: undefined,
+      message: ` 测试步骤：\n  1. 输入搜索query=wxadtestPicH5,发起搜索\n  2.点击第4条热门活动右侧菜单，检查跳转目标广告原生页，校验canvansid`
+    });
     let num = 3;
     while(num != 0){
       try {
-        await addMsg({
-          context: undefined,
-          message: ` 测试步骤：\n  1. 输入搜索query=wxadtestPicH5,发起搜索\n  2.点击第4条热门活动右侧菜单，检查跳转目标广告原生页，校验canvansid`
-        });
         await page.bringToFront();
         await page.waitForSelector(adActivityClass(3, 2).activity_menus);
         await page.hover(adActivityClass(3, 2).activity_menus);
@@ -905,13 +905,13 @@ describe("微信品专广告", () => {
   },50000);
 
   test("> 点击热门活动5，验证是否正确跳转到\"唯品会特卖\"小程序", async () => {
+    await addMsg({
+      context: undefined,
+      message: ` 测试步骤：\n  1. 输入搜索query=wxadtestPicH5,发起搜索\n  2.点击第5条热门活动的行动按钮，检查跳转目标为"唯品会特卖"小程序`
+    });
     let num = 3;
     while(num != 0){
       try {
-        await addMsg({
-          context: undefined,
-          message: ` 测试步骤：\n  1. 输入搜索query=wxadtestPicH5,发起搜索\n  2.点击第5条热门活动的行动按钮，检查跳转目标为"唯品会特卖"小程序`
-        });
         await page.bringToFront();
         await page.waitForSelector(adActivityClass(5, 0).activity);
         await page.hover(adActivityClass(5, 0).activity);
@@ -943,13 +943,13 @@ describe("微信品专广告", () => {
   },50000);
 
   test("> 点击热门活动5行动按钮，验证是否正确跳转到\"唯品会特卖\"小程序", async () => {
+    await addMsg({
+      context: undefined,
+      message: ` 测试步骤：\n  1. 输入搜索query=wxadtestPicH5,发起搜索\n  2.点击第34条热门活动的行动按钮，检查跳转目标为"唯品会特卖"小程序`
+    });
     let num = 3;
     while(num != 0){
       try {
-        await addMsg({
-          context: undefined,
-          message: ` 测试步骤：\n  1. 输入搜索query=wxadtestPicH5,发起搜索\n  2.点击第34条热门活动的行动按钮，检查跳转目标为"唯品会特卖"小程序`
-        });
         await page.bringToFront();
         await page.waitForSelector(adActivityClass(5, 0).activity_button);
         await page.hover(adActivityClass(5, 0).activity_button);

@@ -36,18 +36,19 @@ describe("微信品专广告", () => {
   })
 
   test("> q=wxadtestVidH5，验证混排结果页品专广告是否召回", async () => {
+    await addMsg({
+      context: undefined,
+      message: ` 测试步骤：\n  1. 输入搜索query=wxadtestVidH5,发起搜索\n  2. 检查混排页是否召回品专广告`
+    });
     let num = 3;
     while(num != 0){
       try {
-        await addMsg({
-          context: undefined,
-          message: ` 测试步骤：\n  1. 输入搜索query=wxadtestVidH5,发起搜索\n  2. 检查混排页是否召回品专广告`
-        });
         await page.waitForTimeout(1000);
         const image =  await page.screenshot({
           path: "./static/pic/test_VidH5.png"
         })
         await addAttach({attach: image, description: "页面截图"});
+        break;
       } catch(e){
         if (num == 1){
           if (e.constructor.name == "JestAssertionError"){
@@ -67,13 +68,13 @@ describe("微信品专广告", () => {
   },50000);
 
   test("> 点击广告头部，验证是否正确跳转到百度首页", async () => {
+    await addMsg({
+      context: undefined,
+      message: ` 测试步骤：\n  1. 输入搜索query=wxadtestVidH5,发起搜索\n  2. 点击品专广告头部区域，检查跳转目标为H5页面（百度首页）`
+    });
     let num = 3;
     while(num != 0){
       try {
-        await addMsg({
-          context: undefined,
-          message: ` 测试步骤：\n  1. 输入搜索query=wxadtestVidH5,发起搜索\n  2. 点击品专广告头部区域，检查跳转目标为H5页面（百度首页）`
-        });
         await page.waitForSelector(wxAdClass.head);
         let ele =  await page.$(wxAdClass.head);
         let path = './static/pic/ad_head.png';
@@ -88,6 +89,7 @@ describe("微信品专广告", () => {
         })
         await addAttach({attach: screenshotBuffer, description: "落地页截图"});
         expect(await page2.title()).toBe("百度一下");
+        break;
       }catch (e) {
         if (num == 1){
           if (e.constructor.name == "JestAssertionError"){
@@ -107,13 +109,13 @@ describe("微信品专广告", () => {
   },50000);
 
   test("> 验证\"了解更多 \"外链文案是否正确；点击外链，验证是否正确跳转到百度首页", async () => {
+    await addMsg({
+      context: undefined,
+      message: ` 测试步骤：\n  1. 输入搜索query=wxadtestVidH5,发起搜索\n  2. 检查广告头部展示"了解更多"外链\n  3. 点击"了解更多"，检查跳转目标为H5页面（百度首页）`
+    });
     let num = 3;
     while(num != 0){
       try {
-        await addMsg({
-          context: undefined,
-          message: ` 测试步骤：\n  1. 输入搜索query=wxadtestVidH5,发起搜索\n  2. 检查广告头部展示"了解更多"外链\n  3. 点击"了解更多"，检查跳转目标为H5页面（百度首页）`
-        });
         await page.bringToFront();
         await page.waitForSelector(wxAdClass.extent);
         let ele =  await page.$(wxAdClass.extent);
@@ -135,6 +137,7 @@ describe("微信品专广告", () => {
         await addAttach({attach: screenshotBuffer, description: "落地页截图"});
         expect(pageExtend.url).toContain("http://www.baidu.com");
         expect(await page2.title()).toBe("百度一下");
+        break;
       }catch (e) {
         if (num == 1){
           if (e.constructor.name == "JestAssertionError"){
@@ -154,13 +157,13 @@ describe("微信品专广告", () => {
   },50000);
 
   test("> 验证广告反馈图标、弹窗展示正常，点击广告图标，验证是否正确跳转到广告投诉落地页", async () => {
+    await addMsg({
+      context: undefined,
+      message: ` 测试步骤：\n  1. 输入搜索query=wxadtestVidH5,发起搜索\n  2. 检查广告头部展示"广告"反馈图标\n  3. 点击"广告"图标，展示"投诉广告"弹窗 \n  4. 点击"投诉广告"，跳转到广告投诉落地页\n  5. 再次点击"广告"反馈图标，收起"投诉广告"弹窗`
+    });
     let num = 3;
     while(num != 0){
       try {
-        await addMsg({
-          context: undefined,
-          message: ` 测试步骤：\n  1. 输入搜索query=wxadtestVidH5,发起搜索\n  2. 检查广告头部展示"广告"反馈图标\n  3. 点击"广告"图标，展示"投诉广告"弹窗 \n  4. 点击"投诉广告"，跳转到广告投诉落地页\n  5. 再次点击"广告"反馈图标，收起"投诉广告"弹窗`
-        });
         await page.bringToFront();
         //广告按钮
         await page.waitForSelector(wxAdClass.feedback);
@@ -195,6 +198,7 @@ describe("微信品专广告", () => {
           return getComputedStyle(item).display;
         }, wxAdClass)
         expect(display).toBe("none");
+        break;
       }catch (e){
         if (num == 1){
           if (e.constructor.name == "JestAssertionError"){
@@ -215,13 +219,13 @@ describe("微信品专广告", () => {
 
 
   test("> 验证广告名称为\"快乐测试123\"，验证\"官方\"标签是否正常显示 ", async () => {
+    await addMsg({
+      context: undefined,
+      message: ` 测试步骤：\n  1. 输入搜索query=wxadtestVidH5,发起搜索\n  2. 查看广告名称为"快乐测试123"\n  3. 广告名称后展示"官方"标签，两者一行展示`
+    });
     let num = 3;
     while(num != 0){
       try {
-        await addMsg({
-          context: undefined,
-          message: ` 测试步骤：\n  1. 输入搜索query=wxadtestVidH5,发起搜索\n  2. 查看广告名称为"快乐测试123"\n  3. 广告名称后展示"官方"标签，两者一行展示`
-        });
         await page.bringToFront();
         let content = await page.evaluate(async (eleClass)  => {
           let item = document.querySelector(eleClass.title);
@@ -243,7 +247,7 @@ describe("微信品专广告", () => {
         let title_Height = await getHeightOfEle(page, wxAdClass.headSpan);
         let tag_Height = await getHeightOfEle(page, wxAdClass.headSpan + ':nth-of-type(3)');
         expect(title_Height).toBeCloseTo(tag_Height, 2);
-
+        break;
       }catch (e) {
         if (num == 1){
           if (e.constructor.name == "JestAssertionError"){
@@ -263,13 +267,13 @@ describe("微信品专广告", () => {
   },50000);
 
   test("点击广告名称，验证是否正确跳转到\"唯品会特卖\"小程序", async () => {
+    await addMsg({
+      context: undefined,
+      message: ` 测试步骤：\n  1. 输入搜索query=wxadtestVidH5,发起搜索\n  2. 点击广告名称区域，检查跳转目标为"唯品会特卖"小程序`
+    });
     let num = 3;
     while(num != 0){
       try {
-        await addMsg({
-          context: undefined,
-          message: ` 测试步骤：\n  1. 输入搜索query=wxadtestVidH5,发起搜索\n  2. 点击广告名称区域，检查跳转目标为"唯品会特卖"小程序`
-        });
         await page.bringToFront();
         await page.waitForSelector(wxAdClass.headTitle);
         let ele =  await page.$(wxAdClass.headTitle);
@@ -279,6 +283,7 @@ describe("微信品专广告", () => {
         await page.click(wxAdClass.headTitle);
         await page.waitForTimeout(700);
         expect(pageExtend.extendInfo).toBe("gh_8ed2afad9972@app");
+        break;
       }catch (e) {
         if (num == 1){
           if (e.constructor.name == "JestAssertionError"){
@@ -299,13 +304,13 @@ describe("微信品专广告", () => {
 
 
   test("> 验证广告小程序账号信息展示正确；点击小程序账号，验证是否正确跳转到\"唯品会特卖\"小程序", async () => {
+    await addMsg({
+      context: undefined,
+      message: ` 测试步骤：\n  1. 输入搜索query=wxadtestVidH5,发起搜索\n  2. 查看小程序账号信息，标题为"唯品会特卖"，底部显示"小程序"\n  3. 点击小程序账号主体，检查跳转目标为唯品会特卖小程序`
+    });
     let num = 3;
     while(num != 0){
       try {
-        await addMsg({
-          context: undefined,
-          message: ` 测试步骤：\n  1. 输入搜索query=wxadtestVidH5,发起搜索\n  2. 查看小程序账号信息，标题为"唯品会特卖"，底部显示"小程序"\n  3. 点击小程序账号主体，检查跳转目标为唯品会特卖小程序`
-        });
         await page.bringToFront();
         await page.waitForSelector(wxAdClass.account);
         let ele =  await page.$(wxAdClass.account);
@@ -324,6 +329,7 @@ describe("微信品专广告", () => {
         await page.click(wxAdClass.account);
         await page.waitForTimeout(700);
         expect(pageExtend.extendInfo).toBe("gh_8ed2afad9972@app");
+        break;
       }catch (e) {
         if (num == 1){
           if (e.constructor.name == "JestAssertionError"){
@@ -344,13 +350,13 @@ describe("微信品专广告", () => {
 
 
   test("点击门店地址按钮，验证是否正确跳转到\"唯品会特卖\"小程序", async () => {
+    await addMsg({
+      context: undefined,
+      message: ` 测试步骤：\n  1. 输入搜索query=wxadtestVidH5,发起搜索\n  2. 点击测试门店地址按钮，检查跳转目标为"唯品会特卖"小程序`
+    });
     let num = 3;
     while(num != 0){
       try {
-        await addMsg({
-          context: undefined,
-          message: ` 测试步骤：\n  1. 输入搜索query=wxadtestVidH5,发起搜索\n  2. 点击测试门店地址按钮，检查跳转目标为"唯品会特卖"小程序`
-        });
         await page.bringToFront();
         await page.waitForSelector(wxAdClass.loc);
         let ele =  await page.$(wxAdClass.loc);
@@ -360,6 +366,7 @@ describe("微信品专广告", () => {
         await page.click(wxAdClass.loc);
         await page.waitForTimeout(700);
         expect(pageExtend.extendInfo).toBe("gh_8ed2afad9972@app");
+        break;
       }catch (e) {
         if (num == 1){
           if (e.constructor.name == "JestAssertionError"){
@@ -380,13 +387,13 @@ describe("微信品专广告", () => {
 
 
   test("> 点击在线客服按钮，验证跳转链接配置是否正确", async () => {
+    await addMsg({
+      context: undefined,
+      message: ` 测试步骤：\n  1. 输入搜索query=wxadtestVidH5,发起搜索\n  2. 点击在线客服按钮，检查跳转url正确`
+    });
     let num = 3;
     while(num != 0){
       try {
-        await addMsg({
-          context: undefined,
-          message: ` 测试步骤：\n  1. 输入搜索query=wxadtestVidH5,发起搜索\n  2. 点击在线客服按钮，检查跳转url正确`
-        });
         await page.bringToFront();
         await page.waitForSelector(wxAdClass.helper);
         let ele =  await page.$(wxAdClass.helper);
@@ -396,6 +403,7 @@ describe("微信品专广告", () => {
         await page.click(wxAdClass.helper);
         await page.waitForTimeout(700);
         expect(pageExtend.url).toBe("https://work.weixin.qq.com/kfid/kfc7f0d8acb45de1b0a");
+        break;
       }catch (e) {
         if (num == 1){
           if (e.constructor.name == "JestAssertionError"){
@@ -416,13 +424,13 @@ describe("微信品专广告", () => {
 
 
   test("> 点击联系电话按钮，验证是否正确展示弹窗及对应联系电话", async () => {
+    await addMsg({
+      context: undefined,
+      message: ` 测试步骤：\n  1. 输入搜索query=wxadtestVidH5,发起搜索\n  2. 点击联系电话按钮，显示联系电话弹窗\n  3. 检查联系电话为："17000001688、17000001689、0755-10016"\n  4. 点击联系电话呼叫按钮，检查当前呼叫电话正确`
+    });
     let num = 3;
     while(num != 0){
       try {
-        await addMsg({
-          context: undefined,
-          message: ` 测试步骤：\n  1. 输入搜索query=wxadtestVidH5,发起搜索\n  2. 点击联系电话按钮，显示联系电话弹窗\n  3. 检查联系电话为："17000001688、17000001689、0755-10016"\n  4. 点击联系电话呼叫按钮，检查当前呼叫电话正确`
-        });
         await page.bringToFront();
         await page.waitForSelector(wxAdClass.phone);
         let ele = await page.$(wxAdClass.phone);
@@ -461,6 +469,7 @@ describe("微信品专广告", () => {
             await page.click(wxAdClass.phone);
           }
         }
+        break;
       }catch (e) {
         if (num == 1){
           if (e.constructor.name == "JestAssertionError"){
