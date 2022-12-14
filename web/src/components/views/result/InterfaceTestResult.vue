@@ -1,22 +1,6 @@
 <template>
   <div>
     <a-card :bordered="true">
-    <a-row style="margin-bottom: 2%; margin-left: 2%">
-        <a-col :span="12">
-          <span style="margin-bottom:10px;text-align: right"> 接口测试统计 </span>
-        </a-col>
-        <a-col :span="12">
-          <div style="margin-bottom:10px;text-align: right">
-            <a-button size="small" @click="refreshResult">校验</a-button>
-            <a-button size="small" type="primary" @click="createRule">添加用例</a-button>
-            <a-button size="small" type="primary" @click="checkRule">全部校验</a-button>
-          </div>
-        </a-col>
-      </a-row>
-    </a-card>
-    <br>
-
-    <a-card :bordered="true">
       <el-table
       :data="dataResult"
       style="width: 100%">
