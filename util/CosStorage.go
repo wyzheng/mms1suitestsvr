@@ -18,8 +18,8 @@ var cosConfig *config.CosConfig
 func init() {
 	configContent, err := config.GetCosConfig()
 	if err != nil {
-		log.Println("Get es conf error, err is", err)
-		xlog.Errorf("Get es conf error!, err is %v", err)
+		log.Println("Get cos conf error, err is", err)
+		xlog.Errorf("Get cos conf error!, err is %v", err)
 	}
 	cosConfig = configContent
 }
