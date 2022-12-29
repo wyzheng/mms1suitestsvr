@@ -11,10 +11,14 @@ import 'xe-utils'
 import VXETable from 'vxe-table'
 import 'vxe-table/lib/style.css'
 
+import ElementUI from 'element-ui';
+import 'element-ui/lib/theme-chalk/index.css';
+
 Vue.config.productionTip = false
 
 Vue.use(Antd)
 Vue.use(VXETable)
+Vue.use(ElementUI);
 
 /* eslint-disable no-new */
 new Vue({
