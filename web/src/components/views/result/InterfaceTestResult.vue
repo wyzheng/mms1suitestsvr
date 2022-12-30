@@ -150,15 +150,17 @@
               dataOrigin[i]["key"] = (i + 1).toString();
               dataOrigin[i]["detail"] = "详情";
           }
-          _this.dataResult = dataOrigin
+          _this.dataResult = dataOrigin;
+          console.log(_this.dataResult);
         }).catch(function (error) {
           console.log(error);
           _this.$message.error("加载数据失败！");
         });
       },
       showDetail: function (data) {
-        console.log(data);
+
         this.dataRule = data;
+        console.log(this.dataRule);
         this.dialogVisible = true;
       },
       getAllData: function () {
