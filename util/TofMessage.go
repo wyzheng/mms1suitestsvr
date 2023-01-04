@@ -51,36 +51,30 @@ func init() {
 const API_TOF_SEND_RTX = "/ebus/tof4_msg/api/v1/Message/SendRTXInfo"
 
 func RequestTof(url string, message interface{}) (ret int) {
-	paasId := tofConfig.passId   // 在TOF门户注册获得的应用id
-	paasToken := tofConfig.token // 在TOF门户注册获得的签名密钥
-	//server := "http://api-s.sgw.woa.com" // 智能网关在OA区的接入点域名
-	// server := "http://api-s-idc.sgw.woa.com" 	// 智能网关在IDC区的接入点域名
-	server := tofConfig.server // 智能网关在DevCloud区的接入点域名
-	// server := "http://test.api-s-dev.sgw.woa.com" // 智能网关在为公测环境提供的接入点域名
-	path := url // 在TOF门户订阅接口成功后，获得的接口path
+	paasId := tofConfig.passId   // 应用id
+	paasToken := tofConfig.token // 签名密钥
+	server := tofConfig.server   // 接入点域名
+	path := url                  // 接口path
 
-	params, _ := json.Marshal(message)                // 接口入参,建议以结构体的形式而不是字符串的形式入参，此处字符串只是示例。具体参考接口文档。
+	params, _ := json.Marshal(message)                // 接口入参
 	timestamp := fmt.Sprintf("%d", time.Now().Unix()) // 生成时间戳，注意服务器的时间与标准时间差不能大于180秒
 	rand.Seed(time.Now().Unix())
 	r := rand.New(rand.NewSource(time.Now().Unix()))
 	nonce := strconv.Itoa(r.Intn(4096)) // 随机字符串，十分钟内不重复即可
 	signStr := fmt.Sprintf("%s%s%s%s", timestamp, paasToken, nonce, timestamp)
 	sign := fmt.Sprintf("%X", sha256.Sum256([]byte(signStr))) // 输出大写的结果
-	// 注意，如果是以结构体构造建议编码后用bytes.NewBuffer(),而不是strings.NewReader()。
-	// 同时，具体是POST/GET请求也请参考接口文档。
-	req, err := http.NewRequest("POST", server+path, bytes.NewReader(params)) //server+path示例：http://api-s-dev.sgw.woa.com/ebus/tof4_org/api/v1/tag/fullsearchtags
+	req, err := http.NewRequest("POST", server+path, bytes.NewReader(params))
 	if err != nil {
 		fmt.Println(err)
 	}
 
 	var httpClient = &http.Client{}
-	// 设置鉴权参数，如果此参数设置错误，将触发“AGW.xxxxx”类型的错误，详见3.4章节
+	// 设置鉴权参数
 	req.Header.Add("x-rio-paasid", paasId)
 	req.Header.Add("x-rio-nonce", nonce)
 	req.Header.Add("x-rio-timestamp", timestamp)
 	req.Header.Add("x-rio-signature", sign)
 
-	// 这里主要展示http head的构造，省略了http body的构造。
 	rsp, _ := httpClient.Do(req)
 
 	if err != nil {
