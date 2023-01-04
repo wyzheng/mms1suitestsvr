@@ -25,6 +25,18 @@ func ExecTest(w http.ResponseWriter, r *http.Request) {
 	resp := websvr.CommResp{}
 	xlog.Debugf("[Handler] deal with a request.")
 
+	for {
+		tasks, err := dao.GetTestTasks()
+		if err != nil {
+			xlog.Errorf("[Handler] Get params failed, err is %v", err)
+			break
+		}
+		status := *tasks[0].Status
+		if status == config.S_TAST_FINISH {
+			break
+		}
+	}
+
 	//从cos拉取模板
 	templateParam := websvr.GetStringFromUri(r, "templateKey")
 

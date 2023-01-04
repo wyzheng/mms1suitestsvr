@@ -191,7 +191,7 @@ export class PageExtend {
 
   private async eventHandler(func: string, params: Record<string, any>, ctx: WebSearchPage) {
     if (func === `getSearchData` ) {
-     console.log(params);
+     //console.log(params);
       // send back data
       // 获取数据回包
       let data = {
@@ -207,7 +207,7 @@ export class PageExtend {
           }
         ]
       }
-      console.log(data);
+      //console.log(data);
       await ctx.search(data);
       if (ctx.inited === true){
         ctx.searchResult = this.searchRes;
@@ -247,6 +247,10 @@ export class PageExtend {
       this.extendInfo = "";
       this.extendInfo = params['phoneNumber'];
       console.log(this.extendInfo);
+    }
+    if(func === "openFinderView"){
+      this.extendInfo = "";
+      this.extendInfo = params['feedID'];
     }
 
   }

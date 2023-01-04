@@ -73,6 +73,7 @@ func RunTest(taskId int, templateName string) string {
 	}
 	//更新测试状态
 	UpdateTestTask(taskId, &testRes)
+	sendMessage(res, taskId)
 	return stdout.String()
 }
 
@@ -109,4 +110,20 @@ func UpdateTestTask(id int, res *string) {
 	if err != nil {
 		xlog.Errorf("[sql] update task failed, file %v", err)
 	}
+}
+
+func sendMessage(res *model.TestRes, id int) {
+	numSuite := *res.NumFailedTestSuites + *res.NumPassedTestSuites
+	numCase := *res.NumFailedTests + *res.NumPassedTests
+	message := fmt.Sprintf("hi，测试任务%v已完成，共计%v个测试合集，%v个测试用例，其中用例执行成功%v，失败%v \n 点击查看详细测试报告：http://9.134.52.227:8080/#/reportDetail?id=%v",
+		id, numSuite, numCase, *res.NumPassedTests, *res.NumFailedTests, id)
+	textMsg := &model.TextMessage{
+		Content: &message,
+	}
+	msgTyp := "text"
+	msg := &model.Message{
+		MsgType: &msgTyp,
+		Text:    textMsg,
+	}
+	SendRobotMessage(msg)
 }

@@ -42,6 +42,15 @@ module.exports = {
           "^/interfaceTest": ""
         }
       },
+      '/process' : {
+        target:'http://devops.woa.com/ms',
+        changeOrigin:true,
+        secure: false,
+        pathRewrite:{
+          "^/interfaceTest": ""
+        }
+      },
+
     },
 
     // Various Dev Server settings

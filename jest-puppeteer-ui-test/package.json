@@ -1,6 +1,7 @@
 {
   "author": "joycesong",
   "dependencies": {
+    "element-ui": "^2.15.12",
     "fs-extra": "^10.1.0",
     "got": "^11.3.1",
     "ini": "^3.0.1",

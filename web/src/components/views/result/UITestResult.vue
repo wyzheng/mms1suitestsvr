@@ -63,6 +63,7 @@
             暂无测试结果
           </span>
           </template>
+
         </vxe-table-column>
         <vxe-table-column field="report" title="测试报告">
           <template  #default="{ row }">

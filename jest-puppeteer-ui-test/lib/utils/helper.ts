@@ -5,7 +5,7 @@ import {LoggerService} from "../logger/logger.service";
 import sha1 from 'sha1'
 
 
-const logger = new LoggerService().getLogger();
+const logger = new LoggerService().getLogger("puppeteer");
 
 export async function scrollDown() {
   await new Promise<void>((resolve, reject) => {
