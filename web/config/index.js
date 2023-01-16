@@ -17,7 +17,8 @@ module.exports = {
         secure: false
       },
       '/cgi' : {
-        target:'http://9.134.52.227:19674',
+        //11.159.152.200
+        target:'http://11.159.152.200:19674',
         changeOrigin:true,
         secure: false
       },
@@ -54,7 +55,7 @@ module.exports = {
     },
 
     // Various Dev Server settings
-    host: '0.0.0.0', // can be overwritten by process.env.HOST
+    host: 'localhost', // can be overwritten by process.env.HOST
     port: 8181, // can be overwritten by process.env.PORT, if port is in use, a free one will be determined
     autoOpenBrowser: false,
     errorOverlay: true,
