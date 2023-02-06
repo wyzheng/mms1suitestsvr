@@ -27,7 +27,7 @@ describe("微信品专广告", () => {
 
     afterAll(async () => {
         if (!page.isClosed()) {
-            browser.close();
+            await browser.close();
         }
         let str = "wxadtestPicCanvas_"
         for (const item in resArr) {

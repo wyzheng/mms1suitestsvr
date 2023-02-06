@@ -25,11 +25,12 @@ describe("微信品专广告", () => {
     browser = pageExtend.browser;
   });
 
-  afterAll(() => {
+  afterAll(async () => {
     if (!page.isClosed()) {
-      browser.close();
+      await browser.close();
     }
   });
+
   beforeEach(() => {
     num = num + 1;
   })

@@ -461,3 +461,47 @@ export function adActivityClass(aId,mId){
     activity_button: `div.activity-card-slide div.ui-scroll__item:nth-of-type(${aId}) a`,
   }
 }
+
+//竞价广告
+export const wxCpAdClass = {
+  //小图 q= 羽绒服
+  title : `div.h-animate div.article-title p`,
+  feedback: `div.h-animate div.article-title span div`,
+  pic: `div.h-animate div.article-main div.article-thumb`,
+  desc: `div.h-animate div.article-main div.article-desc-box div.article-desc`,
+  source: `div.h-animate div.article-main div.article-desc-box div.source__title`,
+  source_rec: `div.h-animate div.article-main div.article-desc-box div.source__rec`,
+
+  //大图 q=打车
+  pic_title : `div.h-animate div.pic-title p`,
+  pic_feedback: `div.h-animate div.pic-title span div`,
+  pic_pic: `div.h-animate div.pic-thumb`,
+  pic_source: `div.h-animate div.source-plain div.source__title`,
+  pic_source_rec: `div.h-animate div.source-plain div.source__rec`,
+}
+//小游戏
+export const wxMiniGameAdClass = {
+  //小图 q= 小游戏
+  pic: `div.h-animate div.game__common div.l-game__icon-l`,
+  title : `div.h-animate div.l-game__common div.l-game__block div.l-game__title`,
+  feedback: `div.h-animate div.l-game__common div.l-game__block div.l-game__title span div`,
+  desc: `div.h-animate div.l-game__common div.l-game__block p`,
+  source: `div.h-animate div.l-game__common div.l-game__block div.ui-source span`,
+  action: `div.h-animate div.l-game__common div.l-game__block div.ui-column`,
+}
+
+export function feedbackDialogClass(id){
+  return{
+    //弹窗
+    dialog: `div.pop-over`,
+    title_word: `div.pop-over div.header-wrap div.title-word`,
+    action: `div.exposure-block div.pop-over div.actions-wrap div.actions div:nth-child(${id})`,
+    jump: `div.pop-over div.jump-wrap div.jump-in`,
+    reason_word: `div.pop-over div.reasons-wrap p.title-word`,
+    reason_desc: `div.pop-over div.reasons-wrap p.desc-word`,
+    reason: `div.pop-over div.reasons-wrap div.reasons div.reason:nth-of-type(${id})`,
+    reason_checked: `div.pop-over div.reasons-wrap div.reasons div.reason__checked:nth-of-type(${id})`,
+    button: `div.pop-over div.header-wrap div.button-part div`,
+  }
+}
+
