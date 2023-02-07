@@ -35,6 +35,7 @@
         highlight-hover-row
         :seq-config="{startIndex: (tablePage.currentPage - 1) * tablePage.pageSize}"
         style="width: 96%;margin: auto"
+        :loading="is_loading"
         :data="taskData">
         <vxe-table-column field="id" width="80" title="任务id"></vxe-table-column>
         <vxe-table-column field="template" width="360" title="模板包版本号"></vxe-table-column>
@@ -104,11 +105,18 @@ export default {
         pageSize : 10,
         totalResult : 0
       },
-      latestData: [],
+      latestData: [
+        {
+          update_time: "",
+          test_result:"0_0_0_0"
+        }
+      ],
+      is_loading:false
     }
   },
   mounted() {
     let _this = this;
+    console.log("******");
     _this.getAllDataTask();
   },
   methods: {
@@ -126,13 +134,16 @@ export default {
       console.log(this.allData);
       this.taskData = this.allData.slice((this.tablePage.currentPage - 1) * this.tablePage.pageSize, this.tablePage.currentPage * this.tablePage.pageSize);
     },
-    getAllDataTask: function () {
+    getAllDataTask: async function () {
       let _this = this;
-      axios({
+      _this.is_loading = true;
+      await axios({
         method: "get",
         url: "/cgi/GetTestTask",
       }).then(function (response) {
+        console.log(response.data)
         if (0 === response.data.Ret) {
+          _this.is_loading = false;
           _this.allData = response.data.Data;
           _this.tablePage.totalResult = response.data.Data.length;
           _this.taskData = _this.allData.slice((_this.tablePage.currentPage - 1) * _this.tablePage.pageSize, _this.tablePage.currentPage * _this.tablePage.pageSize);
@@ -140,10 +151,12 @@ export default {
           console.log(_this.latestData);
         } else {
           _this.$message.error(`查询失败！Ret：${response.data.Message}`);
+          _this.is_loading = false;
         }
       }).catch(function (error) {
         console.log(error);
         _this.$message.error("加载校验任务列表失败！");
+        _this.is_loading = false;
       });
     },
     dealTestRes: function (row){
