@@ -20,7 +20,7 @@ describe("微信品专广告", () => {
 
   beforeAll(async () => {
     await superView(6404911937, "wxid_3v5oigo9a2c212");
-    pageExtend = await setup("wxadtestVidFeeds", 20, 3192187635);
+    pageExtend = await setup("wxadtestVidFeeds", 20, 3192187635, true);
     page = pageExtend.webSearchPage.instance;
     browser = pageExtend.browser;
   });
@@ -528,8 +528,9 @@ describe("微信品专广告", () => {
       try  {
         await page.bringToFront();
         await finderOperation("v2_060000231003b20faec8c7e28d1ecad2c900ea34b077192ae8bad1b4f00e998bfc98c5f05d66@finder", 1, "wxid_3v5oigo9a2c212");
-        await page.waitForTimeout(1700);
         await page.click(wxAdClass.select_tab);
+        await page.waitForTimeout(700);
+        await page.click(wxAdClass.select_all);
         await page.waitForTimeout(1700);
 
         //await addMsg({context: undefined, message: `关注视频号`});

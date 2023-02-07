@@ -33,7 +33,7 @@ const defaultConfig: WebSearchPageConfig = {
 };
 
 
-export async function setup(query: string, scene: number, uin: number) {
+export async function setup(query: string, scene: number, uin: number, isSuperView: boolean) {
   let pageExtend = new PageExtend();
   defaultConfig.scene = scene;
 
@@ -44,5 +44,6 @@ export async function setup(query: string, scene: number, uin: number) {
     query: query,
     key: "1",
     uin: uin,
+    isSuperview: isSuperView
   })
 }

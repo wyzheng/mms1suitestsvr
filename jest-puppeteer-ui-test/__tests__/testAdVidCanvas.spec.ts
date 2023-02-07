@@ -20,7 +20,7 @@ describe("微信品专广告", () => {
 
   beforeAll(async () => {
     await superView(6404921429, "wxid_b1axyqt9ni9a12");
-    pageExtend = await setup("wxadtestVidCanvas", 20, 3191187942);
+    pageExtend = await setup("wxadtestVidCanvas", 20, 3191187942, true);
     page = pageExtend.webSearchPage.instance;
     browser = pageExtend.browser;
   });
@@ -426,6 +426,8 @@ describe("微信品专广告", () => {
         //公众号关注
         await bizOperation("AddBizContact", 3094043316, 3191187942);
         await page.click(wxAdClass.select_tab);
+        await page.waitForTimeout(700);
+        await page.click(wxAdClass.select_all);
         await page.waitForTimeout(1700);
 
         //await addMsg({context: undefined, message: `关注公众号`});

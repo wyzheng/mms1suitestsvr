@@ -439,6 +439,7 @@ export const wxAdClass = {
   activity_button: "div.activity-card-slide div.ui-scroll__item a",
 
   select_tab: "#search_result > div.unit__outer > div > div > div.unit__item:nth-of-type(2)",
+  select_all: "#search_result > div.unit__outer > div > div > div.unit__item:nth-of-type(1)",
 }
 
 export function adAccountClass(index){

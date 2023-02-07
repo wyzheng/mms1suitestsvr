@@ -59,18 +59,22 @@ export class PageExtend {
     key,
     config,
     device,
-    uin
+    uin, isSuperview
   }: {
     context: string;
     query: string;
     key: string;
     config: WebSearchPageConfig,
     device: string,
-    uin: number
+    uin: number,
+    isSuperview: boolean
   }) {
     this.uin = uin;
     const page = await (await this.allowBrowser()).newPage();
-    await page.waitForTimeout(30000);
+
+    if (isSuperview){
+      await page.waitForTimeout(30000);
+    }
     const webSearchPage = new WebSearchPage(page);
     this.webSearchPage = webSearchPage;
     const content = await this.assetService.fetchEntryHtmlContent(context);
@@ -199,7 +203,7 @@ export class PageExtend {
         "uin": this.uin,
         "query": params['query'],
         "scene": params['scene'],
-        "business_type": params['businessType'],
+        "business_type": params['type'],
         "ExtReqParams":[
           {
             "key": "ossSource",

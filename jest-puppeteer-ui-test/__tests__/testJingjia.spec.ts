@@ -4,11 +4,10 @@ import {PageExtend} from "../lib/search-page/page-extend";
 import {feedbackDialogClass, wxAdClass, wxCpAdClass } from "../lib/utils/resultMap";
 import {addAttach, addMsg} from "jest-html-reporters/helper";
 import { getLineNum, superView } from "../lib/utils/helper";
-import { WebSearchBrowser } from "../lib/search-page/web-search-browser";
 import { doc } from "prettier";
 
 let page: Puppeteer.Page;
-let browser:  WebSearchBrowser;
+let browser: Puppeteer.Browser;
 let pageExtend: PageExtend;
 let resArr = [];
 let num = 0;
@@ -27,9 +26,9 @@ describe("微信竞价直投广告", () => {
     browser = pageExtend.browser;
   });
 
-  afterAll(() => {
+  afterAll(async () => {
     if (!page.isClosed()) {
-      browser.killSelf();
+      await browser.close();
     }
   });
 

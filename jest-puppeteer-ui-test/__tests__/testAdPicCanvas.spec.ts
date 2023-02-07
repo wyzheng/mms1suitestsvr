@@ -20,7 +20,7 @@ describe("微信品专广告", () => {
 
     beforeAll(async () => {
         await superView(6404900485, "wxid_igb6en2soegm12");
-        pageExtend = await setup("wxadtestPicCanvas", 20, 3190188057);
+        pageExtend = await setup("wxadtestPicCanvas", 20, 3190188057, true);
         page = pageExtend.webSearchPage.instance;
         browser = pageExtend.browser;
     });
