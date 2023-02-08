@@ -346,8 +346,9 @@ describe("微信竞价直投广告", () => {
         await expect(page).toHaveElement(feedbackDialogClass(0).dialog);
         //点击还不错
         await page.waitForSelector(feedbackDialogClass(1).action);
-        //pageExtend.logid = 26805
+        pageExtend.logid = 26805
         await page.click(feedbackDialogClass(1).action);
+
         ele =  await page.$("div.weui-toast");
         path = './static/pic/ad_cp_toast.png';
         image =  await ele.screenshot({path: path});
@@ -356,6 +357,15 @@ describe("微信竞价直投广告", () => {
         path = './static/pic/ad_cp_feedback1.png';
         image =  await page.screenshot({path: path});
         await page.waitForTimeout(700);
+
+        //验证上报
+        await page.waitForTimeout(700);
+        let logStr = pageExtend.extendInfo.split(",")[6];
+        logStr = decodeURIComponent(logStr);
+        let parse = decodeURIComponent(JSON.parse(logStr).reportid);
+        let torf = parse.startsWith("还不错:feedback")
+        expect(torf).toBe(true);
+
         await addAttach({attach: image, description: "广告反馈页面截图"});
         break;
       }

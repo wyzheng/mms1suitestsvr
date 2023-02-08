@@ -25,8 +25,10 @@ export class PageExtend {
   public extendInfo: string;
   public weappPath: string;
   public uin: number;
+  public logid: number;
 
   private logger: Logger;
+
   constructor() {
     this.logger = this.loggerService.getLogger('puppeteer');
   }
@@ -255,6 +257,14 @@ export class PageExtend {
     if(func === "openFinderView"){
       this.extendInfo = "";
       this.extendInfo = params['feedID'];
+    }
+
+    if (func === 'reportSearchStatistics'){
+      if (params["logId"] == "26805"){
+        this.logger.log(`log of ${params["logId"]}: ${params["logString"]}`)
+        this.extendInfo =  params["logString"];
+      }
+      this.logid = 0;
     }
 
   }
