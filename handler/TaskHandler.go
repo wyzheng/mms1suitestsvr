@@ -46,6 +46,7 @@ func ExecTest(w http.ResponseWriter, r *http.Request) {
 	var cosRes model.CosRes
 	json.Unmarshal([]byte(templateParams[0]), &cosRes) // 反序列化
 	templateKey := *cosRes.ToPath
+	xlog.Debugf("[Handler] template is %v.", templateKey)
 	fmt.Println(templateKey)
 
 	tmp := strings.Split(templateKey, "/")

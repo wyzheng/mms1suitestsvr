@@ -380,7 +380,7 @@ export class WebSearchPage extends CommonPage {
 
     if (resp.statusCode == 200){
       let rawData = resp.body;
-      this.logger.log(rawData);
+      this.logger.log(`$$$$ get resp success`);
       return JSON.parse(rawData);
     }else {
       this.logger.error(`$$$$ there is something wrong`);

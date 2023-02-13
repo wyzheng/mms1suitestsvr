@@ -331,7 +331,7 @@ describe("微信竞价直投广告", () => {
   test("> 点击广告图标，点击还不错，验证是否正确对广告进行反馈", async () => {
      await addMsg({
        context: undefined,
-       message: ` 测试步骤：\n  1. 输入搜索query=testBidPicAlt,发起搜索\n  2. 点击右上角广告图标，点击投诉广告，验证是否正确跳转到广告投诉落地页`
+       message: ` 测试步骤：\n  1. 输入搜索query=testBidPicAlt,发起搜索\n  2. 点击"还不错"反馈按钮，验证是否能够正确进行反馈`
      });
     let num = 3;
     while(num != 0){
@@ -392,7 +392,7 @@ describe("微信竞价直投广告", () => {
   test("> 点击广告图标，点击\"关闭此条广告\"，验证是否正确对广告进行反馈", async () => {
     await addMsg({
       context: undefined,
-      message: ` 测试步骤：\n  1. 输入搜索query=testBidPicAlt,发起搜索\n  2. 点击右上角广告图标，点击投诉广告，验证是否正确跳转到广告投诉落地页`
+      message: ` 测试步骤：\n  1. 输入搜索query=testBidPicAlt,发起搜索\n  2. 点击右上角广告图标，点击"关闭此条广告"，验证是否正确跳转到广告投诉落地页`
     });
     let num = 3;
     while(num != 0){

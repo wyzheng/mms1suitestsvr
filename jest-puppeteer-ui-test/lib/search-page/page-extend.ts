@@ -164,7 +164,7 @@ export class PageExtend {
     }
     if (resourceType === 'image') {
       // same origin
-      if (
+      /* if (
         urlObject?.protocol === `data:`
       ) {
         req.continue();
@@ -175,6 +175,10 @@ export class PageExtend {
         //url: this.getProxyUrl(url),
         //url: this.assetService.getImageProxyUrl(url),
         headers: req.headers(),
+      });*/
+      req.respond({
+        body: Buffer.from('R0lGODlhAQABAIAAAMLCwgAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==', 'base64'),
+        contentType: 'image/gif',
       });
       return;
     }
@@ -215,9 +219,9 @@ export class PageExtend {
       }
       //console.log(data);
       await ctx.search(data);
-      if (ctx.inited === true){
+      /*if (ctx.inited === true){
         ctx.searchResult = this.searchRes;
-      }
+      }*/
       await ctx.onSearchDataReady(params);
       await ctx.waitForRenderingDone();
     }
@@ -228,13 +232,13 @@ export class PageExtend {
       if (url.indexOf('wsad.weixin.qq.com') > 0 || url.indexOf('search.weixin.qq.com') > 0){
         url = url + "&pass_ticket=TBBNHOQ%2FJPvpvKRj4W9xy2nvn%2F8l0nMQl3pKptZ03IHyUa0zMOYv5jq%2BHo4SRAiK";
       }
-      console.log(url);
+      //console.log(url);
       this.url = url;
     }
     if (func === 'openCustomerServiceChat'){
       this.url = "";
       this.url = JSON.parse(params['extInfo']).url;
-      console.log(this.url);
+      //console.log(this.url);
     }
     if ( func === 'openFinderProfile' || func === 'profile'){
       this.extendInfo = "";
@@ -252,7 +256,7 @@ export class PageExtend {
     if (func === "makePhoneCall"){
       this.extendInfo = "";
       this.extendInfo = params['phoneNumber'];
-      console.log(this.extendInfo);
+      //console.log(this.extendInfo);
     }
     if(func === "openFinderView"){
       this.extendInfo = "";
