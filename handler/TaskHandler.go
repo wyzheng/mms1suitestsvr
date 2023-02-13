@@ -40,8 +40,11 @@ func ExecTest(w http.ResponseWriter, r *http.Request) {
 	//从cos拉取模板
 	templateParam := websvr.GetStringFromUri(r, "templateKey")
 
+	templateParam = templateParam[1 : len(templateParam)-1]
+	templateParams := strings.Split(templateParam, ",")
+
 	var cosRes model.CosRes
-	json.Unmarshal([]byte(templateParam[1:len(templateParam)-1]), &cosRes) // 反序列化
+	json.Unmarshal([]byte(templateParams[0]), &cosRes) // 反序列化
 	templateKey := *cosRes.ToPath
 	fmt.Println(templateKey)
 
