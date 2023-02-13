@@ -113,10 +113,12 @@ func UpdateTestTask(id int, res *string) {
 }
 
 func sendMessage(res *model.TestRes, id int) {
+	xlog.Debugf("[sql] generate robot message")
 	numSuite := *res.NumFailedTestSuites + *res.NumPassedTestSuites
 	numCase := *res.NumFailedTests + *res.NumPassedTests
 	message := fmt.Sprintf("hi，测试任务%v已完成，共计%v个测试合集，%v个测试用例，其中用例执行成功%v，失败%v \n 点击查看详细测试报告：http://9.134.52.227:8080/#/reportDetail?id=%v",
 		id, numSuite, numCase, *res.NumPassedTests, *res.NumFailedTests, id)
+	xlog.Debugf(message)
 	textMsg := &model.TextMessage{
 		Content: &message,
 	}

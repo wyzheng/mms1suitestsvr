@@ -9,7 +9,7 @@ import (
 )
 
 func SendRobotMessage(message interface{}) (ret int) {
-	url := "https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=f46d8f94-fd4b-4ac5-9524-0f458d6de75f"
+	url := "http://in.qyapi.weixin.qq.com/cgi-bin/webhook/send?key=f46d8f94-fd4b-4ac5-9524-0f458d6de75f"
 	messageBytes, err := json.Marshal(message)
 	if err != nil {
 		xlog.Errorf("Umarshal message struct failed! %v", err)

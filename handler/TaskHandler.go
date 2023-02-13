@@ -43,9 +43,15 @@ func ExecTest(w http.ResponseWriter, r *http.Request) {
 	templateParam = templateParam[1 : len(templateParam)-1]
 	templateParams := strings.Split(templateParam, "},")
 	xlog.Debugf("[Handler] templateParam is %v.", templateParams[0])
+	param := ""
+	if len(templateParams) == 1 {
+		param = templateParams[0]
+	} else {
+		param = templateParams[0] + "}"
+	}
 
 	var cosRes model.CosRes
-	json.Unmarshal([]byte(templateParams[0]+"}"), &cosRes) // 反序列化
+	json.Unmarshal([]byte(param), &cosRes) // 反序列化
 	templateKey := *cosRes.ToPath
 	xlog.Debugf("[Handler] template is %v.", templateKey)
 	fmt.Println(templateKey)
