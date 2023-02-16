@@ -111,8 +111,9 @@ export class WebSearchPage extends CommonPage {
     await this.load(content);
     await this.register(handler);
     await this.prepare();
-
   }
+
+
   // close
   async close() {
     await super.close();
@@ -394,5 +395,27 @@ export class WebSearchPage extends CommonPage {
     return resp;
   }
 
+  //更新搜索词，重新发起搜索
+  public async ChangeQuery(query, content){
+    this._query = query
+    await this.config({
+      isHomePage: 0,
+      query,
+    });
+    this.networkIdlePromiseMaker = this.createWaitForIdleNetworkFactory();
+    await this.load(content);
+    await this.prepare();
+  }
+
+  // 刷新页面
+  public async Reload(content){
+    await this.config({
+      isHomePage: 0,
+      query: this._query,
+    });
+    this.networkIdlePromiseMaker = this.createWaitForIdleNetworkFactory();
+    await this.load(content);
+    await this.prepare();
+  }
 
 }

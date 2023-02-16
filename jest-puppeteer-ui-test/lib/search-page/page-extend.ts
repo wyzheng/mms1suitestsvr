@@ -96,6 +96,8 @@ export class PageExtend {
     return this;
   }
 
+
+
   private requestInterceptor (req: HTTPRequest, context: string) {
     if (req.isInterceptResolutionHandled()) {
       return;
@@ -304,7 +306,17 @@ export class PageExtend {
 
   }
 
+  public async change(query){
+    let context = "./asset/" + global.__TEMPLATE__;
+    const content = await this.assetService.fetchEntryHtmlContent(context);
+    await this.webSearchPage.ChangeQuery(query, content);
+    await this.webSearchPage.waitForRenderingDone();
+  }
 
-
-
+  public async reload(){
+    let context = "./asset/" + global.__TEMPLATE__;
+    const content = await this.assetService.fetchEntryHtmlContent(context);
+    await this.webSearchPage.Reload( content);
+    await this.webSearchPage.waitForRenderingDone();
+  }
 }

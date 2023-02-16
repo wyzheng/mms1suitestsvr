@@ -12,7 +12,8 @@ const defaultConfig: WebSearchPageConfig = {
   platform: 'iOS',
   netType: 'wifi',
   // here this param decided result page or not
-  type: 1,
+  //混排
+  type: 0,
   isHomePage: 1,
   query: ``,
   isSug: true,
