@@ -506,3 +506,32 @@ export function feedbackDialogClass(id){
   }
 }
 
+
+//商品品专
+export const wxGoodAd = {
+  header: `div.ui-zone-ad__hd div.ad-goods-header__bg`,
+  feedback: `div.ui-zone-ad__hd div.ad-goods-header__complaint-entry`,
+  complaint: "div.complaint-content",
+  feedback_mask: 'div.mask.ad-complaint-popover',
+  title: "#search_result > div:nth-child(4) > div > div.exposure-block.search_result_block.box-without-card-style > div > div.ui-zone-ad__bd > div.ui-zone-ad__bd-slot > div > div.service-search-block-body > div:nth-child(1) > div.service-search-item-content-wrapper > div > div.ad-sub-header__slot.ad-sub-header__slot--without-title.ad-sub-header__slot--without-padding > div > div.hd-title-wrapper > div > h2 > span.ellipsis_1",
+  tag: `#search_result > div:nth-child(4) > div > div.exposure-block.search_result_block.box-without-card-style > div > div.ui-zone-ad__bd > div.ui-zone-ad__bd-slot > div > div.service-search-block-body > div:nth-child(1) > div.service-search-item-content-wrapper > div > div.ad-sub-header__slot.ad-sub-header__slot--without-title.ad-sub-header__slot--without-padding > div > div.hd-title-wrapper > div > h2 > span.ui-tags.hd-ui-tags.ui-tags-vertical-align`,
+  headSpan: 'div.ad-sub-header__slot div.hd-title-content h2.hd-title span',
+
+  firstGood: 'div.ui-zone-ad__bd div.ad-sub-header div.ad-goods-info',
+  firstGoodImg: `div.ui-zone-ad__bd div.ad-sub-header div.ad-goods-info div.ui-image-image`,
+  firstGoodTile: `div.ui-zone-ad__bd div.ad-sub-header div.ad-goods-info div.ad-goods-info-goods div.ad-goods-info-goods__title`,
+  firstGoodTag: `div.ui-zone-ad__bd div.ad-sub-header div.ad-goods-info div.ad-goods-info-goods div.ad-goods-info-goods__taglist div.ui-tag`,
+  firstGoodPrice: `div.ui-zone-ad__bd div.ad-sub-header div.ad-goods-info div.ad-goods-info-goods div.ad-goods-info-goods__content div`,
+  firstGoodAction: `div.ui-zone-ad__bd div.ad-sub-header div.ad-goods-info div.ad-goods-info-goods div.ad-goods-info-goods__content div a div.ui-button-content`,
+  relatedGoodTitle: `div.ad-sub-header div.ad-sub-header-info div.ad-sub-header__title span`,
+  goodMall: `div.ad-sub-header div.ad-sub-header__title__after div`,
+  relatedGood: `div.ad-sub-header div.recommended-goods div.recommended-goods-item`,
+}
+
+export function relatedGoods(id) {
+  return {
+    relatedGoods: `div.ad-sub-header div.ad-sub-header__slot div.recommended-goods`,
+    relatedGoodsImg: `div.ad-sub-header div.ad-sub-header__slot div.recommended-goods div.recommended-goods-item:nth-of-type(${id}) div.ui-image-image`,
+    relatedGoodsTitle: `div.ad-sub-header div.ad-sub-header__slot div.recommended-goods div.recommended-goods-item:nth-of-type(${id}) div.recommended-goods-item__title`
+  }
+}
