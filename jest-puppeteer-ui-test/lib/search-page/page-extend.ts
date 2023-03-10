@@ -44,7 +44,7 @@ export class PageExtend {
         `--window-size=414,2000`,
         `--proxy-server=${proxy_svr}`
       ],
-      //headless: false,
+     // headless: false,
       headless:true
     });
 

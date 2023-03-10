@@ -535,3 +535,32 @@ export function relatedGoods(id) {
     relatedGoodsTitle: `div.ad-sub-header div.ad-sub-header__slot div.recommended-goods div.recommended-goods-item:nth-of-type(${id}) div.recommended-goods-item__title`
   }
 }
+
+
+
+export const bizWeAppClass = {
+  title: `#search_result > div:nth-child(3) > div > div:nth-child(2) > div.search-block__hd > div > div.search-block__title span`,
+  more: `#search_result > div:nth-child(3) > div > div:nth-child(2) > div.search-block__hd > div > div:nth-child(2) > div.more__item.active__mask`,
+}
+
+// id：box位次，从1开始，tid：账号tag位次，sid： 账号服务id
+export function bizWeAppsList(id, tid, sid) {
+  let parentClass = `div.basic-block-unified-account div.block-list-unified-account div.unified-account:nth-of-type(${id}) `
+  return{
+    account: parentClass,
+    accountIcon: parentClass + `div.account-header div.account-header-icon`,
+    accountTitle: parentClass + `div.account-header div.header-text div.header-title-container span.header-title`,
+    accountTag: parentClass + `div.account-header div.header-text div.header-title-container span.ui-tags div.ui-tag:nth-of-type(${id})`,
+    accountTagTitle: parentClass + `div.account-header div.header-text div.header-title-container span.ui-tags div.ui-tag:nth-of-type(${id}) div.ui-tag-title`,
+    accountDesc : parentClass + `div.account-header div.header-text div.header-desc`,
+    accountSourceIcon: parentClass + `div.account-header div.header-text div.header-source div.ui-tag`,
+    accountSourceText: parentClass + `div.account-header div.header-text div.header-source span.header-source-text`,
+    accountSourceTag: parentClass + `div.account-header div.header-text div.header-source span.ui-tags div.ui-tag-text-wrapper div.ui-tag-title`,
+    bizService: parentClass + `div.account-header div.header-text div.unified-account-menus div.ui-column-slot`,
+    bizServiceLink: parentClass + `div.account-header div.header-text div.unified-account-menus div.ui-column-slot:nth-of-type(${sid}) div.ui-link`,
+    bizServiceText: parentClass + `div.account-header div.header-text div.unified-account-menus div.ui-column-slot:nth-of-type(${sid}) div.ui-link div.ui-link-text`,
+    weappService: parentClass + `div.account-header div.header-text div.sevice-search.service-list div div.heavy-links div.heavy-link`,
+    weappServiceLink:  parentClass + `div.account-header div.header-text div.sevice-search.service-list div div.heavy-links div.heavy-link:nth-of-type(${sid})`,
+    weappServiceText:  parentClass + `div.account-header div.header-text div.sevice-search.service-list div div.heavy-links div.heavy-link:nth-of-type(${sid}) div div`,
+  }
+}

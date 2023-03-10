@@ -73,6 +73,21 @@ export async function getHeightOfEle(page, selector) {
   }, selector);
 }
 
+// 获得元素在页面上的宽度
+export async function getLeftOfEle(page, selector) {
+  return await page.evaluate((selector) => {
+    let icon = document.querySelector(selector);
+    let Box = icon.getBoundingClientRect(),
+        doc = icon.ownerDocument,
+        body = doc.body,
+        html = doc.documentElement,
+        clientTop = html.clientTop || body.clientTop || 0
+
+    return Box.left;
+  }, selector);
+}
+
+
 export async function getOCRRes(imagePath){
   let r = await got("https://stream.weixin.qq.com/weapp/getOcrAccessToken", {
     agent:{
