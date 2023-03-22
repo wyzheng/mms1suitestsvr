@@ -76,6 +76,7 @@ func ExecTest(w http.ResponseWriter, r *http.Request) {
 
 	// 新建测试任务
 	cTime := time.Now().Format("2006-01-02 15:04:05")
+	testId := time.Now().Format("20060102150405")
 	trigger := "joycesong Manual"
 	versionId := 1
 
@@ -85,6 +86,7 @@ func ExecTest(w http.ResponseWriter, r *http.Request) {
 		UpdateTime: &cTime,
 		Status:     &config.S_NEW_TASK,
 		Template:   &templateName,
+		TestId:     &testId,
 	}
 
 	taskId, err := dao.InsertTestTask(newTask)
@@ -195,6 +197,25 @@ func GetTestCases(w http.ResponseWriter, r *http.Request) {
 	resp.Data = taskArr
 	resp.Ret = define.E_SUCCESS
 	resp.Message = "get all test cases!"
+
+	ww.MarshalJSON(resp)
+	return
+}
+
+func GetS1SResult(w http.ResponseWriter, r *http.Request) {
+	ww := w.(*xhttp.ResponseWriter)
+	resp := websvr.CommResp{}
+	xlog.Debugf("[Handler] deal with a request of result.")
+	decoder := json.NewDecoder(r.Body)
+
+	// 用于存放参数key=value数据
+	var params map[string]interface{}
+
+	// 解析参数 存入map
+	decoder.Decode(&params)
+
+	url := service.GetUrl("mmsearchossopenapisvr", "GetSearchResultLite")
+	resp.Data = fmt.Sprintf("%v", service.MMSearch(r, url))
 
 	ww.MarshalJSON(resp)
 	return
