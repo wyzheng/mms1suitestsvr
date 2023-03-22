@@ -57,7 +57,7 @@ func MMSearch(data interface{}, url string) *bytes.Buffer {
 		xlog.Errorf("Umarshal message struct failed! %v", err)
 	}
 
-	fmt.Printf("%v", data)
+	xlog.Debugf("%v", data)
 
 	reader := bytes.NewReader(messageBytes)
 	request, err := http.NewRequest("POST", url, reader)
@@ -83,7 +83,7 @@ func MMSearch(data interface{}, url string) *bytes.Buffer {
 	}
 
 	resp.Body.Close()
-	fmt.Println(fmt.Sprintf("%v", respBody))
+	xlog.Debugf("%v", respBody)
 
 	if resp.StatusCode == 200 {
 		return respBody

@@ -206,14 +206,11 @@ func GetS1SResult(w http.ResponseWriter, r *http.Request) {
 	xlog.Debugf("[Handler] deal with a request of result.")
 	decoder := json.NewDecoder(r.Body)
 
-	// 用于存放参数key=value数据
 	var params map[string]interface{}
-
-	// 解析参数 存入map
 	decoder.Decode(&params)
 
 	url := service.GetUrl("mmsearchossopenapisvr", "GetSearchResultLite")
-	resp.Data = fmt.Sprintf("%v", service.MMSearch(r, url))
+	resp.Data = fmt.Sprintf("%v", service.MMSearch(params, url))
 
 	ww.MarshalJSON(resp)
 	return
