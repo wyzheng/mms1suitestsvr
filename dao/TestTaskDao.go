@@ -39,7 +39,7 @@ func UpdateDataTask(id int, testTask *model.TestTask) error {
 
 // GetTestTasks 获取所有测试任务
 func GetTestTasks() ([]*model.TestTask, error) {
-	xlog.Debugf("[DAO]:Get a test file from db by %s.")
+	xlog.Debugf("[DAO]:Get a test task from db by %s.")
 
 	err, list := database.Query(
 		config.Mms1suitestDB,

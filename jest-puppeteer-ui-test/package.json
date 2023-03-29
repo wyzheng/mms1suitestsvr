@@ -13,7 +13,7 @@
     "log4js": "^6.6.1",
     "minimist": "^1.2.6",
     "node-fetch": "^3.2.10",
-    "puppeteer": "^18.2.1",
+    "puppeteer": "^14.4.1",
     "request": "^2.88.2",
     "sha1": "^1.1.1",
     "strip-js": "^1.2.0",
