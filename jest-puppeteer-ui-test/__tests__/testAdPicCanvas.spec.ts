@@ -3,7 +3,7 @@ import Puppeteer from "puppeteer";
 import {PageExtend} from "../lib/search-page/page-extend";
 import { adAccountClass, wxAdClass } from "../lib/utils/resultMap";
 import {addAttach, addMsg} from "jest-html-reporters/helper";
-import { bizOperation, getHeightOfEle, superView } from "../lib/utils/helper";
+import { bizOperation, getHeightOfEle, superView } from "../lib/utils/tools";
 import fs from "fs";
 
 let page: Puppeteer.Page ;
@@ -59,7 +59,7 @@ describe("微信品专广告", () => {
                     path: "./static/pic/test_wxad.png"
                 })
                 await addAttach({ description: "当前混排结果页截图", attach: image});
-                expect(page).toHaveElement("div.ui-zone-ad");
+                await expect(page).toHaveElement("div.ui-zone-ad");
                 break;
             } catch(e){
                 if (num == 1){
@@ -189,6 +189,7 @@ describe("微信品专广告", () => {
                     fullPage: true
                 })
                 await addAttach({attach: screenshotBuffer, description: "广告反馈页面截图"});
+                await page2.close();
                 await page.bringToFront();
                 //再次点击收起投诉广告按钮
                 await page.click(wxAdClass.feedback);
@@ -325,6 +326,7 @@ describe("微信品专广告", () => {
                 await addAttach({attach: screenshotBuffer, description: "门店地址点击落地页截图"});
                 expect(pageExtend.url).toContain("http://www.baidu.com");
                 expect(await page2.title()).toBe("百度一下");
+                await page2.close();
                 break;
             }catch (e) {
                 if (num == 1){
@@ -587,8 +589,9 @@ describe("微信品专广告", () => {
                 let content = await page.evaluate(async (eleClass)  => {
                     let title = document.querySelector(eleClass.account_title).innerHTML;
                     let desc = document.querySelector(eleClass.account_desc).innerHTML;
-                    let tagTitle = document.querySelector(eleClass.account_tag).innerHTML;
-                    return  [title, desc, tagTitle];
+                    //let tagTitle = document.querySelector(eleClass.account_tag).innerHTML;
+                    //return  [title, desc, tagTitle];
+                    return  [title, desc];
                 }, adAccountClass(2));
                 expect(content[0]).toBe("快乐测试123");
                 expect(content[1]).toBe("公众号");
@@ -626,8 +629,7 @@ describe("微信品专广告", () => {
             try {
                 await page.bringToFront();
                 await bizOperation("AddBizContact", 3094043316, 3190188057);
-                await page.click(wxAdClass.select_tab);
-                await page.waitForTimeout(1700);
+                await pageExtend.change("wxadtestPicCanvas");
 
                 let content = await page.evaluate(async (eleClass)  => {
                     let item = document.querySelector(eleClass.account_tag);
@@ -724,6 +726,7 @@ describe("微信品专广告", () => {
                     fullPage: true
                 })
                 await addAttach({attach: screenshotBuffer, description: "更多账号落地页截图"});
+                await page2.close();
                 break;
             }catch (e){
                 if (num == 1){

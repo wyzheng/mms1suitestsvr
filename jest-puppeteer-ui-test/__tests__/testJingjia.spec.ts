@@ -3,8 +3,7 @@ import Puppeteer from "puppeteer";
 import {PageExtend} from "../lib/search-page/page-extend";
 import {feedbackDialogClass, wxAdClass, wxCpAdClass } from "../lib/utils/resultMap";
 import {addAttach, addMsg} from "jest-html-reporters/helper";
-import { getLineNum, superView } from "../lib/utils/helper";
-import { doc } from "prettier";
+import { getLineNum, superView } from "../lib/utils/tools";
 
 let page: Puppeteer.Page;
 let browser: Puppeteer.Browser;

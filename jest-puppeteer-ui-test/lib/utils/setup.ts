@@ -1,5 +1,5 @@
 import { WebSearchPageConfig } from "../search-page/interfaces/web-search-page-config";
-import { WebSearchResponse } from "../search-page/interfaces/web-search-page";
+import {CaseCTx, WebSearchResponse} from "../search-page/interfaces/web-search-page";
 import { PageExtend } from "../search-page/page-extend";
 
 
@@ -38,7 +38,12 @@ export async function setup(query: string, scene: number, uin: number, isSuperVi
   let pageExtend = new PageExtend();
   defaultConfig.scene = scene;
 
+  const stx: CaseCTx= {
+    businessType: 0, page: "result", scene: 20, query:query
+  }
   return await pageExtend.allocPage({
+    pageCtx: stx,
+    renderRemoteImage: false,
     device: 'iPhone 11 Pro Max',
     config: defaultConfig,
     context: "./asset/" + global.__TEMPLATE__,

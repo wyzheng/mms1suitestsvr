@@ -3,7 +3,7 @@ import Puppeteer from "puppeteer";
 import {PageExtend} from "../lib/search-page/page-extend";
 import { adAccountClass, wxAdClass } from "../lib/utils/resultMap";
 import {addAttach, addMsg} from "jest-html-reporters/helper";
-import { bizOperation, errorCounting, getHeightOfEle, superView } from "../lib/utils/helper";
+import { bizOperation, errorCounting, getHeightOfEle, superView } from "../lib/utils/tools";
 
 let page: Puppeteer.Page ;
 let browser:  Puppeteer.Browser;
@@ -616,10 +616,8 @@ describe("微信商品品专广告", () => {
                 await page.bringToFront();
                 //公众号关注
                 await bizOperation("AddBizContact", 3094043316, 3192443972);
-                await page.click(wxAdClass.select_tab);
-                await page.waitForTimeout(700);
-                await page.click(wxAdClass.select_all);
-                await page.waitForTimeout(1700);
+
+                await pageExtend.change("wxadtestPicWeapp");
 
                 await addMsg({context: undefined, message: `关注公众号`});
 

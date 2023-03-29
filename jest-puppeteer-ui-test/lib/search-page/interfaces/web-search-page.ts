@@ -1,3 +1,5 @@
+// @ts-ignore
+import type {JSAPI} from "@tencent/web-search-puppeteer-page"
 
 interface DebugInfoRsp {
   DebugInfo: string; // [default = ""]; // debug info内容，字符串展示即可
@@ -21,3 +23,18 @@ export interface WebSearchResponse {
   OssDiagnoseLogInfo?: string;
 }
 
+export interface CaseCTx {
+  page: string;
+  scene: number;
+  businessType: number;
+  query?: string;
+}
+
+const teach:JSAPI  = `onTeachSearchDataReady`;
+const result:JSAPI  = `onSearchDataReady`;
+
+export const PageJsapi = {
+  index: teach,
+  result: result,
+  teach: teach
+}

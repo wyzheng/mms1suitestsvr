@@ -1,11 +1,12 @@
 import Puppeteer, {devices, HTTPRequest, Page, ResourceType} from "puppeteer";
-import { WebSearchResponse } from "./interfaces/web-search-page";
-import { WebSearchPage } from "./web-search-page";
+import { CaseCTx, PageJsapi, WebSearchResponse } from "./interfaces/web-search-page";
+import { Page as WebSearchPage, PageConfig} from '@tencent/web-search-puppeteer-page';
 import { PageAssetService } from "./service/page-asset.service";
-import {scrollDown} from "../utils/helper";
-import { WebSearchPageConfig } from "./interfaces/web-search-page-config";
+import { getSearchData, scrollDown, teach} from "../utils/helper";
 import {LoggerService} from "../logger/logger.service";
 import {Logger} from "log4js";
+import { join } from "path";
+import { readFile } from 'fs-extra';
 
 /**
  * created by joyce on 2022/08/02
@@ -55,178 +56,225 @@ export class PageExtend {
     await this.browser.close();
   }
 
-  async allocPage({
-    context,
-    query,
-    key,
-    config,
-    device,
-    uin, isSuperview
-  }: {
+  async allocPage({ pageCtx,
+                    context,
+                    query,
+                    key,
+                    config,
+                    device,
+                    uin,
+                    isSuperview,
+                    renderRemoteImage}: {
+    pageCtx: CaseCTx;
     context: string;
-    query: string;
+    query?: string;
     key: string;
-    config: WebSearchPageConfig,
+    config: PageConfig,
     device: string,
     uin: number,
-    isSuperview: boolean
+    isSuperview: boolean,
+    renderRemoteImage: boolean
   }) {
-    this.uin = uin;
-    const page = await (await this.allowBrowser()).newPage();
+    const pageConfig = (() => {
+      switch (pageCtx.page) {
+        case "index":
+          return WebSearchPage.GenIndexConfig({wechatVersion: 1661206783});
+        case "result":
+          return WebSearchPage.GenResultConfig({
+            scene: pageCtx.scene,
+            query: pageCtx.query,
+            type: pageCtx.businessType,
+          },  {wechatVersion: 1661206783});
+        case "teach":
+          return WebSearchPage.GenTeachConfig({
+            scene: pageCtx.scene,
+            type: pageCtx.businessType,
+          }, {wechatVersion: 1661206783});
+        default:
+          throw new Error('unsupported page');
+      }
+    })();
 
-    if (isSuperview){
-      await page.waitForTimeout(30000);
-    }
+    this.uin = uin;
+    // const browser = await this.allowBrowser();
+    const page = await (await this.allowBrowser()).newPage();
     const webSearchPage = new WebSearchPage(page);
+    if (isSuperview){
+      await webSearchPage.instance.waitForTimeout(30000);
+    }
+
     this.webSearchPage = webSearchPage;
-    const content = await this.assetService.fetchEntryHtmlContent(context);
-    await webSearchPage.initWithQuery({
-      device,
-      config,
-      key,
-      context,
-      query,
-      content,
+
+    webSearchPage.extInfo.set(
+        'workspace', context,
+    ).set(
+        'renderRemoteImage', renderRemoteImage,
+    );
+
+    this.logger.log(`alloc page end: ${key}`);
+    this.logger.log(`mark page checkpoint start: ${key}`);
+    if (renderRemoteImage) {
+      await webSearchPage.markImageCompleteCheckpoint();
+    }
+    await webSearchPage.markResourceCheckpoint();
+    await webSearchPage.markBridgeEventCheckpoint(PageJsapi[pageCtx.page]);
+    const htmlContent = await this.assetService.fetchEntryHtmlContent(context);
+    await webSearchPage.init(<string>htmlContent, pageConfig, {
       requestInterceptor: this.requestInterceptor.bind(this),
-      handler: this.eventHandler.bind(this)
+      logger: this.loggerService.getLogger('puppeteer'),
+      handler: this.eventHandler.bind(this),
+      context: {
+        dataTransfer: {
+          getSearchData: async (params) => {
+            await new Promise<void>((resolve) => {
+              setTimeout(() => {
+                resolve();
+              }, 2000);
+            });
+            let data = {
+              "src": 25,
+              "uin": this.uin,
+              "query": params['query'],
+              "scene": params['scene'],
+              "business_type": params['type'],
+              "ExtReqParams": [
+                {
+                  "key": "ossSource",
+                  "uint_value": 10003
+                }
+              ]
+            }
+            return getSearchData(data);
+          },
+          getTeachSearchData: async (params) => {
+            await new Promise<void>((resolve) => {
+              setTimeout(() => {
+                resolve();
+              }, 2000);
+            });
+            let data = {
+              "src": 25,
+              "uin": this.uin,
+              "query": params['query'],
+              "scene": params['scene'],
+              "business_type": params['type'],
+              "ExtReqParams": [
+                {
+                  "key": "ossSource",
+                  "uint_value": 10003
+                }
+              ]
+            }
+            return teach(data);
+          },
+        },
+      },
+      hookGlobalImage: renderRemoteImage,
     });
-    await webSearchPage.waitForRenderingDone();
-    webSearchPage.inited = true;
+    await webSearchPage.waitForTimeout(500);
+    await webSearchPage.validateBridgeEventCheckpoint();
+    await webSearchPage.validateResourceCheckPoint();
+    await webSearchPage.validateImageCompleteCheckpoint();
+
     this.logger.log(`here alloc a page`);
     return this;
   }
 
-
-
-  private requestInterceptor (req: HTTPRequest, context: string) {
-    if (req.isInterceptResolutionHandled()) {
-      return;
-    }
-    const shouldBlockUrl = (url) => {
-      for (const str of [
-        'ubd.weixin.oa.com/cloudfunc/api/',
-        'support.weixin.qq.com',
-        'aegis.qq.com',
-        'mmsearch.oa.com/osscore',
-        'badjs.weixinbridge.com',
-      ]) {
-        if (url.indexOf(str) >= 0) {
-          return true;
-        }
-      }
-      return false;
-    };
-    const url = req.url();
-    const resourceType = req.resourceType();
-
-    const urlObject = (() => {
-      try {
-        return new URL(url);
-      } catch (err) {
-        return null;
-      }
-    })();
-
-    // before setting content, go to some url with file protocol
-    if (
-      urlObject?.protocol === `file:`
-      && resourceType === 'document'
-    ) {
-      req.respond({
-        body: '<html><body></body></html>'
-      });
-      return;
-    }
-
-    // local asset (js, css)
-    if (
-      urlObject?.protocol === `file:`
-      && (['stylesheet', 'script'] as ResourceType[]).includes(resourceType)
-    ) {
-      this.assetService.fetchReferenceContent(context, urlObject.pathname).then((content) => {
-        req.respond({
-          status: 200,
-          contentType: ({
-            stylesheet: `text/css; charset=utf-8`,
-            script: `application/javascript; charset=utf-8`,
-          }[resourceType] || ''),
-          body: content,
-        });
-      });
-      return;
-    }
-
-    if (shouldBlockUrl(url)) {
-      req.abort('aborted');
-      return;
-    }
-    if (resourceType === 'media') {
-      req.abort('aborted');
-      return;
-    }
-    if (resourceType === 'image') {
-      // same origin
-      /* if (
-        urlObject?.protocol === `data:`
+  private requestInterceptor(req: HTTPRequest, ctx: WebSearchPage, url: URL, needHandle: boolean) {
+    if (needHandle) {
+      const resourceType = req.resourceType();
+      if (
+          url.protocol === 'file:'
+          && ['stylesheet', 'script'].includes(resourceType)
       ) {
-        req.continue();
+        this.fetchReferenceContent(ctx.extInfo.get('workspace'), url.pathname).then((content) => {
+          req.respond({
+            status: 200,
+            contentType: ({
+              stylesheet: `text/css; charset=utf-8`,
+              script: `application/javascript; charset=utf-8`,
+            }[resourceType] || ''),
+            body: content,
+          });
+        });
         return;
       }
+
+      if (resourceType === 'image') {
+        // local
+        if (url.protocol === 'file:') {
+          this.fetchReferenceContent(ctx.extInfo.get('workspace'), url.pathname, true).then((content) => {
+            req.respond({
+              status: 200,
+              body: content,
+            });
+          });
+          return;
+        }
+        // same origin
+        if (url.protocol === 'data:') {
+          req.continue();
+          return;
+        }
+        if (ctx.extInfo.get('renderRemoteImage')) {
+          req.continue({
+            url: req.url(),
+            headers: req.headers(),
+          });
+        } else {
+          /**
+           * <!---黑-->
+           * <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs=">
+           * <!---灰--->
+           * <img src="data:image/gif;base64,R0lGODlhAQABAIAAAMLCwgAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==">
+           * <!---透明--->
+           * <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7">
+           * <!---白--->
+           * <img src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==">
+           */
+          req.respond({
+            body: Buffer.from('R0lGODlhAQABAIAAAMLCwgAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==', 'base64'),
+            contentType: 'image/gif',
+          });
+        }
+        return;
+      }
+
       req.continue({
-        url: url,
-        //url: this.getProxyUrl(url),
-        //url: this.assetService.getImageProxyUrl(url),
-        headers: req.headers(),
-      });*/
-      req.respond({
-        body: Buffer.from('R0lGODlhAQABAIAAAMLCwgAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==', 'base64'),
-        contentType: 'image/gif',
+        headers: Object.assign({}, req.headers(), {
+          referer: '*',
+        }),
       });
-      return;
     }
-    req.continue({
-      headers: Object.assign({}, req.headers(), {
-        referer: '*',
-      }),
-    });
   }
 
-  private getProxyUrl(url: string) {
-    const urlObject = new URL(`http://example.com`);
-    urlObject.protocol = `http`;
-    urlObject.hostname = `shanghai-mmhttpproxy.woa.com`;
-    urlObject.port = '11113';
-    urlObject.searchParams.append(`url`, encodeURIComponent(url));
-    this.logger.error(urlObject.href)
-    return urlObject.href;
+  private async fetchReferenceContent(distDir: string, relPath: string, isBuffer: boolean = false) {
+    const path = join(distDir, relPath);
+    if (isBuffer) {
+      const content = await readFile(path);
+      return content;
+    }
+    const content = await readFile(path, {
+      encoding: 'utf-8',
+    });
+    return content;
   }
 
   private async eventHandler(func: string, params: Record<string, any>, ctx: WebSearchPage) {
-    if (func === `getSearchData` ) {
-     //console.log(params);
-      // send back data
-      // 获取数据回包
-      let data = {
-        "src": 25,
-        "uin": this.uin,
-        "query": params['query'],
-        "scene": params['scene'],
-        "business_type": params['type'],
-        "ExtReqParams":[
-          {
-            "key": "ossSource",
-            "uint_value": 10003
-          }
-        ]
+
+    if (func === 'reportSearchStatistics'){
+      if (params["logId"] == "26805"){
+        this.extendInfo =  params["logString"];
       }
-      //console.log(data);
-      await ctx.search(data);
-      /*if (ctx.inited === true){
-        ctx.searchResult = this.searchRes;
-      }*/
-      await ctx.onSearchDataReady(params);
-      await ctx.waitForRenderingDone();
+      if (params["logId"] == "14904"){
+        this.extendInfo = params["logString"];
+      }
+      if (params["logId"] == "27901"){
+        this.extendInfo = params["logString"];
+      }
+      this.logid = 0;
     }
+
     if (func === 'startSearchItemDetailPage') {
       this.url = "";
       let url = params['jumpUrl'];
@@ -234,13 +282,11 @@ export class PageExtend {
       if (url.indexOf('wsad.weixin.qq.com') > 0 || url.indexOf('search.weixin.qq.com') > 0){
         url = url + "&pass_ticket=TBBNHOQ%2FJPvpvKRj4W9xy2nvn%2F8l0nMQl3pKptZ03IHyUa0zMOYv5jq%2BHo4SRAiK";
       }
-      //console.log(url);
       this.url = url;
     }
     if (func === 'openCustomerServiceChat'){
       this.url = "";
       this.url = JSON.parse(params['extInfo']).url;
-      //console.log(this.url);
     }
     if ( func === 'openFinderProfile' || func === 'profile'){
       this.extendInfo = "";
@@ -248,6 +294,7 @@ export class PageExtend {
     }
     if(func === 'openWeAppPage'){
       this.extendInfo = "";
+      this.weappPath = "";
       this.extendInfo = params['userName'];
       this.weappPath = params['relativeURL'];
     }
@@ -258,21 +305,11 @@ export class PageExtend {
     if (func === "makePhoneCall"){
       this.extendInfo = "";
       this.extendInfo = params['phoneNumber'];
-      //console.log(this.extendInfo);
     }
     if(func === "openFinderView"){
       this.extendInfo = "";
-      this.extendInfo = params['feedID'];
+      this.extendInfo = params['feedId'];
     }
-
-    if (func === 'reportSearchStatistics'){
-      if (params["logId"] == "26805"){
-        this.logger.log(`log of ${params["logId"]}: ${params["logString"]}`)
-        this.extendInfo =  params["logString"];
-      }
-      this.logid = 0;
-    }
-
   }
 
   public async click(type: string) {
@@ -292,6 +329,7 @@ export class PageExtend {
       return page;
     }
     else if (type === "outer"){
+      //const page2 = await (await this.browser.allocPage({ key: "", local: "1" })).instance;
       const page2 = await this.browser.newPage();
       await page2.emulate(devices["iPhone 11 Pro Max"]);
       let func: Function = page2["goto"];
@@ -303,20 +341,16 @@ export class PageExtend {
       await page2.waitForTimeout(7000);
       return page2;
     }
-
   }
 
   public async change(query){
-    let context = "./asset/" + global.__TEMPLATE__;
-    const content = await this.assetService.fetchEntryHtmlContent(context);
-    await this.webSearchPage.ChangeQuery(query, content);
-    await this.webSearchPage.waitForRenderingDone();
+    await this.webSearchPage.markImageCompleteCheckpoint();
+    await this.webSearchPage.markResourceCheckpoint();
+    await this.webSearchPage.markBridgeEventCheckpoint('onSearchDataReady');
+    await this.webSearchPage.search(query);
+    await this.webSearchPage.validateBridgeEventCheckpoint();
+    await this.webSearchPage.validateResourceCheckPoint();
+    await this.webSearchPage.validateImageCompleteCheckpoint();
   }
 
-  public async reload(){
-    let context = "./asset/" + global.__TEMPLATE__;
-    const content = await this.assetService.fetchEntryHtmlContent(context);
-    await this.webSearchPage.Reload( content);
-    await this.webSearchPage.waitForRenderingDone();
-  }
 }

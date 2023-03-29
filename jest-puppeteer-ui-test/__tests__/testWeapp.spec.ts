@@ -3,7 +3,7 @@ import {
   getLeftOfEle,
   getLineNum,
   getOCRRes,
-} from "../lib/utils/helper";
+} from "../lib/utils/tools";
 import { setup } from "../lib/utils/setup";
 import Puppeteer from "puppeteer";
 import { PageExtend } from "../lib/search-page/page-extend";

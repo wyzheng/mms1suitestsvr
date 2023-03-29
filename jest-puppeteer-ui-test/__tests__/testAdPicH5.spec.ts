@@ -3,7 +3,7 @@ import Puppeteer from "puppeteer";
 import {PageExtend} from "../lib/search-page/page-extend";
 import { adActivityClass, wxAdClass } from "../lib/utils/resultMap";
 import { addAttach, addMsg } from "jest-html-reporters/helper";
-import { errorCounting, finderOperation, getHeightOfEle, superView } from "../lib/utils/helper";
+import { errorCounting, finderOperation, getHeightOfEle, superView } from "../lib/utils/tools";
 import fs from "fs";
 
 let page: Puppeteer.Page ;
@@ -538,10 +538,8 @@ describe("微信品专广告", () => {
       try {
         await page.bringToFront();
         await finderOperation("v2_060000231003b20faec8c7e28d1ecad2c900ea34b077192ae8bad1b4f00e998bfc98c5f05d66@finder", 1, "wxid_dl6z2p8aq2vt12");
-        await page.click(wxAdClass.select_tab);
-        await page.waitForTimeout(700);
-        await page.click(wxAdClass.select_all);
-        await page.waitForTimeout(1700);
+
+        await pageExtend.change("wxadtestPicH5");
 
         let image = await page.screenshot();
         await addAttach({attach: image, description: "页面截图"});

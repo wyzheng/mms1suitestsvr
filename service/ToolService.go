@@ -83,7 +83,6 @@ func MMSearch(data interface{}, url string) *bytes.Buffer {
 	}
 
 	resp.Body.Close()
-	xlog.Debugf("%v", respBody)
 
 	if resp.StatusCode == 200 {
 		return respBody
