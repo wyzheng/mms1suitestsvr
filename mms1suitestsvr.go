@@ -73,7 +73,7 @@ func main() {
 		HandBuild: hb,
 		Mux:       mux,
 		CgiHandle: http.HandlerFunc(handler.GetTestCases),
-		CmdId:     4,
+		CmdId:     5,
 		CgiName:   "GetTestCases",
 		Pattern:   "/cgi/GetTestCases",
 	})
@@ -81,9 +81,27 @@ func main() {
 		HandBuild: hb,
 		Mux:       mux,
 		CgiHandle: http.HandlerFunc(handler.GetS1SResult),
-		CmdId:     4,
+		CmdId:     6,
 		CgiName:   "GetTestCases",
-		Pattern:   "/cgi/GetS1SReport",
+		Pattern:   "/cgi/GetS1SResult",
+	})
+
+	websvr.AddCgi(websvr.Cgi{
+		HandBuild: hb,
+		Mux:       mux,
+		CgiHandle: http.HandlerFunc(handler.UploadCase),
+		CmdId:     7,
+		CgiName:   "GetTestCases",
+		Pattern:   "/cgi/UploadCase",
+	})
+
+	websvr.AddCgi(websvr.Cgi{
+		HandBuild: hb,
+		Mux:       mux,
+		CgiHandle: http.HandlerFunc(handler.GetTestCaseTaskDetail),
+		CmdId:     8,
+		CgiName:   "GetTestCases",
+		Pattern:   "/cgi/GetCaseTaskDetail",
 	})
 
 	// init svr

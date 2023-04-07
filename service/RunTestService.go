@@ -15,9 +15,9 @@ import (
 )
 
 // RunTest 根据任务id和模板包名执行测试任务
-func RunTest(taskId int, templateName string) string {
+func RunTest(taskId int, testId string, templateName string) string {
 	cmd := exec.Command("bash", "-c",
-		"npx jest --json --outputFile=./static/res/reporter.json --template="+templateName+" --resPath="+strconv.Itoa(taskId))
+		"npx jest --json --outputFile=./static/res/reporter.json --template="+templateName+" --resPath="+testId)
 	cmd.Dir = "./jest-puppeteer-ui-test"
 	var stdout bytes.Buffer
 	var stderr bytes.Buffer
@@ -35,25 +35,29 @@ func RunTest(taskId int, templateName string) string {
 
 	//存储测试结果到cos
 	fileContent, err := os.ReadFile("./jest-puppeteer-ui-test/static/res/reporter.json")
-	err = SetCosFile("s1s/res/"+strconv.Itoa(taskId)+"/result.json", fileContent)
+	err = SetCosFile("s1s/res/"+testId+"/result.json", fileContent)
 	if err != nil {
 		xlog.Errorf("[COS] set test result into cos failed, file %v", err)
 	}
+
+	//解析测试结果，存储到sql中
+	err_num := ResDecodeSave("./jest-puppeteer-ui-test/static/res/"+testId+"/jest_result.json", &testId)
+
 	// 解析成功失败数目：
-	res := util.JsonDecode(fileContent)
-	var testRes = fmt.Sprintf("%v_%v_%v_%v", *res.NumFailedTestSuites, *res.NumPassedTestSuites, *res.NumFailedTests, *res.NumPassedTests)
+	res := util.JsonDecodeRes(fileContent)
+	var testRes = fmt.Sprintf("%v_%v_%v_%v_%v", *res.NumFailedTestSuites, *res.NumPassedTestSuites, *res.NumFailedTests, *res.NumPassedTests, err_num)
 
 	//存储html结果到cos
-	cmd = exec.Command("bash", "-c", "tar -zcvf "+strconv.Itoa(taskId)+"report.tar.gz "+strconv.Itoa(taskId)+"/*")
+	cmd = exec.Command("bash", "-c", "tar -zcvf "+testId+"report.tar.gz "+testId+"/*")
 	cmd.Dir = "./jest-puppeteer-ui-test/static/res"
 
 	if err = cmd.Run(); err != nil {
 		xlog.Error(err)
 	}
-	fileContent, err = os.ReadFile("./jest-puppeteer-ui-test/static/res/" + strconv.Itoa(taskId) + "/jest_html_reporters.html")
-	err = SetCosFile("s1s/res/"+strconv.Itoa(taskId)+"/report.html", fileContent)
-	fileContent, err = os.ReadFile("./jest-puppeteer-ui-test/static/res/" + strconv.Itoa(taskId) + "report.tar.gz")
-	err = SetCosFile("s1s/res/"+strconv.Itoa(taskId)+"/report.tar.gz", fileContent)
+	fileContent, err = os.ReadFile("./jest-puppeteer-ui-test/static/res/" + testId + "/jest_html_reporters.html")
+	err = SetCosFile("s1s/res/"+testId+"/report.html", fileContent)
+	fileContent, err = os.ReadFile("./jest-puppeteer-ui-test/static/res/" + testId + "report.tar.gz")
+	err = SetCosFile("s1s/res/"+testId+"/report.tar.gz", fileContent)
 	if err != nil {
 		xlog.Errorf("[COS] set html result into cos failed, file %v", err)
 	}
@@ -73,6 +77,7 @@ func RunTest(taskId int, templateName string) string {
 	}
 	//更新测试状态
 	UpdateTestTask(taskId, &testRes)
+
 	sendMessage(res, taskId)
 	return stdout.String()
 }
@@ -128,4 +133,41 @@ func sendMessage(res *model.TestRes, id int) {
 		Text:    textMsg,
 	}
 	SendRobotMessage(msg)
+}
+
+// ResDecodeSave 解析存储case粒度的测试结果
+func ResDecodeSave(filePath string, testId *string) int {
+	fileContent, err := os.ReadFile(filePath)
+	if err != nil {
+		xlog.Errorf(`decode json result error, error is %v`, err)
+	}
+	res := util.JsonDecodeRes(fileContent)
+	errNum := 0
+	//var testCaseTasks []*model.TestCaseTask
+	for i := 0; i < len(*res.TestResults); i++ {
+		for j := 0; j < len(*(*res.TestResults)[i].TestResults); j++ {
+			var caseSingle = (*(*res.TestResults)[i].TestResults)[j]
+			message := ""
+			for k := 0; k < len(*caseSingle.FailureMessages); k++ {
+				message += (*caseSingle.FailureMessages)[k]
+			}
+			if *(caseSingle.Status) == "errored" {
+				errNum++
+			}
+			var testCaseTask = &model.TestCaseTask{
+				TestId:     testId,
+				CaseId:     caseSingle.CaseId,
+				Status:     caseSingle.Status,
+				Duration:   caseSingle.Duration,
+				FailureMsg: &message,
+				FailureTag: caseSingle.FailureTag,
+			}
+			//testCaseTasks = append(testCaseTasks, testCaseTask)
+			_, err := dao.InsertTestCaseTasks(testCaseTask)
+			if err != nil {
+				xlog.Errorf(`[Dao] insert case task error, error is %v`, err)
+			}
+		}
+	}
+	return errNum
 }

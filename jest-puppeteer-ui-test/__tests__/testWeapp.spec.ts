@@ -40,10 +40,10 @@ describe("小程序账号box测试", () => {
   })
 
   test("> query = 美团外卖，验证混排页召回美团外卖小程序", async () => {
-    await addMsg({
+    /*await addMsg({
       context: undefined,
       message: ` 测试步骤：\n  1. 输入搜索query=美团外卖,发起搜索\n  2. 检查混排页是否召回小程序box`
-    });
+    });*/
     let num = 3;
     while (num != 0) {
       try {
@@ -233,7 +233,7 @@ describe("小程序账号box测试", () => {
       try {
         await page.waitForSelector(bizWeAppClass.more);
         await page.click(bizWeAppClass.more);
-        await page.waitForTimeout(2000);
+        //await page.waitForTimeout(2000);
         const image = await page.screenshot({
           path: "./static/pic/test_testWeapptab.png"
         })

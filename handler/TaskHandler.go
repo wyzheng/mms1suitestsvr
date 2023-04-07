@@ -32,7 +32,7 @@ func ExecTest(w http.ResponseWriter, r *http.Request) {
 			break
 		}
 		status := *tasks[0].Status
-		if status == config.S_TAST_FINISH {
+		if status != config.S_NEW_TASK {
 			break
 		}
 	}
@@ -76,15 +76,17 @@ func ExecTest(w http.ResponseWriter, r *http.Request) {
 
 	// 新建测试任务
 	cTime := time.Now().Format("2006-01-02 15:04:05")
+	testId := time.Now().Format("20060102150405")
 	trigger := "joycesong Manual"
 	versionId := 1
 
 	newTask := &model.TestTask{
-		VersionId:  &versionId,
-		Trigger:    &trigger,
-		UpdateTime: &cTime,
-		Status:     &config.S_NEW_TASK,
-		Template:   &templateName,
+		VersionId: &versionId,
+		Trigger:   &trigger,
+		StartTime: &cTime,
+		Status:    &config.S_NEW_TASK,
+		Template:  &templateName,
+		TestId:    &testId,
 	}
 
 	taskId, err := dao.InsertTestTask(newTask)
@@ -96,6 +98,11 @@ func ExecTest(w http.ResponseWriter, r *http.Request) {
 
 	if err != nil {
 		xlog.Errorf("Get test file names failed! %v", err)
+		newTask.Status = &config.S_TAST_ERROR
+		err = dao.UpdateDataTask(taskId, newTask)
+		if err != nil {
+			return
+		}
 	}
 
 	for i := range caseFiles {
@@ -103,11 +110,15 @@ func ExecTest(w http.ResponseWriter, r *http.Request) {
 		xlog.Debugf("Get test file %v", caseFiles[i])
 		if err != nil {
 			xlog.Errorf("[COS] download test case %v from cos failed, file %v", caseFiles[i], err)
+			newTask.Status = &config.S_TAST_ERROR
+			err = dao.UpdateDataTask(taskId, newTask)
 			return
 		}
 	}
 	//执行测试任务，存储测试结果
-	go service.RunTest(taskId, templateName[0:pos])
+	newTask.Status = &config.S_TASK_TESTING
+	err = dao.UpdateDataTask(taskId, newTask)
+	go service.RunTest(taskId, testId, templateName[0:pos])
 
 	resp.Ret = define.E_SUCCESS
 	resp.Message = "testing!"
@@ -182,6 +193,7 @@ func GetTestTaskReport(w http.ResponseWriter, r *http.Request) {
 	ww.Write(html)
 	return
 }
+
 func GetTestCases(w http.ResponseWriter, r *http.Request) {
 	ww := w.(*xhttp.ResponseWriter)
 	resp := websvr.CommResp{}
@@ -211,6 +223,27 @@ func GetS1SResult(w http.ResponseWriter, r *http.Request) {
 
 	url := service.GetUrl("mmsearchossopenapisvr", "GetSearchResultLite")
 	resp.Data = fmt.Sprintf("%v", service.MMSearch(params, url))
+
+	ww.MarshalJSON(resp)
+	return
+}
+
+// GetTestCaseTaskDetail for web 获取case粒度的测试任务信息
+func GetTestCaseTaskDetail(w http.ResponseWriter, r *http.Request) {
+	ww := w.(*xhttp.ResponseWriter)
+	resp := websvr.CommResp{}
+	xlog.Debugf("[Handler] deal with a request.")
+
+	testId := websvr.GetIntFromUri(r, "id")
+	println(testId)
+	taskCaseArr, err := dao.GetTaskDetailsByTestId(testId)
+	if err != nil {
+		xlog.Errorf("[Dao] get tasks failed! %v", err)
+	}
+
+	resp.Data = taskCaseArr
+	resp.Ret = define.E_SUCCESS
+	resp.Message = "get all test cases!"
 
 	ww.MarshalJSON(resp)
 	return

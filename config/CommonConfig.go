@@ -5,6 +5,7 @@ var S_NEW_TASK = "NEW_TEST_TASK"
 
 var S_TASK_TESTING = "TASK_TESTING"
 var S_TAST_FINISH = "TASK_TEST_FINISHED"
+var S_TAST_ERROR = "TASK_TEST_ERROR"
 
 const DefaultReportContent = `<!DOCTYPE html>
 				<html lang="en">

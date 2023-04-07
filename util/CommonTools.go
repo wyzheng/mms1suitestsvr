@@ -10,6 +10,7 @@ import (
 	comm_define "mmtestgocommon/define"
 	comm_model "mmtestgocommon/model"
 	comm_tools "mmtestgocommon/tools"
+	"os"
 	"strings"
 )
 
@@ -57,11 +58,26 @@ func SendMsg(taskId int) error {
 }
 
 // JsonDecode 字符串解析json结构体
-func JsonDecode(content []byte) *model.TestRes {
+func JsonDecodeRes(content []byte) *model.TestRes {
 	var jsonRes model.TestRes
 	err := json.Unmarshal(content, &jsonRes)
 	if err != nil {
 		xlog.Errorf("[utils] json result decode error, err is %v", err)
 	}
 	return &jsonRes
+}
+
+func IsDirExist(dirPath string) bool {
+	_, err := os.Stat(dirPath)
+	return err == nil || os.IsExist(err)
+}
+
+func CreateDirIfNotExist(dirPath string) error {
+	if _, err := os.Stat(dirPath); os.IsNotExist(err) {
+		err = os.MkdirAll(dirPath, os.ModePerm)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
 }

@@ -26,7 +26,7 @@ var ormReleaseRecord = &orm.OrmOption{Table: ReleaseRecordTable}
 var ReleaseRecordModel, _ = orm.NewOrm(ormReleaseRecord, &model.ReleaseRecord{})
 
 var ormTestCase = &orm.OrmOption{Table: TestCaseTale}
-var TestCaseModel, _ = orm.NewOrm(ormTestCase, &model.TestCases{})
+var TestCaseModel, _ = orm.NewOrm(ormTestCase, &[]model.TestCases{})
 
 var ormTestCaseTask = &orm.OrmOption{Table: TestCaseTaskTable}
 var TestCaseTaskModel, _ = orm.NewOrm(ormTestCaseTask, &model.TestCaseTask{})
