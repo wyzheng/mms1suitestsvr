@@ -37,7 +37,7 @@
         style="width: 96%;margin: auto"
         :loading="is_loading"
         :data="taskData">
-        <vxe-table-column field="id" width="80" title="任务id"></vxe-table-column>
+        <vxe-table-column field="test_id" title="任务id"></vxe-table-column>
         <vxe-table-column field="template" width="360" title="模板包版本号"></vxe-table-column>
         <vxe-table-column field="update_time" title="任务发起时间" sortable></vxe-table-column>
         <vxe-table-column field="status" width="70" title="状态">
@@ -69,7 +69,7 @@
         <vxe-table-column field="report" title="测试报告">
           <template  #default="{ row }">
             <div v-if="row.status === 'TASK_TEST_FINISHED'">
-              <a @click="pathTo(row.id)"> 测试报告 </a>
+              <a @click="pathTo(row.test_id)"> 测试报告 </a>
             </div>
             <span v-else>
             暂无测试报告
@@ -155,7 +155,7 @@ export default {
         }
       }).catch(function (error) {
         console.log(error);
-        _this.$message.error("加载校验任务列表失败！");
+        _this.$message.error("加载测试任务列表失败！");
         _this.is_loading = false;
       });
     },
@@ -179,7 +179,7 @@ export default {
     },
 
     getStatus: function (row){
-      return row.status === "TASK_TEST_FINISHED" ? "完成" : "测试中";
+      return row.status === "TASK_TEST_FINISHED" ? "完成" : row.status === "TASK_TEST_ERROR" ? "发起测试任务失败" : "测试中";
     },
 
     startTest(){
