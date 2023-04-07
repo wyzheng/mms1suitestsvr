@@ -11,20 +11,20 @@ expect.extend({
       if (pass) {
         return {
           message: () =>
-            `expected the page to have the element of selector ${selector}`,
+            `Expected the page to have the element of selector ${selector}`,
           pass: true,
         };
       } else {
         return {
           message: () =>
-            `expected the page to have the element of selector ${selector}`,
+            `Expected the page to have the element of selector ${selector}`,
           pass: false,
         };
       }
     } catch (err) {
       return {
         message: () =>
-          `expected the page to have the element of selector ${selector}, but ${err}}`,
+          `Expected the page to have the element of selector ${selector}, but ${err}}`,
         pass: false,
       };
     }
@@ -36,20 +36,20 @@ expect.extend({
       if (pass) {
         return {
           message: () =>
-              `expected the ${received} to be start with ${selector}`,
+              `Expected the ${received} to be start with ${selector}`,
           pass: true,
         };
       } else {
         return {
           message: () =>
-              `expected the ${received} to be start with ${selector}`,
+              `Expected the ${received} to be start with ${selector}`,
           pass: false,
         };
       }
     } catch (err) {
       return {
         message: () =>
-            `expected the ${received} to be start with ${selector}, but ${err}}`,
+            `Expected the ${received} to be start with ${selector}, but ${err}}`,
         pass: false,
       };
     }

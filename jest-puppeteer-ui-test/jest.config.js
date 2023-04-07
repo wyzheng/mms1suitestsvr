@@ -24,7 +24,13 @@ module.exports = {
         "expand":true,
         "inlineSource":true
       }
-    ]
+    ],
+    [
+      "./reporter/report.js",
+      {
+        "publicPath":`./static/res/${resPath}`
+      }
+    ],
   ],
 };
 
