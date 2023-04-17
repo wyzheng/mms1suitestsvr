@@ -34,7 +34,7 @@ func RunTest(taskId int, testId string, templateName string) string {
 	xlog.Error(stderr.String())
 
 	//存储测试结果到cos
-	fileContent, err := os.ReadFile("./jest-puppeteer-ui-test/static/res/" + testId + "/jest_result.json")
+	fileContent, err := os.ReadFile("./jest-puppeteer-ui-test/static/res/reporter.json")
 	err = SetCosFile("s1s/res/"+testId+"/result.json", fileContent)
 	if err != nil {
 		xlog.Errorf("[COS] set test result into cos failed, file %v", err)
@@ -138,7 +138,7 @@ func sendMessage(res *model.TestRes, id int) {
 	SendRobotMessage(msg)
 }
 
-// ResDecodeSave 解析存储case粒度的测试结果
+// ResDecodeSave 解析以及存储case粒度的测试结果
 func ResDecodeSave(filePath string, testId *string) int {
 	fileContent, err := os.ReadFile(filePath)
 	if err != nil {
