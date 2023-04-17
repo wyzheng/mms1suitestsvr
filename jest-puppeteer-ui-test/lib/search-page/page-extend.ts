@@ -126,25 +126,27 @@ export class PageExtend {
       context: {
         dataTransfer: {
           getSearchData: async (params) => {
-            await new Promise<void>((resolve) => {
-              setTimeout(() => {
-                resolve();
-              }, 2000);
-            });
-            let data = {
-              "src": 25,
-              "uin": this.uin,
-              "query": params['query'],
-              "scene": params['scene'],
-              "business_type": params['type'],
-              "ExtReqParams": [
-                {
-                  "key": "ossSource",
-                  "uint_value": 10003
-                }
-              ]
+            if(params["searchId"] == "") {
+              await new Promise<void>((resolve) => {
+                setTimeout(() => {
+                  resolve();
+                }, 2000);
+              });
+              let data = {
+                "src": 25,
+                "uin": this.uin,
+                "query": params['query'],
+                "scene": params['scene'],
+                "business_type": params['type'],
+                "ExtReqParams": [
+                  {
+                    "key": "ossSource",
+                    "uint_value": 10003
+                  }
+                ]
+              }
+              return getSearchData(data);
             }
-            return getSearchData(data);
           },
           getTeachSearchData: async (params) => {
             await new Promise<void>((resolve) => {
