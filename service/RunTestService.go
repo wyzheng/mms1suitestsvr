@@ -46,9 +46,8 @@ func RunTest(taskId int, testId string, templateName string) string {
 	// 解析成功失败数目：
 	testRes := ""
 	res := util.JsonDecodeRes(fileContent)
-	if res != nil {
-		testRes = fmt.Sprintf("%v_%v_%v_%v_%v", *res.NumFailedTestSuites, *res.NumPassedTestSuites, *res.NumFailedTests, *res.NumPassedTests, err_num)
-	}
+	testRes = fmt.Sprintf("%v_%v_%v_%v_%v", *res.NumFailedTestSuites, *res.NumPassedTestSuites, *res.NumFailedTests, *res.NumPassedTests, err_num)
+	xlog.Debugf("%v_%v_%v_%v_%v", *res.NumFailedTestSuites, *res.NumPassedTestSuites, *res.NumFailedTests, *res.NumPassedTests, err_num)
 
 	//存储html结果到cos
 	cmd = exec.Command("bash", "-c", "tar -zcvf "+testId+"report.tar.gz "+testId+"/*")
