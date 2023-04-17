@@ -11,6 +11,7 @@ import (
 	"strings"
 )
 
+// GetIpPort 获取ip和端口地址
 func GetIpPort(module string) []string {
 	var ipList [][]string
 	env := []string{"shanghai", "shenzhen", "hk", "camel"}

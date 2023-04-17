@@ -34,7 +34,7 @@ func RunTest(taskId int, testId string, templateName string) string {
 	xlog.Error(stderr.String())
 
 	//存储测试结果到cos
-	fileContent, err := os.ReadFile("./jest-puppeteer-ui-test/static/res/reporter.json")
+	fileContent, err := os.ReadFile("./jest-puppeteer-ui-test/static/res/" + testId + "/jest_result.json")
 	err = SetCosFile("s1s/res/"+testId+"/result.json", fileContent)
 	if err != nil {
 		xlog.Errorf("[COS] set test result into cos failed, file %v", err)
@@ -44,8 +44,11 @@ func RunTest(taskId int, testId string, templateName string) string {
 	err_num := ResDecodeSave("./jest-puppeteer-ui-test/static/res/"+testId+"/jest_result.json", &testId)
 
 	// 解析成功失败数目：
+	testRes := ""
 	res := util.JsonDecodeRes(fileContent)
-	var testRes = fmt.Sprintf("%v_%v_%v_%v_%v", *res.NumFailedTestSuites, *res.NumPassedTestSuites, *res.NumFailedTests, *res.NumPassedTests, err_num)
+	if res != nil {
+		testRes = fmt.Sprintf("%v_%v_%v_%v_%v", *res.NumFailedTestSuites, *res.NumPassedTestSuites, *res.NumFailedTests, *res.NumPassedTests, err_num)
+	}
 
 	//存储html结果到cos
 	cmd = exec.Command("bash", "-c", "tar -zcvf "+testId+"report.tar.gz "+testId+"/*")
@@ -144,28 +147,30 @@ func ResDecodeSave(filePath string, testId *string) int {
 	res := util.JsonDecodeRes(fileContent)
 	errNum := 0
 	//var testCaseTasks []*model.TestCaseTask
-	for i := 0; i < len(*res.TestResults); i++ {
-		for j := 0; j < len(*(*res.TestResults)[i].TestResults); j++ {
-			var caseSingle = (*(*res.TestResults)[i].TestResults)[j]
-			message := ""
-			for k := 0; k < len(*caseSingle.FailureMessages); k++ {
-				message += (*caseSingle.FailureMessages)[k]
-			}
-			if *(caseSingle.Status) == "errored" {
-				errNum++
-			}
-			var testCaseTask = &model.TestCaseTask{
-				TestId:     testId,
-				CaseId:     caseSingle.CaseId,
-				Status:     caseSingle.Status,
-				Duration:   caseSingle.Duration,
-				FailureMsg: &message,
-				FailureTag: caseSingle.FailureTag,
-			}
-			//testCaseTasks = append(testCaseTasks, testCaseTask)
-			_, err := dao.InsertTestCaseTasks(testCaseTask)
-			if err != nil {
-				xlog.Errorf(`[Dao] insert case task error, error is %v`, err)
+	if res.TestResults != nil {
+		for i := 0; i < len(*res.TestResults); i++ {
+			for j := 0; j < len(*(*res.TestResults)[i].TestResults); j++ {
+				var caseSingle = (*(*res.TestResults)[i].TestResults)[j]
+				message := ""
+				for k := 0; k < len(*caseSingle.FailureMessages); k++ {
+					message += (*caseSingle.FailureMessages)[k]
+				}
+				if *(caseSingle.Status) == "errored" {
+					errNum++
+				}
+				var testCaseTask = &model.TestCaseTask{
+					TestId:     testId,
+					CaseId:     caseSingle.CaseId,
+					Status:     caseSingle.Status,
+					Duration:   caseSingle.Duration,
+					FailureMsg: &message,
+					FailureTag: caseSingle.FailureTag,
+				}
+				//testCaseTasks = append(testCaseTasks, testCaseTask)
+				_, err := dao.InsertTestCaseTasks(testCaseTask)
+				if err != nil {
+					xlog.Errorf(`[Dao] insert case task error, error is %v`, err)
+				}
 			}
 		}
 	}

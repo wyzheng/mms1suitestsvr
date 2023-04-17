@@ -79,7 +79,7 @@ async function mmSearch(url: string, data){
 export  async function getSearchData(data) {
   let url = getUrl("mmsearchossopenapisvr", "GetSearchResultLite")
   let resp =  await mmSearch(url, data);
-  return resp;
+  return resp.resp;
 }
 
 export async function teach(data) {
