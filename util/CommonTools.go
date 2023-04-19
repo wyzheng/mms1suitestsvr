@@ -38,7 +38,7 @@ func AssembleUser(user string, msgType string) string {
 }
 
 // SendMsg 发送测试完成消息
-func SendMsg(taskId int) error {
+func SendMsg(taskId string) error {
 	msg := comm_model.RtxMessage{}
 	user := "joycesong"
 	msg.Sender = user

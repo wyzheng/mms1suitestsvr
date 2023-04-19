@@ -26,7 +26,7 @@ module.exports = {
       }
     ],
     [
-      "./reporter/report.js",
+      "./report/report.js",
       {
         "publicPath":`./static/res/${resPath}`
       }

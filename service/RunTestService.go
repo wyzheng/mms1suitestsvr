@@ -73,14 +73,14 @@ func RunTest(taskId int, testId string, templateName string) string {
 		xlog.Error(err)
 	}*/
 
-	err = util.SendMsg(taskId)
+	err = util.SendMsg(testId)
 	if err != nil {
 		xlog.Errorf("[wechat work] send message error %v", err)
 	}
 	//更新测试状态
 	UpdateTestTask(taskId, &testRes)
 
-	sendMessage(res, taskId)
+	sendMessage(res, testId)
 	return stdout.String()
 }
 
@@ -119,7 +119,7 @@ func UpdateTestTask(id int, res *string) {
 	}
 }
 
-func sendMessage(res *model.TestRes, id int) {
+func sendMessage(res *model.TestRes, id string) {
 	xlog.Debugf("[sql] generate robot message")
 	numSuite := *res.NumFailedTestSuites + *res.NumPassedTestSuites
 	numCase := *res.NumFailedTests + *res.NumPassedTests

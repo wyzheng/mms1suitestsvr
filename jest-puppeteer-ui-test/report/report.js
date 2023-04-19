@@ -60,8 +60,6 @@ var MyCustomReporter = /** @class */ (function () {
                                     failureMessage = results.testResults[i].testResults[j].failureMessages[k];
                                     if (failureMessage.indexOf('Expected:') === -1) {
                                         results.testResults[i].testResults[j].status = "errored";
-                                    }
-                                    else if (failureMessage.indexOf('Expected:') !== -1) {
                                         failTag += "assertError#";
                                     }
                                     else if (failureMessage.indexOf("Cannot read properties of null") !== -1 || failureMessage.indexOf("TimeoutError: Waiting for selector") !== -1) {
