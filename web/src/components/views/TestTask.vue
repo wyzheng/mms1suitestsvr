@@ -19,23 +19,17 @@
         <vxe-table-column field="update_time" title="任务发起时间" sortable></vxe-table-column>
         <vxe-table-column field="status" width="70" title="状态">
           <template  #default="{ row }">
-            <a-tag style="width:50px;" color= "gray" size="mini">
-              {{getStatus(row)}}
-            </a-tag>
+            <a-tag style="width:50px;" color= "gray" size="mini">{{getStatus(row)}}</a-tag>
           </template>
         </vxe-table-column>
         <vxe-table-column title="测试结果" width="320">
           <template  #default="{ row }">
             <div v-if="row.status === 'TASK_TEST_FINISHED'">
               <span>共执行{{dealTestRes(row)[0]}}个测试合集，成功率:</span>
-              <a-tag style="width:60px;" :color="dealTestRes(row)[1] === '100.0%' ? 'green' : 'red'" size="mini">
-                {{dealTestRes(row)[1]}}
-              </a-tag>
+              <a-tag style="width:60px;" :color="dealTestRes(row)[1] === '100.0%' ? 'green' : 'red'" size="mini">{{dealTestRes(row)[1]}}</a-tag>
               <br>
               <span>包含{{dealTestRes(row)[2]}}个测试用例，成功率:</span>
-              <a-tag style="width:60px;" :color="dealTestRes(row)[3] === '100.0%' ? 'green' : 'red'" size="mini">
-                {{dealTestRes(row)[3]}}
-              </a-tag>
+              <a-tag style="width:60px;" :color="dealTestRes(row)[3] === '100.0%' ? 'green' : 'red'" size="mini">{{dealTestRes(row)[3]}}</a-tag>
             </div>
             <div v-else>
             暂无测试结果

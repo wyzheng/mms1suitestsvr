@@ -1,36 +1,98 @@
 <template>
   <div>
+    <a-card>
+      <a-descriptions title="测试任务信息"  style="width: 96%;margin: auto">
+        <a-descriptions-item label="testId"> {{taskData.test_id}}</a-descriptions-item>
+        <a-descriptions-item label="状态">{{taskData.status}}</a-descriptions-item>
+        <a-descriptions-item label="开始时间">{{taskData.start_time}}</a-descriptions-item>
+        <a-descriptions-item label="结束时间">{{taskData.update_time}}</a-descriptions-item>
+        <a-descriptions-item label="模板号">{{taskData.template}}</a-descriptions-item>
+        <a-descriptions-item label="用例合集数">{{taskData.res[0]}}</a-descriptions-item>
+        <a-descriptions-item label="用例个数">{{taskData.res[2]}}</a-descriptions-item>
+        <a-descriptions-item label="任务失败数">{{taskData.res[4]}}</a-descriptions-item>
+        <a-descriptions-item label="成功率">{{taskData.res[3]}}</a-descriptions-item>-->
+      </a-descriptions>
+    </a-card>
+
 
     <a-card>
+      <a-row>
+        <a-form
+          :model="formState"
+          layout="inline"
+          autocomplete="off"
+          style="margin-bottom: 2%; margin-left: 2%"
+        >
+          <a-form-item
+            label="筛选模块"
+            name="筛选模块"
+          >
+            <a-select
+              @focus="getSuites"
+              :value="selectedValue"
+              :options="suiteSelect"
+              style="width: 220px"
+              @change="handleChange">
+              <!--          <a-select-option v-for="(item,id) in suiteSelect" :key="id" :value="item.value">{{item.label}}</a-select-option>-->
+            </a-select>
+          </a-form-item>
+
+          <a-form-item>
+            <a-button type="primary" @click="filterTableData">筛选</a-button>
+          </a-form-item>
+
+          <a-form-item>
+            <a-button type="primary" @click="getAllCaseTask">清除筛选条件</a-button>
+          </a-form-item>
+        </a-form>
+
+      </a-row>
       <vxe-table
         border
         stripe
-        resizable
+        auto-resize
         highlight-hover-row
         :seq-config="{startIndex: (tablePage.currentPage - 1) * tablePage.pageSize}"
         style="width: 96%;margin: auto"
         :loading="is_loading"
-        :data="caseTaskData">
-        <vxe-table-column field="case_id" title="case编号"></vxe-table-column>
-        <vxe-table-column field="description" title="用例描述"></vxe-table-column>
-        <vxe-table-column field="owner" title="负责人"></vxe-table-column>
-        <vxe-table-column field="duration" title="耗时(秒)"></vxe-table-column>
-        <vxe-table-column title="用例状态">
+        :data="caseTaskData"
+        ref="table">
+        <vxe-column field="suite_desc" sortable title="所属用例模块"></vxe-column>
+        <vxe-column field="suite" title="所属用例合集" sortable>
           <template #default="{ row }">
-            <a-tag :color="getStatus(row)">
+            <span class="vxe-cell--label">{{getSuite(row)}}</span>
+          </template>
+        </vxe-column>
+        <vxe-column field="func_name" title="用例函数名">
+          <template #default="{ row }"><span class="vxe-cell--label">{{getCaseFuncName(row)}}</span>
+          </template>
+        </vxe-column>
+<!--        <vxe-column field="case_id" title="case编号"></vxe-column>-->
+        <vxe-column field="description" title="用例描述"></vxe-column>
+        <vxe-column field="owner" title="负责人"></vxe-column>
+        <vxe-column field="duration" title="耗时(秒)">
+          <template #default="{ row }">{{row.duration / 1000}}</template>
+        </vxe-column>
+        <vxe-column title="用例状态">
+          <template #default="{ row }">
+            <a-tag :color="getColor(row)">
               {{sta[row.status]}}
             </a-tag>
           </template>
-        </vxe-table-column>
-        <vxe-table-column field="fail_tag" title="失败原因">
+        </vxe-column>
+        <vxe-column field="fail_tag" title="失败原因">
           <template #default="{ row }">
-            <a-tag v-for="item in getTags(row)" color="red">
-              {{item}}
-            </a-tag>
+            <a-tag v-for="item in getTags(row)" :key= item.id color="red">{{item}}</a-tag>
           </template>
-        </vxe-table-column>
+        </vxe-column>
 
+        <vxe-column field="details" title="运行详情">
+          <template #default="{ row }">
+            <a-button @click="showModal(row)"> 运行详情 </a-button>
+          </template>
+        </vxe-column>
       </vxe-table>
+
       <vxe-pager
         background
         size="small"
@@ -43,8 +105,22 @@
       </vxe-pager>
     </a-card>
 
-    <iframe style="width: 90%; height: 1000px" :src="url">
+    <a-modal :visible="visible" width="80%" @ok="handleOk">
 
+      <div v-for="item in attachData" :key= item.createTime style="display: inline-block">
+        <p>{{item.description}}</p>
+      </div>
+
+      <p v-if="attachFile.length !== 0"> 截图信息：</p>
+      <a-row>
+        <div v-for="item in attachFile" :key= item.createTime style="display: inline-block">
+          <img :src="url + item.filePath.substr(1)" :alt= "item.description" :width="200" :height="300"/>
+          <p>{{item.description}}</p>
+        </div>
+      </a-row>
+    </a-modal>
+
+    <iframe style="width: 90%; height: 1000px" :src="url">
     </iframe>
   </div>
 </template>
@@ -77,7 +153,14 @@ export default {
         dataTimeout: "后台数据超时",
         Timeout: "任务超时",
         unknown: "未知错误"
-      }
+      },
+      visible: false,
+      attachData: [],
+      attachFile: [],
+      taskData: {},
+      suiteSelect: [],
+      selectedValue: "",
+      formState: {},
     }
   },
 
@@ -86,6 +169,7 @@ export default {
     _this.id = _this.$route.query.id;
     console.log(_this.id);
     _this.getAllCaseTask();
+    _this.getTaskDetail();
     axios({
       method : "get",
       url : "/cgi/backend/GetReport",
@@ -94,7 +178,7 @@ export default {
       }
     }).then(function (response) {
       if (0 === response.data.Ret) {
-        _this.url = "http://9.134.52.227/"
+        _this.url = "http://9.134.52.227"
       } else {
         _this.$message.error(`获取测试报告失败！Ret：${response.data.Message}`);
       }
@@ -105,6 +189,28 @@ export default {
   },
 
   methods:{
+    getTaskDetail: async function(){
+      let _this = this;
+      _this.is_loading = true;
+      await axios({
+        method: "get",
+        url: "/cgi/GetTestTaskByTestId",
+        params: {
+          id: _this.id
+        }
+      }).then(function (response) {
+        console.log(response.data.Data);
+        _this.taskData = response.data.Data;
+        _this.taskData.start_time = new Date(_this.taskData.start_time).toLocaleString('zh-CN', { timeZone: 'Asia/Shanghai' });
+        _this.taskData.update_time = new Date(_this.taskData.update_time).toLocaleString('zh-CN', { timeZone: 'Asia/Shanghai' });
+        _this.taskData.status = _this.getStatus(_this.taskData);
+        _this.taskData.res = _this.dealTestRes(_this.taskData)
+      }).catch(function (error) {
+        console.log(error);
+        _this.$message.error("加载测试任务详情失败！");
+        _this.is_loading = false;
+      });
+    },
     handlePageChange: function ({currentPage, pageSize}) {
       this.tablePage.currentPage = currentPage;
       this.tablePage.pageSize = pageSize;
@@ -137,10 +243,6 @@ export default {
         _this.is_loading = false;
       });
     },
-
-    getStatus: function (row){
-      return row.status=== "passed" ? "green" : "red";
-    },
     getTags: function (row){
       console.log(row);
       let tagArr = []
@@ -152,6 +254,99 @@ export default {
         console.log(tagArr);
       }
       return tagArr
+    },
+    showModal: function (row){
+      console.log(row);
+      this.visible = true
+      console.log(row);
+      console.log(JSON.parse(row.attach_info));
+      let attachInfo = JSON.parse(row.attach_info)
+      this.attachData = [];
+      this.attachFile = [];
+      for (let i = 0; i < attachInfo.length; i++) {
+        if (attachInfo[i].filePath !== undefined){
+          this.attachFile.push(attachInfo[i])
+        }else{
+          this.attachData.push(attachInfo[i])
+        }
+      }
+    },
+    handleOk: function (){
+      this.visible = false;
+    },
+    dealTestRes: function (row){
+      if (row.test_result !== null){
+        let res = row.test_result.split("_");
+        let suiteNum = Number(res[0]) + Number(res[1]);
+        let suitePer = 0.0 + "%" ;
+        if (suiteNum !== 0){
+          suitePer = ((Number(res[1]) / suiteNum) * 100).toFixed(1)+ "%" ;
+        }
+        let caseNum = Number(res[2]) + Number(res[3]);
+        let casePer = 0.0 + "%";
+        if (caseNum !== 0){
+          casePer = ((Number(res[3]) / caseNum) * 100).toFixed(1)+"%" ;
+        }
+        let errNum = 0;
+        if (res.length == 5){
+          errNum = Number(res[4])
+        }
+        return [suiteNum, suitePer, caseNum, casePer, errNum];
+      }else {
+        return [0, 0, 0, 0];
+      }
+    },
+    getStatus: function (row){
+      return row.status === "TASK_TEST_FINISHED" ? "完成" : "测试中";
+    },
+    getColor: function (row){
+      return row.status=== "passed" ? "green" : "red";
+    },
+
+    getSuite: function (row) {
+      let caseId = row.case_id;
+      let arr = caseId.split(".");
+      let suite = "";
+      let index = caseId.indexOf(arr[arr.length - 1]);
+      return caseId.substr(0, index - 1);
+    },
+    getCaseFuncName: function (row) {
+      let arr = row.case_id.split(".");
+      return arr[arr.length - 1];
+    },
+
+    getSuites: function (){
+      let suiteArr = [];
+      this.suiteSelect = [];
+      for (let i = 0; i < this.allData.length; i++) {
+        let suite = this.getSuite(this.allData[i]);
+        console.log("%%%%%");
+        if (suiteArr.indexOf(suite) === -1){
+          let item = {
+            value: suite,
+            label: suite,
+          }
+          this.suiteSelect.push(item);
+          suiteArr.push(suite)
+        }
+      }
+    },
+    handleChange: function (value){
+      this.selectedValue = value;
+    },
+    filterTableData: function () {
+      console.log(this.selectedValue);
+      let _this = this;
+      this.is_loading = true;
+      let filterData = [];
+      for (let i = 0; i < this.allData.length; i++) {
+        if (this.allData[i].case_id.indexOf(this.selectedValue) !== -1){
+          filterData.push(this.allData[i]);
+        }
+      }
+      this.allData = filterData;
+      _this.caseTaskData = _this.allData.slice((_this.tablePage.currentPage - 1) * _this.tablePage.pageSize, _this.tablePage.currentPage * _this.tablePage.pageSize);
+      this.is_loading = false;
     }
   }
 
@@ -159,5 +354,8 @@ export default {
 </script>
 
 <style scoped>
-
+.template-wrapper {
+  display: flex;
+  align-items: center;
+}
 </style>
