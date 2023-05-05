@@ -312,6 +312,18 @@ export class PageExtend {
       this.extendInfo = "";
       this.extendInfo = params['feedId'];
     }
+
+    if(func === "openEmotionPage"){
+      //console.log("############");
+      this.extendInfo = "";
+      if(params['type'] == 1){
+        //专辑
+        this.extendInfo = params['productURL'];
+      }else {
+        this.extendInfo = params['encryptUrl'];
+      }
+
+    }
   }
 
   public async click(type: string) {
