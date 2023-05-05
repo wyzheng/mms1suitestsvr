@@ -248,3 +248,23 @@ func GetTestCaseTaskDetail(w http.ResponseWriter, r *http.Request) {
 	ww.MarshalJSON(resp)
 	return
 }
+
+func GetTestTaskByTestId(w http.ResponseWriter, r *http.Request) {
+	ww := w.(*xhttp.ResponseWriter)
+	resp := websvr.CommResp{}
+	xlog.Debugf("[Handler] deal with a request.")
+
+	testId := websvr.GetStringFromUri(r, "id")
+
+	taskArr, err := dao.GetTestTaskByTestId(testId)
+	if err != nil {
+		xlog.Errorf("[Dao] get tasks failed! %v", err)
+	}
+
+	resp.Data = taskArr
+	resp.Ret = define.E_SUCCESS
+	resp.Message = "get all tasks!"
+
+	ww.MarshalJSON(resp)
+	return
+}

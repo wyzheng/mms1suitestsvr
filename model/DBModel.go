@@ -63,4 +63,5 @@ type TestCaseTask struct {
 	Duration   *int    `json:"duration" col:"duration"`
 	FailureMsg *string `json:"failure_msg" col:"failure_msg"`
 	FailureTag *string `json:"failure_tag" col:"failure_tag"`
+	AttachInfo *string `json:"attach_info" col:"attach_info"`
 }

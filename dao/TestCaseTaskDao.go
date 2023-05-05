@@ -58,7 +58,7 @@ func JoinQuery(db *sql.DB, table string, conditions map[string]interface{}, mode
 		return nil, err
 	}
 
-	sqlStr := "select A.*, B.description, B.owner from test_task_case as A join test_cases as B on A.case_id = B.case_id where "
+	sqlStr := "select A.*, B.*  from test_task_case as A join test_cases as B on A.case_id = B.case_id where "
 	for condition := range conditions {
 		value := conditions[condition]
 		xlog.Debugf(" condition == limit: %v, condition: %v ", condition == "limit", condition)

@@ -20,6 +20,7 @@ type TestRes struct {
 	NumPassedTestSuites *int `json:"numPassedTestSuites"`
 	NumPassedTests      *int `json:"numPassedTests"`
 	TestResults         *[]TestResSingleSuite
+	AttachInfos         *map[string]interface{} `json:"attachInfos"`
 }
 
 type TestResSingleSuite struct {
@@ -53,4 +54,15 @@ type TestResCaseWeb struct {
 	FailureTag  *string `json:"failure_tag" col:"failure_tag"`
 	Description *string `json:"description" col:"description"`
 	Owner       *string `json:"owner" col:"owner"`
+	AttachInfo  *string `json:"attach_info" col:"attach_info"`
+	SuiteDesc   *string `json:"suite_desc" col:"suite_desc"`
+}
+
+type TAttachObject struct {
+	Description *string `json:"description"`
+	CreateTime  *string `json:"createTime"`
+	ExtName     *string `json:"extName"`
+	FilePath    *string `json:"filePath"`
+	FileName    *string `json:"fileName"`
+	CaseId      *string `json:"caseId"`
 }

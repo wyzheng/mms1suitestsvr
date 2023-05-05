@@ -76,7 +76,28 @@ func GetTestTaskById(id int) (*model.TestTask, error) {
 		false)
 
 	if len(list) == 0 {
-		return nil, errors.New("no test file of this name")
+		return nil, errors.New("no test task of this id")
+	}
+
+	return list[0].(*model.TestTask), err
+}
+
+func GetTestTaskByTestId(testId string) (*model.TestTask, error) {
+	xlog.Debugf("[DAO]:Get a task from db by %s.", testId)
+
+	conditions := make(map[string]interface{})
+	conditions["test_id"] = testId
+
+	err, list := database.Query(
+		config.Mms1suitestDB,
+		config.TestTaskTable,
+		conditions,
+		&model.TestTask{},
+		"id",
+		false)
+
+	if len(list) == 0 {
+		return nil, errors.New("no test task of this id")
 	}
 
 	return list[0].(*model.TestTask), err

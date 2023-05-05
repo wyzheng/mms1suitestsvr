@@ -2,6 +2,7 @@ package service
 
 import (
 	"bytes"
+	"encoding/json"
 	"fmt"
 	"git.woa.com/wego/wego2/xlog"
 	"mms1suitestsvr/config"
@@ -157,6 +158,13 @@ func ResDecodeSave(filePath string, testId *string) int {
 				if *(caseSingle.Status) == "errored" {
 					errNum++
 				}
+				caseId := *caseSingle.CaseId
+				attachInfo := ""
+				if res.AttachInfos != nil {
+					a := (*res.AttachInfos)[caseId]
+					marshal, _ := json.Marshal(a)
+					attachInfo = string(marshal)
+				}
 				var testCaseTask = &model.TestCaseTask{
 					TestId:     testId,
 					CaseId:     caseSingle.CaseId,
@@ -164,6 +172,7 @@ func ResDecodeSave(filePath string, testId *string) int {
 					Duration:   caseSingle.Duration,
 					FailureMsg: &message,
 					FailureTag: caseSingle.FailureTag,
+					AttachInfo: &attachInfo,
 				}
 				//testCaseTasks = append(testCaseTasks, testCaseTask)
 				_, err := dao.InsertTestCaseTasks(testCaseTask)
