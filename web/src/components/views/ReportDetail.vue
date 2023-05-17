@@ -16,6 +16,7 @@
 
 
     <a-card>
+      <a-descriptions title="用例任务列表"  style="width: 96%;margin: auto"></a-descriptions>
       <a-row>
         <a-form
           :model="formState"
@@ -42,7 +43,7 @@
           </a-form-item>
 
           <a-form-item>
-            <a-button type="primary" @click="getAllCaseTask">清除筛选条件</a-button>
+            <a-button type="primary" @click="cleanFilter">清除筛选条件</a-button>
           </a-form-item>
         </a-form>
 
@@ -105,19 +106,59 @@
       </vxe-pager>
     </a-card>
 
-    <a-modal :visible="visible" width="80%" @ok="handleOk">
+    <a-modal :visible="visible"
+             width="80%"
+             @ok="handleOk"
+             @cancel="handleOk"
+             title="运行详情"
+             :ok-text="'确认'"
+             :cancel-text="'取消'">
+      <a-card>
+        <a-descriptions title="测试详情"  style="width: 96%;margin: auto">
+          <a-descriptions-item label="testId"> {{taskData.test_id}}</a-descriptions-item>
+          <a-descriptions-item label="模板号">{{taskData.template}}</a-descriptions-item>
+          <a-descriptions-item label="用例">{{getCaseFuncName(rowData)}}</a-descriptions-item>
+          <a-descriptions-item label="用例描述">{{rowData.description}}</a-descriptions-item>
+          <a-descriptions-item :color="getColor(rowData)" label="状态">{{sta[rowData.status]}}</a-descriptions-item>
+          <a-descriptions-item label="开始时间">{{taskData.start_time}}</a-descriptions-item>
+          <a-descriptions-item label="耗时">{{rowData.duration / 1000}}秒</a-descriptions-item>
+          <a-descriptions-item label="负责人">{{rowData.owner}}</a-descriptions-item>
+        </a-descriptions>
+      </a-card>
 
-      <div v-for="item in attachData" :key= item.createTime style="display: inline-block">
-        <p>{{item.description}}</p>
-      </div>
+      <a-card v-if="typeof (rowData.failure_msg) != 'undefined'">
+        <a-row>
+          <a-col :span=2>
+            <p>错误信息：</p>
+          </a-col>
+          <a-col :span=9>
+            <a-tag v-for="item in getTags(rowData)" :key= item.id color="red">{{item}}</a-tag>
+          </a-col>
+        </a-row>
 
-      <p v-if="attachFile.length !== 0"> 截图信息：</p>
-      <a-row>
-        <div v-for="item in attachFile" :key= item.createTime style="display: inline-block">
-          <img :src="url + item.filePath.substr(1)" :alt= "item.description" :width="200" :height="300"/>
-          <p>{{item.description}}</p>
+        <div style="display: inline-block; background-color: rgba(188,188,188,0.16); width: 100%; height: auto; border-radius: 10px">
+          <pre style="margin-top: 1%"> {{rowData.failure_msg}} </pre>
         </div>
-      </a-row>
+      </a-card>
+
+      <a-card v-if="attachData.length !== 0">
+        <p>附加信息：</p>
+        <div v-for="item in attachData"
+             :key= item.createTime
+             style="display: inline-block; background-color: rgba(188,188,188,0.16); width: 90%; height: auto; border-radius: 10px">
+          <pre style="margin-top: 1%"> {{item.description}} </pre>
+        </div>
+      </a-card>
+
+      <a-card v-if="attachFile.length !== 0" style="margin-top: 1%">
+        <p> 截图信息：</p>
+        <a-row>
+          <div v-for="item in attachFile" :key= item.createTime style="display: inline-block">
+            <img :src="url + item.filePath.substr(1)" :alt= "item.description" width="30%" height="35%"/>
+            <p>{{item.description}}</p>
+          </div>
+        </a-row>
+      </a-card>
     </a-modal>
 
     <iframe style="width: 90%; height: 1000px" :src="url">
@@ -161,6 +202,7 @@ export default {
       suiteSelect: [],
       selectedValue: "",
       formState: {},
+      rowData: {},
     }
   },
 
@@ -257,17 +299,18 @@ export default {
     },
     showModal: function (row){
       console.log(row);
-      this.visible = true
+      this.visible = true;
+      this.rowData = row;
       console.log(row);
       console.log(JSON.parse(row.attach_info));
       let attachInfo = JSON.parse(row.attach_info)
       this.attachData = [];
       this.attachFile = [];
       for (let i = 0; i < attachInfo.length; i++) {
-        if (attachInfo[i].filePath !== undefined){
-          this.attachFile.push(attachInfo[i])
+        if (JSON.parse(attachInfo[i]).filePath !== undefined){
+          this.attachFile.push(JSON.parse(attachInfo[i]))
         }else{
-          this.attachData.push(attachInfo[i])
+          this.attachData.push(JSON.parse(attachInfo[i]))
         }
       }
     },
@@ -311,8 +354,10 @@ export default {
       return caseId.substr(0, index - 1);
     },
     getCaseFuncName: function (row) {
-      let arr = row.case_id.split(".");
-      return arr[arr.length - 1];
+      if (row.case_id !== undefined){
+        let arr = row.case_id.split(".");
+        return arr[arr.length - 1];
+      }
     },
 
     getSuites: function (){
@@ -340,13 +385,19 @@ export default {
       this.is_loading = true;
       let filterData = [];
       for (let i = 0; i < this.allData.length; i++) {
-        if (this.allData[i].case_id.indexOf(this.selectedValue) !== -1){
+        if (this.allData[i].case_id.indexOf(this.selectedValue) !== -1) {
           filterData.push(this.allData[i]);
         }
       }
       this.allData = filterData;
+      _this.tablePage.totalResult = this.allData.length;
+      _this.tablePage.currentPage = 1;
       _this.caseTaskData = _this.allData.slice((_this.tablePage.currentPage - 1) * _this.tablePage.pageSize, _this.tablePage.currentPage * _this.tablePage.pageSize);
       this.is_loading = false;
+    },
+    cleanFilter: async function() {
+      this.selectedValue = "";
+      await this.getAllCaseTask();
     }
   }
 

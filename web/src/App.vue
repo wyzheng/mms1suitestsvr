@@ -57,7 +57,7 @@
       </a-layout-content>
       <a-layout-footer style="text-align: center">
         Designed by 微信测试中心 <br>
-        Copyright © 1998-2022 Tencent Inc. All Rights Reserved.
+        Copyright © 1998-2023 Tencent Inc. All Rights Reserved.
       </a-layout-footer>
     </a-layout>
   </a-layout>
