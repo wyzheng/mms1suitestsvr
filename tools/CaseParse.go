@@ -40,11 +40,13 @@ func GetTestNames(content []byte, filepath string) ([]*model.TestCases, *model.T
 	index := indexOf(pref, "__tests__")
 	println(index)
 
+	//包名
 	module := ""
 
 	for i := index + 1; i < len(pref); i++ {
 		module += pref[i] + "."
 	}
+
 	// 提取所有的测试用例对象
 	var testCases []*model.TestCases
 	for _, match := range matches0 {

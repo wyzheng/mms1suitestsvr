@@ -56,6 +56,7 @@ type TestResCaseWeb struct {
 	Owner       *string `json:"owner" col:"owner"`
 	AttachInfo  *string `json:"attach_info" col:"attach_info"`
 	SuiteDesc   *string `json:"suite_desc" col:"suite_desc"`
+	FailureMsg  *string `json:"failure_msg" col:"failure_msg"`
 }
 
 type TAttachObject struct {

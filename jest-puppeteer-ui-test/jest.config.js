@@ -26,7 +26,7 @@ module.exports = {
       }
     ],
     [
-      "./report/report.js",
+      "@tencent/jest-report-search/lib/report.js",
       {
         "publicPath":`./static/res/${resPath}`
       }
