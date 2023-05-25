@@ -564,3 +564,75 @@ export function bizWeAppsList(id, tid, sid) {
     weappServiceText:  parentClass + `div.account-header div.header-text div.sevice-search.service-list div div.heavy-links div.heavy-link:nth-of-type(${sid}) div div`,
   }
 }
+
+//tab 栏
+export const tabClass = {
+  select_tab: "#search_result > div.unit__outer > div > div > div.unit__item:nth-of-type(2)",
+  select_all: "#search_result > div.unit__outer > div > div > div.unit__item:nth-of-type(1)",
+  selected: `#search_result > div.unit__outer > div > div > div.unit__item.selected span.unit__item-title`
+}
+
+// 表情
+export function stickersClass(id) {
+  return{
+    box: `div.stickers-all`, //召回
+    title: `div.stickers-all div.search-block__hd div.search-block__title div.search-block__title span`,
+    more: `div.stickers-all div.search-block__hd div.search-block__title div.more__item`,
+    stickersAll: `div.stickers-all div.stickers-all__inner div.stickers-all__wrap div.sticker-all__item`,
+    stickersItem: `div.stickers-all div.stickers-all__inner div.stickers-all__wrap div.sticker-all__item:nth-of-type(${id}) div.sticker-all__item-inner`,
+    stickersTag: `div.stickers-all div.stickers-all__inner div.stickers-all__wrap div.sticker-all__item:nth-of-type(${id}) span.album-tag`,
+    // 垂搜页
+    album: `div.search_block.basic-block-stickersAlbum`,
+    albumTitle: `div.search_block.basic-block-stickersAlbum div.search-block__hd div.search-block__title div.search-block__title span`,
+    albumList: `div.search_block.basic-block-stickersAlbum div.search_list div.search_item div.search_item_inner div.stickers_album div.stickers_album_thumb`,
+    albumInfoTitle: `div.search_block.basic-block-stickersAlbum div.search_list div.search_item div.search_item_inner div.stickers_album div.stickers_album_info span.stickers_album_title`,
+    stickerBox: `div.stickers-single`,
+    stickerTabAll: `div.stickers-single div.single`,
+    stickerSingle: `div.stickers-single div.single:nth-of-type(${id})`,
+    stickerImg: `div.stickers-single div.single:nth-of-type(${id}) div.box div.client-image`
+  }
+}
+
+export function musicClass(id){
+  return{
+    box: `div.basic-block-music`,
+    title: `div.basic-block-music div.search-block__hd div.search-block__title span`,
+    more: `div.basic-block-music div.search-block__hd div.more__item`,
+    musicAll: `div.basic-block-music div.search_list div.music`,
+    musicItem: `div.basic-block-music div.search_list div.music:nth-of-type(${id})`,
+    musicThumb: `div.basic-block-music div.search_list div.music:nth-of-type(${id}) div.music__thumb`,
+    musicName: `div.basic-block-music div.search_list div.music:nth-of-type(${id}) div.music__bd div.music__info div.music__title span`,
+    musicArtist: `div.basic-block-music div.search_list div.music:nth-of-type(${id}) div.music__bd div.music__info div.music__artist>span:not(.ui-tags.ui-tags-vertical-align)`,
+    musicTag: `div.basic-block-music div.search_list div.music:nth-of-type(${id}) div.music__bd div.music__info div.music__artist span.ui-tags.ui-tags-vertical-align`,
+    musicTagContent: `div.basic-block-music div.search_list div.music:nth-of-type(${id}) div.music__bd div.music__info div.music__artist span.ui-tags.ui-tags-vertical-align div.ui-tag-title`,
+    musicK: `div.basic-block-music div.search_list div.music:nth-of-type(${id}) div.music__bd div.music__opts div.music__opt div:nth-of-type(1)`,
+    musicPlay: `div.basic-block-music div.search_list div.music:nth-of-type(${id}) div.music__bd div.music__opts div.music__opt div div.music__icon-play`,
+    musicRelationTag: `div.basic-block-music div.search_list div.music:nth-of-type(${id}) div.music__bd div.music__info div.music__bottom div.ui-tags div.ui-tag-title`,
+    musicLyric: `div.basic-block-music div.search_list div.music:nth-of-type(${id}) div.music__bd div.music__info div.music__bottom div`,
+    musicSource: `div.basic-block-music div.block__source.line div.line__item:nth-of-type(2)`,
+    musicIcon: `div.basic-block-music div.block__source.line div.line__item:nth-of-type(1)`,
+    //垂搜,除了来源，跟混排页面class相同
+    musicTabSource: `div.basic-block-music div.search_list div.music:nth-of-type(${id}) div.music__bd div.music__info div.ui-source span`,
+  }
+}
+
+export function musicCardClass(id){
+  return{
+    box: `div.search_result_block.ui-zone`,
+    musicThumb: `div.search_result_block.ui-zone div.music-info div.online-thumb`,
+    musicName: `div.search_result_block.ui-zone div.music-info div.music-info__rt div.music-info__rtt div.music-info__meta span`,
+    musicMore: `div.search_result_block.ui-zone div.music-info div.music-info__rt div.music-info__rtt div.music-info__more-link`,
+    musicMoreWord: `div.search_result_block.ui-zone div.music-info div.music-info__rt div.music-info__rtt div.music-info__more-link div.music-info__more-link__title`,
+    musicArtist: `div.search_result_block.ui-zone div.music-info div.music-info__rt div.music-info__album`,
+    musicTags: `div.search_result_block.ui-zone div.music-info div.music-info__rt div.music-info__tags span.ui-tags div.ui-tag`,
+    musicTag: `div.search_result_block.ui-zone div.music-info div.music-info__rt div.music-info__tags span.ui-tags div.ui-tag:nth-of-type(${id}) div.ui-tag-title`,
+    musicOpts: `div.search_result_block.ui-zone div.music-outlinks`,
+    musicLyric: `div.search_result_block.ui-zone div.music-outlinks div.music-outlinks__link:nth-of-type(1)`,
+    musicK: `div.search_result_block.ui-zone div.music-outlinks div.music-outlinks__link:nth-of-type(3)`,
+    musicPlay: `div.search_result_block.ui-zone div.music-outlinks div.music-outlinks__opt`,
+    musicStoryTag: `div.music-zone-header div.music-zone-header__lt div.ui-tag div.ui-tag-title`,
+    musicStoryTitle: `div.music-zone-header div.music-zone-header__lt div.music-zone-header__title`,
+    musicStoryText: `div.music-zone__music-story div.music-story__text`,
+    musicStorySource: `div.music-zone__music-story div.music-story__text span.music-story__source`,
+  }
+}
