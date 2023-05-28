@@ -18,7 +18,7 @@ module.exports = {
       },
       '/cgi' : {
         //11.159.152.200
-        target:'http://9.134.52.227:19674',
+        target:'http://11.159.152.200:19674',
         changeOrigin:true,
         secure: false
       },

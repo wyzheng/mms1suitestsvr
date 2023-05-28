@@ -133,7 +133,7 @@
         </a-descriptions>
       </a-card>
 
-      <a-card v-if="typeof (rowData.failure_msg) != 'undefined'">
+      <a-card v-if="rowData.failure_msg !== ''">
         <a-row>
           <a-col :span=2>
             <p>错误信息：</p>
@@ -369,13 +369,14 @@ export default {
 
     getCaseUrl: function (row){
       let git = "https://git.woa.com/mmtest/search-ui-test-base/blob/master/__tests__";
+      console.log(row);
       if (row.case_id !== undefined){
         let arr = row.case_id.split(".");
         for (let i = 0; i < arr.length - 1; i++) {
           git += "/";
           git += arr[i];
         }
-        return git + ".spec.ts#L" +row.star_line;
+        return git + ".spec.ts#L" +row.start_line;
       }else {
         return git;
       }
