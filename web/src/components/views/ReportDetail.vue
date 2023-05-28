@@ -59,17 +59,17 @@
         :data="caseTaskData"
         ref="table">
         <vxe-column field="suite_desc" sortable title="所属用例模块"></vxe-column>
-        <vxe-column field="suite" title="所属用例合集" sortable>
+        <vxe-column field="suite" title="所属用例合集" sortable width="15%">
           <template #default="{ row }">
             <span class="vxe-cell--label">{{getSuite(row)}}</span>
           </template>
         </vxe-column>
-        <vxe-column field="func_name" title="用例函数名">
+        <vxe-column field="func_name" title="用例函数名" width="15%">
           <template #default="{ row }"><span class="vxe-cell--label">{{getCaseFuncName(row)}}</span>
           </template>
         </vxe-column>
 <!--        <vxe-column field="case_id" title="case编号"></vxe-column>-->
-        <vxe-column field="description" title="用例描述"></vxe-column>
+        <vxe-column field="description" title="用例描述" width="20%"></vxe-column>
         <vxe-column field="owner" title="负责人"></vxe-column>
         <vxe-column field="duration" title="耗时(秒)">
           <template #default="{ row }">{{row.duration / 1000}}</template>
@@ -117,7 +117,14 @@
         <a-descriptions title="测试详情"  style="width: 96%;margin: auto">
           <a-descriptions-item label="testId"> {{taskData.test_id}}</a-descriptions-item>
           <a-descriptions-item label="模板号">{{taskData.template}}</a-descriptions-item>
-          <a-descriptions-item label="用例">{{getCaseFuncName(rowData)}}</a-descriptions-item>
+          <a-descriptions-item label="用例地址">
+            <a
+              :href="getCaseUrl(rowData)"
+              target="_blank"
+            >{{ getCaseFuncName(rowData)  }}</a
+            >
+          </a-descriptions-item>
+<!--          <a-descriptions-item label="用例">{{getCaseFuncName(rowData)}}</a-descriptions-item>-->
           <a-descriptions-item label="用例描述">{{rowData.description}}</a-descriptions-item>
           <a-descriptions-item :color="getColor(rowData)" label="状态">{{sta[rowData.status]}}</a-descriptions-item>
           <a-descriptions-item label="开始时间">{{taskData.start_time}}</a-descriptions-item>
@@ -357,6 +364,20 @@ export default {
       if (row.case_id !== undefined){
         let arr = row.case_id.split(".");
         return arr[arr.length - 1];
+      }
+    },
+
+    getCaseUrl: function (row){
+      let git = "https://git.woa.com/mmtest/search-ui-test-base/blob/master/__tests__";
+      if (row.case_id !== undefined){
+        let arr = row.case_id.split(".");
+        for (let i = 0; i < arr.length - 1; i++) {
+          git += "/";
+          git += arr[i];
+        }
+        return git + ".spec.ts#L" +row.star_line;
+      }else {
+        return git;
       }
     },
 

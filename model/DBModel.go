@@ -52,6 +52,7 @@ type TestCases struct {
 	CreateTime  *string `json:"create_time" col:"create_time"`
 	UpdateTime  *string `json:"update_time" col:"update_time"`
 	Comment     *string `json:"comment" col:"comment"`
+	StartLine   *int    `json:"start_line" col:"start_line"`
 }
 
 // TestCaseTask 测试任务（case粒度）结构，定义测试任务&结果基本信息

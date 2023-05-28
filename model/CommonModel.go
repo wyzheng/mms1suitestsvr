@@ -57,6 +57,7 @@ type TestResCaseWeb struct {
 	AttachInfo  *string `json:"attach_info" col:"attach_info"`
 	SuiteDesc   *string `json:"suite_desc" col:"suite_desc"`
 	FailureMsg  *string `json:"failure_msg" col:"failure_msg"`
+	StartLine   *int    `json:"start_line" col: "start_line"`
 }
 
 type TAttachObject struct {

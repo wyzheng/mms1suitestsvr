@@ -1,6 +1,7 @@
 package tools
 
 import (
+	"bytes"
 	"mms1suitestsvr/model"
 	"regexp"
 	"strings"
@@ -42,7 +43,6 @@ func GetTestNames(content []byte, filepath string) ([]*model.TestCases, *model.T
 
 	//包名
 	module := ""
-
 	for i := index + 1; i < len(pref); i++ {
 		module += pref[i] + "."
 	}
@@ -53,12 +53,15 @@ func GetTestNames(content []byte, filepath string) ([]*model.TestCases, *model.T
 		if len(match) >= 2 {
 			caseId := module + string(match[2])
 			desc := string(match[1])
+			// 起始行号
+			startLine := GetLine(content, match[2])
 			var testcase = model.TestCases{
 				CaseId:      &caseId,
 				Owner:       &author,
 				SuiteDesc:   &suiteDesc,
 				Description: &desc,
 				CreateTime:  &cTime,
+				StartLine:   &startLine,
 			}
 			testCases = append(testCases, &testcase)
 		}
@@ -80,4 +83,14 @@ func indexOf(a []string, e string) int {
 		}
 	}
 	return -1
+}
+
+// GetLine 获取函数名在文件中的行号
+func GetLine(content []byte, target []byte) int {
+	subSlices := bytes.Split(content, target)
+	startLine := 1
+	for i := 0; i < len(subSlices)-1; i++ {
+		startLine += bytes.Count(subSlices[i], []byte("\n"))
+	}
+	return startLine
 }
