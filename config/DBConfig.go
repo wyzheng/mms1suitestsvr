@@ -15,6 +15,7 @@ var ReleaseRecordTable = "release_record"
 var TestCaseTale = "test_cases"
 var TestCaseTaskTable = "test_task_case"
 var TestTaskNewTable = "test_task_new"
+var TestSuiteTaskTable = "test_task_suite"
 
 var ormTestFile = &orm.OrmOption{Table: TestFileTable}
 var TestFileModel, _ = orm.NewOrm(ormTestFile, &model.TestFile{})
@@ -33,3 +34,6 @@ var TestCaseTaskModel, _ = orm.NewOrm(ormTestCaseTask, &model.TestCaseTask{})
 
 var ormTestTaskNew = &orm.OrmOption{Table: TestTaskNewTable}
 var TestTaskNewModel, _ = orm.NewOrm(ormTestTaskNew, &model.TestTaskNew{})
+
+var ormTestSuiteTask = &orm.OrmOption{Table: TestSuiteTaskTable}
+var TestSuiteTaskModel, _ = orm.NewOrm(ormTestSuiteTask, &model.TestSuiteTask{})

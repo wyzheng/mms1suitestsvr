@@ -12,6 +12,7 @@ import (
 	"os"
 	"os/exec"
 	"strconv"
+	"strings"
 	"time"
 )
 
@@ -138,7 +139,7 @@ func sendMessage(res *model.TestRes, id string) {
 	SendRobotMessage(msg)
 }
 
-// ResDecodeSave 解析以及存储case粒度的测试结果
+// ResDecodeSave 解析以及存储case、suite粒度的测试结果
 func ResDecodeSave(filePath string, testId *string) int {
 	fileContent, err := os.ReadFile(filePath)
 	if err != nil {
@@ -147,9 +148,37 @@ func ResDecodeSave(filePath string, testId *string) int {
 	res := util.JsonDecodeRes(fileContent)
 	errNum := 0
 	//var testCaseTasks []*model.TestCaseTask
+
 	if res.TestResults != nil {
 		for i := 0; i < len(*res.TestResults); i++ {
-			for j := 0; j < len(*(*res.TestResults)[i].TestResults); j++ {
+			suitRes := (*res.TestResults)[i]
+			status := "success"
+			if len(*(*res.TestResults)[i].TestResults) == 0 {
+				status = "fail"
+			}
+
+			fileName := strings.Split(*suitRes.TestFilePath, "__tests__/")[1]
+			suiteId := strings.ReplaceAll(fileName, ".spec.ts", "")
+			suiteId = strings.ReplaceAll(suiteId, "/", ".")
+
+			testRes := fmt.Sprintf("%v_%v_%v_%v", *suitRes.NumPassingTests, *suitRes.NumFailingTests, *suitRes.NumPendingTests, *suitRes.NumTodoTests)
+			testTaskSuite := &model.TestSuiteTask{
+				TestId:     testId,
+				SuiteId:    &suiteId,
+				Status:     &status,
+				StartTime:  suitRes.PerfStats.Start,
+				EndTime:    suitRes.PerfStats.End,
+				Duration:   suitRes.PerfStats.Runtime,
+				TestResult: &testRes,
+				FailureMsg: suitRes.FailureMessage,
+			}
+			_, err := dao.InsertTestSuiteTasks(testTaskSuite)
+			if err != nil {
+				xlog.Errorf(`[Dao] insert suite task error, error is %v`, err)
+			}
+
+			// case粒度的结果解析
+			for j := 0; j < len(*suitRes.TestResults); j++ {
 				var caseSingle = (*(*res.TestResults)[i].TestResults)[j]
 				message := ""
 				for k := 0; k < len(*caseSingle.FailureMessages); k++ {

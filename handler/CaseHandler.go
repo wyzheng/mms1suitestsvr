@@ -48,9 +48,19 @@ func UploadCase(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		xlog.Errorf("InsertTestCases  error is %v", err)
 	}
-	_, err = dao.InsertTestFile(testFile)
-	if err != nil {
-		xlog.Errorf("InsertTestFile  error is %v", err)
+
+	// 更新测试文件
+	res, err := dao.GetTestFileBySuiteId(*testFile.SuiteId)
+	if res != nil {
+		err := dao.UpdateTestFileBySuiteId(*testFile.SuiteId, testFile)
+		if err != nil {
+			xlog.Errorf("Update TestFile  error is %v", err)
+		}
+	} else {
+		_, err = dao.InsertTestFile(testFile)
+		if err != nil {
+			xlog.Errorf("InsertTestFile  error is %v", err)
+		}
 	}
 	// 更新到cos
 	cosKey := fmt.Sprintf("%s/latest/%s", FileGitCosDir, fileName)

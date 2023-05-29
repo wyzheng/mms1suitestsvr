@@ -14,7 +14,7 @@ import (
 
 // InsertTestCaseTasks 增加测试用例粒度的测试结果
 func InsertTestCaseTasks(testCaseTask *model.TestCaseTask) (int, error) {
-	xlog.Debug("[DAO]:Insert a test file into db.")
+	xlog.Debug("[DAO]:Insert a test case task into db.")
 
 	err, id := database.Insert(
 		config.Mms1suitestDB,
@@ -25,11 +25,12 @@ func InsertTestCaseTasks(testCaseTask *model.TestCaseTask) (int, error) {
 	return id, err
 }
 
-func GetTaskDetailsByTestId(testID int) ([]*model.TestResCaseWeb, error) {
-	xlog.Debugf("[DAO]:Get test case task from db by %s.", testID)
+func GetTaskDetailsByTestId(testId int, suiteId string) ([]*model.TestResCaseWeb, error) {
+	xlog.Debugf("[DAO]:Get test case task from db by %s.", testId)
 
 	conditions := make(map[string]interface{})
-	conditions["test_id"] = testID
+	conditions["test_id"] = testId
+	conditions["suite_id"] = suiteId
 
 	list, err := JoinQuery(
 		config.Mms1suitestDB,
@@ -59,17 +60,26 @@ func JoinQuery(db *sql.DB, table string, conditions map[string]interface{}, mode
 	}
 
 	sqlStr := "select A.*, B.*  from test_task_case as A join test_cases as B on A.case_id = B.case_id where "
-	for condition := range conditions {
-		value := conditions[condition]
-		xlog.Debugf(" condition == limit: %v, condition: %v ", condition == "limit", condition)
-		if condition != "limit" {
-			if "string" == reflect.TypeOf(conditions[condition]).Name() {
-				value = fmt.Sprintf("'%s'", value)
+	flag := false
+	if conditions != nil {
+		for condition := range conditions {
+			value := conditions[condition]
+			xlog.Debugf(" condition == limit: %v, condition: %v ", condition == "limit", condition)
+			if condition != "limit" {
+				if "string" == reflect.TypeOf(conditions[condition]).Name() {
+					value = fmt.Sprintf("'%s'", value)
+				}
+				if flag {
+					sqlStr = fmt.Sprintf("%s AND %s=%v", sqlStr, condition, value)
+				} else {
+					sqlStr = fmt.Sprintf("%s %s=%v", sqlStr, condition, value)
+					flag = true
+				}
 			}
-			sqlStr = fmt.Sprintf("%s %s=%v", sqlStr, condition, value)
+
 		}
 	}
-
+	println(sqlStr)
 	list, err := db.Query(sqlStr)
 
 	if err != nil {

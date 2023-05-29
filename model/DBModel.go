@@ -7,6 +7,8 @@ type TestFile struct {
 	FileName   *string `json:"file_name" col:"file_name"`
 	Owner      *string `json:"owner" col:"owner"`
 	UpdateTime *string `json:"update_time" col:"update_time"`
+	SuiteDesc  *string `json:"suite_desc" col:"suite_desc"` // 新增，增加suite描述
+	SuiteId    *string `json:"suite_id" col:"suite_id"`
 }
 
 // TestTask 测试任务结构，定义测试任务基本信息
@@ -53,6 +55,7 @@ type TestCases struct {
 	UpdateTime  *string `json:"update_time" col:"update_time"`
 	Comment     *string `json:"comment" col:"comment"`
 	StartLine   *int    `json:"start_line" col:"start_line"`
+	SuiteId     *string `json:"suite_id" col:"suite_id"`
 }
 
 // TestCaseTask 测试任务（case粒度）结构，定义测试任务&结果基本信息
@@ -65,4 +68,16 @@ type TestCaseTask struct {
 	FailureMsg *string `json:"failure_msg" col:"failure_msg"`
 	FailureTag *string `json:"failure_tag" col:"failure_tag"`
 	AttachInfo *string `json:"attach_info" col:"attach_info"`
+}
+
+type TestSuiteTask struct {
+	Id         *int    `json:"id" col:"id"`
+	TestId     *string `json:"test_id" col:"test_id"`
+	SuiteId    *string `json:"suite_id" col:"suite_id"`
+	Status     *string `json:"status" col:"status"`
+	StartTime  *int    `json:"start_time" col:"start_time"`
+	EndTime    *int    `json:"end_time" col:"end_time"`
+	Duration   *int    `json:"duration" col:"duration"`
+	TestResult *string `json:"test_result" col:"test_result"`
+	FailureMsg *string `json:"failure_msg" col:"failure_msg"`
 }

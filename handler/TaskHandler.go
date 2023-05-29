@@ -235,8 +235,8 @@ func GetTestCaseTaskDetail(w http.ResponseWriter, r *http.Request) {
 	xlog.Debugf("[Handler] deal with a request.")
 
 	testId := websvr.GetIntFromUri(r, "id")
-	println(testId)
-	taskCaseArr, err := dao.GetTaskDetailsByTestId(testId)
+	suiteId := websvr.GetStringFromUri(r, "suite_id")
+	taskCaseArr, err := dao.GetTaskDetailsByTestId(testId, suiteId)
 	if err != nil {
 		xlog.Errorf("[Dao] get tasks failed! %v", err)
 	}
@@ -264,6 +264,27 @@ func GetTestTaskByTestId(w http.ResponseWriter, r *http.Request) {
 	resp.Data = taskArr
 	resp.Ret = define.E_SUCCESS
 	resp.Message = "get all tasks!"
+
+	ww.MarshalJSON(resp)
+	return
+}
+
+// GetTestCaseTaskDetail for web 获取case粒度的测试任务信息
+func GetTestSuiteTaskDetail(w http.ResponseWriter, r *http.Request) {
+	ww := w.(*xhttp.ResponseWriter)
+	resp := websvr.CommResp{}
+	xlog.Debugf("[Handler] deal with a request.")
+
+	testId := websvr.GetIntFromUri(r, "id")
+	println(testId)
+	taskCaseArr, err := dao.GetSuiteTaskDetailsByTestId(testId)
+	if err != nil {
+		xlog.Errorf("[Dao] get tasks failed! %v", err)
+	}
+
+	resp.Data = taskCaseArr
+	resp.Ret = define.E_SUCCESS
+	resp.Message = "get all test cases!"
 
 	ww.MarshalJSON(resp)
 	return

@@ -113,6 +113,15 @@ func main() {
 		Pattern:   "/cgi/GetTestTaskByTestId",
 	})
 
+	websvr.AddCgi(websvr.Cgi{
+		HandBuild: hb,
+		Mux:       mux,
+		CgiHandle: http.HandlerFunc(handler.GetTestSuiteTaskDetail),
+		CmdId:     10,
+		CgiName:   "GetTestCases",
+		Pattern:   "/cgi/GetTestSuiteTaskDetail",
+	})
+
 	// init svr
 	svr := &xhttp.Server{
 		Server: http.Server{

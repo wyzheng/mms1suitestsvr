@@ -23,15 +23,23 @@ type TestRes struct {
 	AttachInfos         *map[string]interface{} `json:"attachInfos"`
 }
 
+// TestResSingleSuite suite粒度的测试结果
 type TestResSingleSuite struct {
 	NumFailingTests *int             `json:"numFailingTests"`
 	NumPassingTests *int             `json:"numPassingTests"`
 	NumPendingTests *int             `json:"numPendingTests"`
 	NumTodoTests    *int             `json:"numTodoTests"`
-	PerfStats       *interface{}     `json:"perfStats"`
+	PerfStats       *SuitePerfStats  `json:"perfStats"`
 	TestFilePath    *string          `json:"testFilePath"`
 	FailureMessage  *string          `json:"failureMessage"`
 	TestResults     *[]TestResSingle `json:"testResults"`
+}
+
+type SuitePerfStats struct {
+	End     *int  `json:"end"`
+	Runtime *int  `json:"runtime"`
+	Slow    *bool `json:"slow"`
+	Start   *int  `json:"start"`
 }
 
 type TestResSingle struct {
@@ -58,6 +66,20 @@ type TestResCaseWeb struct {
 	SuiteDesc   *string `json:"suite_desc" col:"suite_desc"`
 	FailureMsg  *string `json:"failure_msg" col:"failure_msg"`
 	StartLine   *int    `json:"start_line" col:"start_line"`
+}
+
+type TestResSuiteWeb struct {
+	Id         *int    `json:"id" col:"id"`
+	TestId     *string `json:"test_id" col:"test_id"`
+	SuiteId    *string `json:"suite_id" col:"suite_id"`
+	Status     *string `json:"status" col:"status"`
+	StartTime  *int    `json:"start_time" col:"start_time"`
+	EndTime    *int    `json:"end_time" col:"end_time"`
+	Duration   *int    `json:"duration" col:"duration"`
+	Owner      *string `json:"owner" col:"owner"`
+	SuiteDesc  *string `json:"suite_desc" col:"suite_desc"` // 新增，增加suite描述
+	TestResult *string `json:"test_result" col:"test_result"`
+	FailureMsg *string `json:"failure_msg" col:"failure_msg"`
 }
 
 type TAttachObject struct {

@@ -91,3 +91,41 @@ func GetAllTestFiles() ([]*model.TestFile, error) {
 	}
 	return dataList, err
 }
+
+// GetTestFileBySuiteId 获取测试文件对象
+func GetTestFileBySuiteId(id string) (*model.TestFile, error) {
+	xlog.Debugf("[DAO]:Get a test file from db by %s.", id)
+
+	conditions := make(map[string]interface{})
+	conditions["suite_id"] = id
+	err, list := database.Query(
+		config.Mms1suitestDB,
+		config.TestFileTable,
+		conditions,
+		&model.TestFile{},
+		"id",
+		false)
+
+	if err != nil {
+		xlog.Errorf("Get test file by name failed! %v", err)
+	}
+	if len(list) == 0 {
+		return nil, errors.New("no test file of this name")
+	}
+	return list[0].(*model.TestFile), err
+}
+
+// UpdateTestFileBySuiteId 更新测试文件对象
+func UpdateTestFileBySuiteId(id string, testFile *model.TestFile) error {
+	xlog.Debugf("[DAO]:Get a test file from db by %s.", id)
+
+	conditions := make(map[string]interface{})
+	conditions["suite_id"] = id
+	err := database.Update(
+		config.Mms1suitestDB,
+		config.TestFileTable,
+		conditions,
+		testFile,
+	)
+	return err
+}

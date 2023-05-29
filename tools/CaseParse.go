@@ -46,6 +46,7 @@ func GetTestNames(content []byte, filepath string) ([]*model.TestCases, *model.T
 	for i := index + 1; i < len(pref); i++ {
 		module += pref[i] + "."
 	}
+	suiteId := module[:len(module)-1]
 
 	// 提取所有的测试用例对象
 	var testCases []*model.TestCases
@@ -53,6 +54,7 @@ func GetTestNames(content []byte, filepath string) ([]*model.TestCases, *model.T
 		if len(match) >= 2 {
 			caseId := module + string(match[2])
 			desc := string(match[1])
+
 			// 起始行号
 			startLine := GetLine(content, match[2])
 			var testcase = model.TestCases{
@@ -62,6 +64,7 @@ func GetTestNames(content []byte, filepath string) ([]*model.TestCases, *model.T
 				Description: &desc,
 				CreateTime:  &cTime,
 				StartLine:   &startLine,
+				SuiteId:     &suiteId,
 			}
 			testCases = append(testCases, &testcase)
 		}
@@ -70,6 +73,8 @@ func GetTestNames(content []byte, filepath string) ([]*model.TestCases, *model.T
 	testFile.FileName = &strings.Split(filepath, "__tests__/")[1]
 	testFile.Owner = &author
 	testFile.UpdateTime = &cTime
+	testFile.SuiteDesc = &suiteDesc
+	testFile.SuiteId = &suiteId
 
 	return testCases, &testFile
 }
