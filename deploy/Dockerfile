@@ -11,6 +11,7 @@ RUN mkdir -p /home/qspace/mms1suitestsvr/bin
 
 RUN mkdir -p /home/qspace/mms1suitestsvr/bin/jest-puppeteer-ui-test/static/res
 RUN mkdir -p /home/qspace/mms1suitestsvr/bin/jest-puppeteer-ui-test/static/pic
+RUN mkdir -p /home/qspace/mms1suitestsvr/bin/jest-puppeteer-ui-test/static/pic_diff
 
 WORKDIR /app
 
