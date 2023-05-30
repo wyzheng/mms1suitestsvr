@@ -33,7 +33,7 @@ func GetSuiteTaskDetailsByTestId(testID int) ([]*model.TestResSuiteWeb, error) {
 
 	list, err := joinQuery(
 		config.Mms1suitestDB,
-		config.TestCaseTaskTable,
+		config.TestSuiteTaskTable,
 		conditions,
 		&model.TestResSuiteWeb{})
 
@@ -69,6 +69,7 @@ func joinQuery(db *sql.DB, table string, conditions map[string]interface{}, mode
 			sqlStr = fmt.Sprintf("%s %s=%v", sqlStr, condition, value)
 		}
 	}
+	println(sqlStr)
 
 	list, err := db.Query(sqlStr)
 
@@ -81,6 +82,7 @@ func joinQuery(db *sql.DB, table string, conditions map[string]interface{}, mode
 		xlog.Debugf("[dao]Query result is null, sql is %s", sqlStr)
 		return nil, nil
 	}
+	println(list.Columns())
 	for list.Next() {
 		ptr := reflect.New(reflect.TypeOf(model).Elem()).Interface()
 		err = ormModel.Scan(list, ptr)

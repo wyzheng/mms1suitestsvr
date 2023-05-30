@@ -152,11 +152,14 @@ func ResDecodeSave(filePath string, testId *string) int {
 	if res.TestResults != nil {
 		for i := 0; i < len(*res.TestResults); i++ {
 			suitRes := (*res.TestResults)[i]
-			status := "success"
-			if len(*(*res.TestResults)[i].TestResults) == 0 {
+			status := ""
+			if len(*suitRes.TestResults) == 0 {
 				status = "fail"
+			} else if suitRes.FailureMessage == nil {
+				status = "success"
+			} else {
+				status = "fail+success"
 			}
-
 			fileName := strings.Split(*suitRes.TestFilePath, "__tests__/")[1]
 			suiteId := strings.ReplaceAll(fileName, ".spec.ts", "")
 			suiteId = strings.ReplaceAll(suiteId, "/", ".")
