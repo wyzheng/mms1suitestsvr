@@ -34,13 +34,15 @@ const defaultConfig: WebSearchPageConfig = {
 };
 
 
-export async function setup(query: string, scene: number, uin: number, isSuperView: boolean) {
+// 如果某些参数是undefined，就选择其默认值
+export async function setup(query: string, scene = 20, uin: number, isSuperView = false, businessType = 0, page = "result") {
   let pageExtend = new PageExtend();
   defaultConfig.scene = scene;
-
+  console.log(global.__TEMPLATE__);
   const stx: CaseCTx= {
-    businessType: 0, page: "result", scene: 20, query:query
+    businessType: businessType, page: page, scene: scene, query:query
   }
+
   return await pageExtend.allocPage({
     pageCtx: stx,
     renderRemoteImage: false,
