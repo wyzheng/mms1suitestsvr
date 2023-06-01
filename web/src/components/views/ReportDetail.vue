@@ -16,6 +16,13 @@
 
     <a-card style="margin-top: 2%">
       <a-descriptions title="用例任务列表"  style="width: 96%;margin: auto"></a-descriptions>
+      <vxe-toolbar style="width: 96%;margin: auto">
+        <template #buttons>
+          <vxe-button @click="$refs.xTable.setAllRowExpand(true)">展开所有行</vxe-button>
+          <vxe-button @click="$refs.xTable.clearRowExpand()">关闭所有行</vxe-button>
+        </template>
+      </vxe-toolbar>
+
       <vxe-table
         border
         stripe
@@ -26,7 +33,7 @@
         style="width: 96%;margin: auto"
         :loading="is_loading"
         :data="suiteTaskData"
-        ref="table">
+        ref="xTable">
         <vxe-column type="expand" width="80">
           <template #content="{ row }">
             <div class="expand-wrapper">
@@ -55,7 +62,7 @@
                 </vxe-column>
                 <!--        <vxe-column field="case_id" title="case编号"></vxe-column>-->
                 <vxe-column field="description" title="用例描述" width="30%"></vxe-column>
-                <vxe-column field="owner" title="负责人"></vxe-column>
+<!--                <vxe-column field="owner" title="负责人"></vxe-column>-->
                 <vxe-column field="duration" title="耗时(秒)">
                   <template #default="{ row }">{{row.duration / 1000}}</template>
                 </vxe-column>
@@ -78,6 +85,13 @@
                   </template>
                 </vxe-column>
               </vxe-table>
+              <a-row>
+                <a-col :span="22">
+                </a-col>
+                <a-button type="primary" size="mini" @click="$refs.xTable.toggleRowExpand(row)" style="margin-top: 1%;margin-right: 2%">
+                  收起
+                </a-button>
+              </a-row>
             </div>
           </template>
         </vxe-column>
@@ -89,13 +103,18 @@
           <template #default="{ row }">{{row.duration / 1000}}</template>
         </vxe-column>
         <vxe-column field="status" title="用例状态">
-          <template #default="{ row }">
-            <a-tag :color="row.status.indexOf('success') !== -1 ? 'green' : 'red'">
-              {{suiteSta[row.status]}}
-            </a-tag>
-            <a-tag v-if="row.status === 'fail+success'" color="red">
-              用例失败
-            </a-tag>
+          <template #default="{ row }" #content="{row1}">
+            <a-tooltip  title="点击展开执行详情" >
+              <a-tag :color="row.status.indexOf('success') !== -1 ? 'green' : 'red'" @click="$refs.xTable.toggleRowExpand(row)">
+                {{suiteSta[row.status]}}
+              </a-tag>
+            </a-tooltip>
+
+            <a-tooltip  title="点击展开执行详情" >
+              <a-tag v-if="row.status === 'fail+success'" color="red" @click="$refs.xTable.toggleRowExpand(row)">
+                用例失败
+              </a-tag>
+            </a-tooltip>
           </template>
         </vxe-column>
         <vxe-column field="result" title="测试结果">
@@ -116,98 +135,6 @@
         @page-change="handlePageChange">
       </vxe-pager>
     </a-card>
-
-
-<!--    <a-card>
-      <a-descriptions title="用例任务列表"  style="width: 96%;margin: auto"></a-descriptions>
-      <a-row>
-        <a-form
-          :model="formState"
-          layout="inline"
-          autocomplete="off"
-          style="margin-bottom: 2%; margin-left: 2%"
-        >
-          <a-form-item
-            label="筛选模块"
-            name="筛选模块"
-          >
-            <a-select
-              @focus="getSuites"
-              :value="selectedValue"
-              :options="suiteSelect"
-              style="width: 220px"
-              @change="handleChange">
-              &lt;!&ndash;          <a-select-option v-for="(item,id) in suiteSelect" :key="id" :value="item.value">{{item.label}}</a-select-option>&ndash;&gt;
-            </a-select>
-          </a-form-item>
-
-          <a-form-item>
-            <a-button type="primary" @click="filterTableData">筛选</a-button>
-          </a-form-item>
-
-          <a-form-item>
-            <a-button type="primary" @click="cleanFilter">清除筛选条件</a-button>
-          </a-form-item>
-        </a-form>
-
-      </a-row>
-      <vxe-table
-        border
-        stripe
-        auto-resize
-        highlight-hover-row
-        :seq-config="{startIndex: (tablePage.currentPage - 1) * tablePage.pageSize}"
-        style="width: 96%;margin: auto"
-        :loading="is_loading"
-        :data="caseTaskData"
-        ref="table">
-        <vxe-column field="suite_desc" sortable title="所属用例模块"></vxe-column>
-        <vxe-column field="suite" title="所属用例合集" sortable width="15%">
-          <template #default="{ row }">
-            <span class="vxe-cell&#45;&#45;label">{{getSuite(row)}}</span>
-          </template>
-        </vxe-column>
-        <vxe-column field="func_name" title="用例函数名" width="15%">
-          <template #default="{ row }"><span class="vxe-cell&#45;&#45;label">{{getCaseFuncName(row)}}</span>
-          </template>
-        </vxe-column>
-&lt;!&ndash;        <vxe-column field="case_id" title="case编号"></vxe-column>&ndash;&gt;
-        <vxe-column field="description" title="用例描述" width="20%"></vxe-column>
-        <vxe-column field="owner" title="负责人"></vxe-column>
-        <vxe-column field="duration" title="耗时(秒)">
-          <template #default="{ row }">{{row.duration / 1000}}</template>
-        </vxe-column>
-        <vxe-column title="用例状态">
-          <template #default="{ row }">
-            <a-tag :color="getColor(row)">
-              {{sta[row.status]}}
-            </a-tag>
-          </template>
-        </vxe-column>
-        <vxe-column field="fail_tag" title="失败原因">
-          <template #default="{ row }">
-            <a-tag v-for="item in getTags(row)" :key= item.id color="red">{{item}}</a-tag>
-          </template>
-        </vxe-column>
-
-        <vxe-column field="details" title="运行详情">
-          <template #default="{ row }">
-            <a-button @click="showModal(row)"> 运行详情 </a-button>
-          </template>
-        </vxe-column>
-      </vxe-table>
-
-      <vxe-pager
-        background
-        size="small"
-        :current-page="tablePage.currentPage"
-        :page-size="tablePage.pageSize"
-        :total="tablePage.totalResult"
-        :page-sizes="[10, 20]"
-        :layouts="['PrevPage', 'JumpNumber', 'NextPage', 'FullJump', 'Sizes', 'Total']"
-        @page-change="handlePageChange">
-      </vxe-pager>
-    </a-card>-->
 
     <a-modal :visible="visible"
              width="80%"
@@ -350,6 +277,10 @@ export default {
   },
 
   methods: {
+    test (row){
+      console.log("########");
+      this.$refs.xTable.toggleRowExpand(row);
+    },
     getAllSuiteTask: async function () {
       let _this = this;
       _this.is_loading = true;
@@ -436,7 +367,7 @@ export default {
       this.tablePage.currentPage = currentPage;
       this.tablePage.pageSize = pageSize;
       console.log(this.allData);
-      this.caseTaskData = this.allData.slice((this.tablePage.currentPage - 1) * this.tablePage.pageSize, this.tablePage.currentPage * this.tablePage.pageSize);
+      this.suiteTaskData = this.allSuiteData.slice((this.tablePage.currentPage - 1) * this.tablePage.pageSize, this.tablePage.currentPage * this.tablePage.pageSize);
     },
     getAllCaseTask: async function () {
       let _this = this;

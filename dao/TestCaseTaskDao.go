@@ -79,7 +79,6 @@ func JoinQuery(db *sql.DB, table string, conditions map[string]interface{}, mode
 
 		}
 	}
-	println(sqlStr)
 	list, err := db.Query(sqlStr)
 
 	if err != nil {
@@ -100,6 +99,5 @@ func JoinQuery(db *sql.DB, table string, conditions map[string]interface{}, mode
 		}
 		respList = append(respList, ptr)
 	}
-	println(len(respList))
 	return respList, err
 }

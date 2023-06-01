@@ -69,7 +69,6 @@ func joinQuery(db *sql.DB, table string, conditions map[string]interface{}, mode
 			sqlStr = fmt.Sprintf("%s %s=%v", sqlStr, condition, value)
 		}
 	}
-	println(sqlStr)
 
 	list, err := db.Query(sqlStr)
 
@@ -92,6 +91,5 @@ func joinQuery(db *sql.DB, table string, conditions map[string]interface{}, mode
 		}
 		respList = append(respList, ptr)
 	}
-	println(len(respList))
 	return respList, err
 }
