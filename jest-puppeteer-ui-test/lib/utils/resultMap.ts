@@ -636,3 +636,13 @@ export function musicCardClass(id){
     musicStorySource: `div.music-zone__music-story div.music-story__text span.music-story__source`,
   }
 }
+
+//微信指数
+export const wxIndexClass = {
+  box: `div.widget-webview`,
+  title: `div.widget-webview div.bd p.title span`,
+  panel: `div.widget-webview div.bd div.panel`,
+  foot: `div.widget-webview div.ft div.line.widget-source`,
+  icon: `div.widget-webview div.ft div.line.widget-source img`,
+  source: `div.widget-webview div.ft div.line.widget-source div.widget-source__wording`
+}
