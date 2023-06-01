@@ -77,7 +77,7 @@ func RunTest(taskId int, testId string, templateName string) string {
 	// 把图片挪到diff
 	cmdStr := "mv * ../pic_diff/"
 	cmd = exec.Command("/bin/bash", "-c", cmdStr)
-	cmd.Dir = "../jest-puppeteer-ui-test/static/pic"
+	cmd.Dir = "./jest-puppeteer-ui-test/static/pic"
 	if err = cmd.Run(); err != nil {
 		xlog.Error(err)
 	}
