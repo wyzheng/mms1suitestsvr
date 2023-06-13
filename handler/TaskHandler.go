@@ -106,7 +106,11 @@ func ExecTest(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
+	//先串行
 	times := len(caseFiles) % pNum
+	//执行测试任务，存储测试结果
+	newTask.Status = &config.S_TASK_TESTING
+	err = dao.UpdateDataTask(taskId, newTask)
 	for j := 0; j <= times; j++ {
 		if (j+1)*pNum > len(caseFiles) {
 			for i := pNum * j; i < len(caseFiles); i++ {
@@ -119,6 +123,7 @@ func ExecTest(w http.ResponseWriter, r *http.Request) {
 					return
 				}
 			}
+			go service.RunTest(taskId, testId, templateName[0:pos], -1)
 		} else {
 			for i := 0; i < pNum; i++ {
 				for i := pNum * j; i < len(caseFiles); i++ {
@@ -131,12 +136,9 @@ func ExecTest(w http.ResponseWriter, r *http.Request) {
 						return
 					}
 				}
+				go service.RunTest(taskId, testId, templateName[0:pos], j)
 			}
 		}
-		//执行测试任务，存储测试结果
-		newTask.Status = &config.S_TASK_TESTING
-		err = dao.UpdateDataTask(taskId, newTask)
-		go service.RunTest(taskId, testId, templateName[0:pos], j)
 	}
 	resp.Ret = define.E_SUCCESS
 	resp.Message = "testing!"
