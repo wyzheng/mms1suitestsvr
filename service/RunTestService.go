@@ -17,7 +17,7 @@ import (
 )
 
 // RunTest 根据任务id和模板包名执行测试任务
-func RunTest(taskId int, testId string, templateName string) string {
+func RunTest(taskId int, testId string, templateName string, times int) string {
 	cmd := exec.Command("bash", "-c",
 		"npx jest --json --outputFile=./static/res/reporter.json --template="+templateName+" --resPath="+testId)
 	cmd.Dir = "./jest-puppeteer-ui-test"
@@ -66,18 +66,11 @@ func RunTest(taskId int, testId string, templateName string) string {
 		xlog.Errorf("[COS] set html result into cos failed, file %v", err)
 	}
 
-	/*// 删除本地模板/case/结果文件
-	cmdStr := "rm -r ./__tests__ && rm ./static/res/reporter.json && rm -r ./asset/" + templateName
-	cmd := exec.Command("/bin/bash", "-c", cmdStr)
-	cmd.Dir = "../jest-puppeteer-ui-test"
-
-	if err = cmd.Run(); err != nil {
-		xlog.Error(err)
-	}*/
-	// 把图片挪到diff
-	cmdStr := "mv * ../pic_diff/"
+	// 删除本地case文件
+	cmdStr := "rm -r ./__tests__/* && mv static/res/" + testId + "/jest_result.json static/res/" + testId + "/jest_result" + strconv.Itoa(times) + ".json"
 	cmd = exec.Command("/bin/bash", "-c", cmdStr)
-	cmd.Dir = "./jest-puppeteer-ui-test/static/pic"
+	cmd.Dir = "./jest-puppeteer-ui-test"
+
 	if err = cmd.Run(); err != nil {
 		xlog.Error(err)
 	}
@@ -111,6 +104,24 @@ func ArchiveTeatCases(versionId int) {
 
 func UpdateTestTask(id int, res *string) {
 	task, err := dao.GetTestTaskById(id)
+
+	if task.TestResult != nil {
+		arr := strings.Split(*task.TestResult, "_")
+		arr2 := strings.Split(*res, "_")
+		resTmp := ""
+		for i := 0; i < len(arr); i++ {
+			num1, _ := strconv.Atoi(arr[i])
+			num2, _ := strconv.Atoi(arr2[i])
+			tmp := num1 + num2
+			if i < len(arr)-1 {
+				resTmp += fmt.Sprintf("%d", tmp)
+				resTmp += "_"
+			} else {
+				resTmp += fmt.Sprintf("%d", tmp)
+			}
+		}
+		res = &resTmp
+	}
 
 	cTime := time.Now().Format("2006-01-02 15:04:05")
 	newTask := &model.TestTask{
