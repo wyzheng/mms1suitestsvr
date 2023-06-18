@@ -11,47 +11,47 @@ module.exports = {
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
     proxyTable: {
-      '/cgi/backend' : {
-        target:'http://9.134.52.227:19678',
-        changeOrigin:true,
+      '/cgi/backend': {
+        target: 'http://9.134.52.227:19678',
+        changeOrigin: true,
         secure: false
       },
-      '/cgi' : {
+      '/cgi': {
         // 11.159.152.200
         // 11.138.202.187
-        target:'http://11.179.191.250:19674',
-        changeOrigin:true,
+        target: 'http://11.179.191.250:19674',
+        changeOrigin: true,
         secure: false
       },
       '/lipstick': {
         target: 'http://lipstick.woa.com',
-        changeOrigin:true,
+        changeOrigin: true,
         secure: false,
         pathRewrite: {
           '^/lipstick/': '' // 路径重写
         }
       },
-      '/static':{
+      '/static': {
         target: 'http://iostream.woa.com:18883',
-        changeOrigin:true,
+        changeOrigin: true,
         secure: false
       },
-      '/interfaceTest' : {
-        target:'http://9.134.186.157:8056',
-        changeOrigin:true,
+      '/interfaceTest': {
+        target: 'http://9.134.186.157:8056',
+        changeOrigin: true,
         secure: false,
-        pathRewrite:{
+        pathRewrite: {
           "^/interfaceTest": ""
         }
       },
-      '/process' : {
-        target:'http://devops.woa.com/ms',
-        changeOrigin:true,
+      '/process': {
+        target: 'http://devops.woa.com/ms',
+        changeOrigin: true,
         secure: false,
-        pathRewrite:{
+        pathRewrite: {
           "^/interfaceTest": ""
         }
-      },
+      }
 
     },
 
