@@ -35,7 +35,7 @@ const defaultConfig: WebSearchPageConfig = {
 
 
 // 如果某些参数是undefined，就选择其默认值
-export async function setup(query: string, scene = 20, uin: number, isSuperView = false, businessType = 0, page = "result") {
+export async function setup(query: string, scene = 20, uin: number, isSuperView = false, businessType = 0, page = "result", renderImg = false) {
   let pageExtend = new PageExtend();
   defaultConfig.scene = scene;
   console.log(global.__TEMPLATE__);
@@ -45,7 +45,7 @@ export async function setup(query: string, scene = 20, uin: number, isSuperView 
 
   return await pageExtend.allocPage({
     pageCtx: stx,
-    renderRemoteImage: false,
+    renderRemoteImage: renderImg,
     device: 'iPhone 11 Pro Max',
     config: defaultConfig,
     context: "./asset/" + global.__TEMPLATE__,

@@ -193,8 +193,35 @@ export async function finderOperation(finderName, optype, userName){
         }
     }
     let resp = await got( {method: 'post', url: url, body: JSON.stringify(req_data), decompress: false});
-    logger.log("here addBizContact log something*********");
+    logger.log("here finderOperation log something*********");
     logger.log(resp.body);
+}
+
+/**
+ *
+ * @param user: 点赞者
+ * @param optype: 1. likeComment 2. unlikeComment 3. likeObject 4. unlikeObject
+ * @param objectid: feedid
+ * @param commentid: 评论id
+ */
+export async function channelOperation(user, optype, objectid, commentid=0){
+    console.log("*************************")
+    let url = `http://wxunitest.oa.com/mmcasehelperidc/mmfinder`
+    let finder_username = ""  // 点赞者的finder username, 可为空
+    let req_data = {
+        'func_name': 'SetFinderLike',
+        'func_args': {
+            "username": user,
+            "finder_username": finder_username,
+            "optype": optype,
+            "objectid": objectid,
+            "commentid": commentid
+        }
+    }
+    let resp = await got( {method: 'post', url: url, body: JSON.stringify(req_data), decompress: false});
+    //console.log(resp.body);
+     logger.log("here channelOperation log something*********");
+     logger.log(resp.body);
 }
 
 
@@ -246,4 +273,42 @@ export async function superView(aid, wxid){
         //this.logger.error(`$$$$ there is something wrong`);
     }
     return false;
+}
+
+// 读取img文件到base64
+function readImageFileToBase64(filePath) {
+    const imageBuffer = fs.readFileSync(filePath);
+    return imageBuffer.toString('base64');
+}
+
+//获取两图片文件的相似度
+export async function getSimilarity(srcPath, desPath) {
+    if (!fs.existsSync(srcPath) || !fs.existsSync(desPath)){
+        return "file not existed";
+    }
+    let url = "http://mt.woa.com/epcvat/similarity/compare_base64?alg=hist";
+    let req_data = {
+        "image1": readImageFileToBase64(srcPath),
+        "image2": readImageFileToBase64(desPath),
+    }
+    let resp = await got({ method: 'post', url: url, body: JSON.stringify(req_data), decompress: false, timeout: 20000 });
+    if (JSON.parse(resp.body).rtn == 0){
+        return JSON.parse(resp.body).value;
+    }
+}
+
+// 获取两图片的差异图 base64 字符串
+export async function getDiff(srcPath, desPath) {
+    if (!fs.existsSync(srcPath) || !fs.existsSync(desPath)) {
+        return "file not existed";
+    }
+    let url = "http://mt.woa.com/epcvat/similarity/image_diff_base64";
+    let req_data = {
+        "image1": readImageFileToBase64(srcPath),
+        "image2": readImageFileToBase64(desPath),
+    }
+    let resp = await got({ method: 'post', url: url, body: JSON.stringify(req_data), decompress: false, timeout: 30000 });
+    if (JSON.parse(resp.body).rtn == 0) {
+        return JSON.parse(resp.body).value;
+    }
 }

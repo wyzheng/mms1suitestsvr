@@ -82,12 +82,12 @@ export default {
     getSelectedKeys : function () {
       console.log(window.location.href);
       let url = window.location.href;
-      let urlArr = url.split("?")[0].split("/")
+      let urlArr = url.split("?")[0].split("/");
       console.log(urlArr);
 
       // 测试用例部分
       if (urlArr.indexOf("testCases") !== -1)
-        return {key:["1"], box: ["1"]};
+        return {key: ["1"], box: ["1"]};
 
       // 测试结果部分
       if (urlArr.indexOf("testTask") !== -1)

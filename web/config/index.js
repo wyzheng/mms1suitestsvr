@@ -1,8 +1,8 @@
-'use strict'
+'use strict';
 // Template version: 1.3.1
 // see http://vuejs-templates.github.io/webpack for documentation.
 
-const path = require('path')
+const path = require('path');
 
 module.exports = {
   dev: {
@@ -17,8 +17,9 @@ module.exports = {
         secure: false
       },
       '/cgi' : {
-        //11.159.152.200
-        target:'http://11.159.152.200:19674',
+        // 11.159.152.200
+        // 11.138.202.187
+        target:'http://11.179.191.250:19674',
         changeOrigin:true,
         secure: false
       },
@@ -108,4 +109,4 @@ module.exports = {
     // Set to `true` or `false` to always turn it on or off
     bundleAnalyzerReport: process.env.npm_config_report
   }
-}
+};
