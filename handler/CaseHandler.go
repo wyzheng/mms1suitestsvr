@@ -44,6 +44,9 @@ func UploadCase(w http.ResponseWriter, r *http.Request) {
 	}
 
 	cases, testFile := tools.GetTestNames(fileBytes, filePath)
+
+	//todo 这里要先删掉然后再存起来？ -- 好像也不行，加个状态？
+
 	_, err = dao.InsertTestCases(cases)
 	if err != nil {
 		xlog.Errorf("InsertTestCases  error is %v", err)
