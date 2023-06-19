@@ -17,7 +17,7 @@ import (
 )
 
 // RunTest 根据任务id和模板包名执行测试任务
-func RunTest(taskId int, testId string, templateName string, times int) string {
+func RunTest(taskId int, testId string, templateName string) string {
 	cmd := exec.Command("bash", "-c",
 		"npx jest --json --outputFile=./static/res/reporter.json --template="+templateName+" --resPath="+testId)
 	cmd.Dir = "./jest-puppeteer-ui-test"
@@ -51,34 +51,14 @@ func RunTest(taskId int, testId string, templateName string, times int) string {
 	testRes = fmt.Sprintf("%v_%v_%v_%v_%v", *res.NumFailedTestSuites, *res.NumPassedTestSuites, *res.NumFailedTests, *res.NumPassedTests, err_num)
 	xlog.Debugf("%v_%v_%v_%v_%v", *res.NumFailedTestSuites, *res.NumPassedTestSuites, *res.NumFailedTests, *res.NumPassedTests, err_num)
 
-	// 删除本地case文件转存json结果
-	cmdStr := "rm -r ./__tests__/* && mv static/res/" + testId + "/jest_result.json static/res/" + testId + "/jest_result" + strconv.Itoa(times) + ".json"
-	cmd = exec.Command("/bin/bash", "-c", cmdStr)
-	cmd.Dir = "./jest-puppeteer-ui-test"
+	//存储html结果到cos
+	cmd = exec.Command("bash", "-c", "tar -zcvf "+testId+"report.tar.gz "+testId+"/*")
+	cmd.Dir = "./jest-puppeteer-ui-test/static/res"
 
 	if err = cmd.Run(); err != nil {
 		xlog.Error(err)
 	}
-	//更新测试状态
-	UpdateTestTask(taskId, &testRes, times)
-
-	// 最后一波
-	if times == -1 {
-		AfterTest(testId)
-	}
-
-	return stdout.String()
-}
-
-func AfterTest(testId string) {
-	//存储html结果到cos
-	cmd := exec.Command("bash", "-c", "tar -zcvf "+testId+"report.tar.gz "+testId+"/*")
-	cmd.Dir = "./jest-puppeteer-ui-test/static/res"
-
-	if err := cmd.Run(); err != nil {
-		xlog.Error(err)
-	}
-	fileContent, err := os.ReadFile("./jest-puppeteer-ui-test/static/res/" + testId + "/jest_html_reporters.html")
+	fileContent, err = os.ReadFile("./jest-puppeteer-ui-test/static/res/" + testId + "/jest_html_reporters.html")
 	err = SetCosFile("s1s/res/"+testId+"/report.html", fileContent)
 	fileContent, err = os.ReadFile("./jest-puppeteer-ui-test/static/res/" + testId + "report.tar.gz")
 	err = SetCosFile("s1s/res/"+testId+"/report.tar.gz", fileContent)
@@ -86,16 +66,31 @@ func AfterTest(testId string) {
 		xlog.Errorf("[COS] set html result into cos failed, file %v", err)
 	}
 
+	/*// 删除本地模板/case/结果文件
+	cmdStr := "rm -r ./__tests__ && rm ./static/res/reporter.json && rm -r ./asset/" + templateName
+	cmd := exec.Command("/bin/bash", "-c", cmdStr)
+	cmd.Dir = "../jest-puppeteer-ui-test"
+
+	if err = cmd.Run(); err != nil {
+		xlog.Error(err)
+	}*/
+	// 把图片挪到diff
+	cmdStr := "mv * ../pic_diff/"
+	cmd = exec.Command("/bin/bash", "-c", cmdStr)
+	cmd.Dir = "./jest-puppeteer-ui-test/static/pic"
+	if err = cmd.Run(); err != nil {
+		xlog.Error(err)
+	}
+
 	err = util.SendMsg(testId)
 	if err != nil {
 		xlog.Errorf("[wechat work] send message error %v", err)
 	}
+	//更新测试状态
+	UpdateTestTask(taskId, &testRes)
 
-	task, err := dao.GetTestTaskByTestId(testId)
-	if err != nil {
-		xlog.Errorf("[SQL] get task err %v", err)
-	}
-	sendMessage(task, testId)
+	sendMessage(res, testId)
+	return stdout.String()
 }
 
 // ArchiveTeatCases 存档测试用例
@@ -114,37 +109,15 @@ func ArchiveTeatCases(versionId int) {
 	}
 }
 
-func UpdateTestTask(id int, res *string, times int) {
+func UpdateTestTask(id int, res *string) {
 	task, err := dao.GetTestTaskById(id)
-
-	if task.TestResult != nil {
-		arr := strings.Split(*task.TestResult, "_")
-		arr2 := strings.Split(*res, "_")
-		resTmp := ""
-		for i := 0; i < len(arr); i++ {
-			num1, _ := strconv.Atoi(arr[i])
-			num2, _ := strconv.Atoi(arr2[i])
-			tmp := num1 + num2
-			if i < len(arr)-1 {
-				resTmp += fmt.Sprintf("%d", tmp)
-				resTmp += "_"
-			} else {
-				resTmp += fmt.Sprintf("%d", tmp)
-			}
-		}
-		res = &resTmp
-	}
-	status := config.S_TASK_TESTING
-	if times == -1 {
-		status = config.S_TAST_FINISH
-	}
 
 	cTime := time.Now().Format("2006-01-02 15:04:05")
 	newTask := &model.TestTask{
 		VersionId:  task.VersionId,
 		Trigger:    task.Trigger,
 		UpdateTime: &cTime,
-		Status:     &status,
+		Status:     &config.S_TAST_FINISH,
 		Template:   task.Template,
 		TestResult: res,
 	}
@@ -155,23 +128,12 @@ func UpdateTestTask(id int, res *string, times int) {
 	}
 }
 
-func sendMessage(res *model.TestTask, id string) {
+func sendMessage(res *model.TestRes, id string) {
 	xlog.Debugf("[sql] generate robot message")
-	message := fmt.Sprintf("hi，测试任务%v已完成 \n 点击查看详细测试报告：http://9.134.52.227:8080/#/reportDetail?id=%v", id)
-	if res.TestResult != nil {
-		arr := strings.Split(*res.TestResult, "_")
-		nPassSuite, _ := strconv.Atoi(arr[0])
-		nErrSuite, _ := strconv.Atoi(arr[1])
-		numSite := nPassSuite + nErrSuite
-
-		nPassCase, _ := strconv.Atoi(arr[2])
-		nErrCase, _ := strconv.Atoi(arr[3])
-		numCase := nPassCase + nErrCase
-
-		message = fmt.Sprintf("hi，测试任务%v已完成，共计%v个测试合集，%v个测试用例，其中用例执行成功%v，失败%v \n 点击查看详细测试报告：http://9.134.52.227:8080/#/reportDetail?id=%v",
-			id, numSite, numCase, nPassCase, nErrCase, id)
-
-	}
+	numSuite := *res.NumFailedTestSuites + *res.NumPassedTestSuites
+	numCase := *res.NumFailedTests + *res.NumPassedTests
+	message := fmt.Sprintf("hi，测试任务%v已完成，共计%v个测试合集，%v个测试用例，其中用例执行成功%v，失败%v \n 点击查看详细测试报告：http://9.134.52.227:8080/#/reportDetail?id=%v",
+		id, numSuite, numCase, *res.NumPassedTests, *res.NumFailedTests, id)
 	xlog.Debugf(message)
 	textMsg := &model.TextMessage{
 		Content: &message,
@@ -182,7 +144,6 @@ func sendMessage(res *model.TestTask, id string) {
 		Text:    textMsg,
 	}
 	SendRobotMessage(msg)
-
 }
 
 // ResDecodeSave 解析以及存储case、suite粒度的测试结果

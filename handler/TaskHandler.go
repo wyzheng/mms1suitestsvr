@@ -39,7 +39,6 @@ func ExecTest(w http.ResponseWriter, r *http.Request) {
 
 	//从cos拉取模板
 	templateParam := websvr.GetStringFromUri(r, "templateKey")
-	pNum := websvr.GetIntFromUri(r, "pnum")
 
 	templateParam = templateParam[1 : len(templateParam)-1]
 	templateParams := strings.Split(templateParam, "},")
@@ -106,40 +105,21 @@ func ExecTest(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	//先串行
-	times := len(caseFiles) % pNum
+	for i := range caseFiles {
+		err = service.GetTestCase(caseFiles[i], "./jest-puppeteer-ui-test/__tests__/"+caseFiles[i])
+		xlog.Debugf("Get test file %v", caseFiles[i])
+		if err != nil {
+			xlog.Errorf("[COS] download test case %v from cos failed, file %v", caseFiles[i], err)
+			newTask.Status = &config.S_TAST_ERROR
+			err = dao.UpdateDataTask(taskId, newTask)
+			return
+		}
+	}
 	//执行测试任务，存储测试结果
 	newTask.Status = &config.S_TASK_TESTING
 	err = dao.UpdateDataTask(taskId, newTask)
-	for j := 0; j <= times; j++ {
-		if (j+1)*pNum > len(caseFiles) {
-			for i := pNum * j; i < len(caseFiles); i++ {
-				err = service.GetTestCase(caseFiles[i], "./jest-puppeteer-ui-test/__tests__/"+caseFiles[i])
-				xlog.Debugf("Get test file %v", caseFiles[(pNum*j)+i])
-				if err != nil {
-					xlog.Errorf("[COS] download test case %v from cos failed, file %v", caseFiles[i], err)
-					newTask.Status = &config.S_TAST_ERROR
-					err = dao.UpdateDataTask(taskId, newTask)
-					return
-				}
-			}
-			go service.RunTest(taskId, testId, templateName[0:pos], -1)
-		} else {
-			for i := 0; i < pNum; i++ {
-				for i := pNum * j; i < len(caseFiles); i++ {
-					err = service.GetTestCase(caseFiles[(pNum*j)+i], "./jest-puppeteer-ui-test/__tests__/"+caseFiles[(pNum*j)+i])
-					xlog.Debugf("Get test file %v", caseFiles[(pNum*j)+i])
-					if err != nil {
-						xlog.Errorf("[COS] download test case %v from cos failed, file %v", caseFiles[(pNum*j)+i], err)
-						newTask.Status = &config.S_TAST_ERROR
-						err = dao.UpdateDataTask(taskId, newTask)
-						return
-					}
-				}
-				go service.RunTest(taskId, testId, templateName[0:pos], j)
-			}
-		}
-	}
+	go service.RunTest(taskId, testId, templateName[0:pos])
+
 	resp.Ret = define.E_SUCCESS
 	resp.Message = "testing!"
 

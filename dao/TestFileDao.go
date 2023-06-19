@@ -57,7 +57,7 @@ func GetTestFiles() ([]string, error) {
 		false)
 
 	if len(list) == 0 {
-		return nil, errors.New("no test files")
+		return nil, errors.New("no test file of this name")
 	}
 	var dataList []string
 	for _, item := range list {
