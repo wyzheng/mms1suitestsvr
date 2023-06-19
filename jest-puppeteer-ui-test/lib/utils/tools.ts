@@ -8,22 +8,22 @@ const logger = new LoggerService().getLogger("puppeteer");
 
 export async function getHighlightContent(page, selector) {
     let content = await page.evaluate((selector) => {
-        let items =  document.querySelectorAll(selector + '  ' + 'em[class="highlight"]');
+        let items = document.querySelectorAll(selector + '  ' + 'em[class="highlight"]');
         let content = [];
         for (let i = 0; i < items.length; i++) {
             content.push(items[i].innerHTML);
         }
         return content;
-    },selector)
+    }, selector)
     return content;
 }
 
 export async function getContentStyle(page, selector) {
-    let style : string;
+    let style: string;
     style = await page.evaluate((selector) => {
-        let desc =  document.querySelector(selector);
+        let desc = document.querySelector(selector);
         return getComputedStyle(desc).textOverflow;
-    },selector)
+    }, selector)
     return style;
 }
 
@@ -57,8 +57,7 @@ export async function getTopHeightOfEle(page, selector) {
             body = doc.body,
             html = doc.documentElement,
             clientTop = html.clientTop || body.clientTop || 0
-
-        return Box.top + (self.pageYOffset || html.scrollTop || body.scrollTop) - clientTop;
+       return Box.top + (self.pageYOffset || html.scrollTop || body.scrollTop) - clientTop;
     }, selector);
 }
 
@@ -110,9 +109,9 @@ export async function getRightOfEle(page, selector) {
 }
 
 
-export async function getOCRRes(imagePath){
+export async function getOCRRes(imagePath) {
     let r = await got("https://stream.weixin.qq.com/weapp/getOcrAccessToken", {
-        agent:{
+        agent: {
             https: tunnel.httpsOverHttp({
                 proxy: {
                     host: 'shanghai-mmhttpproxy.woa.com',
@@ -137,7 +136,7 @@ export async function getOCRRes(imagePath){
             "ocr_type": 8
         }
     };
-    let resp = await got( {method: 'post', url: url, body: JSON.stringify(data), decompress: false});
+    let resp = await got({method: 'post', url: url, body: JSON.stringify(data), decompress: false});
     logger.log("here joyce log something*********");
     logger.log(resp.body);
 
@@ -148,27 +147,28 @@ export async function getOCRRes(imagePath){
     return ocrRes;
 }
 
-export async function getLineNum(path){
+export async function getLineNum(path) {
     let num = 0;
     num = (await getOCRRes(path)).ocr_comm_res.items.length;
     return num;
 }
 
-export async function getLastItem(path){
-    let  ocrRes = await getOCRRes(path);
-    let num =  ocrRes.ocr_comm_res.items.length;
-    if(num >= 2){
+export async function getLastItem(path) {
+    let ocrRes = await getOCRRes(path);
+    let num = ocrRes.ocr_comm_res.items.length;
+    if (num >= 2) {
         return ocrRes.ocr_comm_res.items[num - 1].text;
     }
     return '...'
 }
+
 /**
  *
  * @param functionName AddBizContact 关注公众号  DelBizContact 取消关注
  * @param bizUin  公众号uin
  * @param uin 用户uin
  */
-export async function bizOperation(functionName, bizUin, uin){
+export async function bizOperation(functionName, bizUin, uin) {
     console.log("*************************")
     let url = `http://wxunitest.oa.com/mmbizcasehelper/mmbasedatabroker`
     let data = {
@@ -179,7 +179,7 @@ export async function bizOperation(functionName, bizUin, uin){
         "func_name": functionName,
         "func_args": data
     };
-    let resp = await got( {method: 'post', url: url, body: JSON.stringify(req_data), decompress: false});
+    let resp = await got({method: 'post', url: url, body: JSON.stringify(req_data), decompress: false});
     logger.log("here addBizContact log something*********");
     logger.log(resp.body);
 
@@ -191,7 +191,7 @@ export async function bizOperation(functionName, bizUin, uin){
  * @param optype  1 关注 / 2 取消关注
  * @param userName 用户账号名
  */
-export async function finderOperation(finderName, optype, userName){
+export async function finderOperation(finderName, optype, userName) {
     let url = "http://mmtest.oa.com/mmcasehelperidc/mmfinder"
     let req_data = {
         'func_name': 'SetFinderFollow',
@@ -201,7 +201,7 @@ export async function finderOperation(finderName, optype, userName){
             "optype": optype
         }
     }
-    let resp = await got( {method: 'post', url: url, body: JSON.stringify(req_data), decompress: false});
+    let resp = await got({method: 'post', url: url, body: JSON.stringify(req_data), decompress: false});
     logger.log("here finderOperation log something*********");
     logger.log(resp.body);
 }
@@ -213,7 +213,7 @@ export async function finderOperation(finderName, optype, userName){
  * @param objectid: feedid
  * @param commentid: 评论id
  */
-export async function channelOperation(user, optype, objectid, commentid=0){
+export async function channelOperation(user, optype, objectid, commentid = 0) {
     console.log("*************************")
     let url = `http://wxunitest.oa.com/mmcasehelperidc/mmfinder`
     let finder_username = ""  // 点赞者的finder username, 可为空
@@ -227,24 +227,24 @@ export async function channelOperation(user, optype, objectid, commentid=0){
             "commentid": commentid
         }
     }
-    let resp = await got( {method: 'post', url: url, body: JSON.stringify(req_data), decompress: false});
+    let resp = await got({method: 'post', url: url, body: JSON.stringify(req_data), decompress: false});
     //console.log(resp.body);
-     logger.log("here channelOperation log something*********");
-     logger.log(resp.body);
+    logger.log("here channelOperation log something*********");
+    logger.log(resp.body);
 }
 
 
-export function errorCounting(e, err, fail){
-    if (e.constructor.name == "JestAssertionError"){
+export function errorCounting(e, err, fail) {
+    if (e.constructor.name == "JestAssertionError") {
         fail++;
         throw e;
-    }else {
+    } else {
         err++;
     }
     return [err, fail];
 }
 
-export function genToken(){
+export function genToken() {
     let secret = "dfZ2bnrTHfperANtWZGdnx0HRwE1W92n";
     let client = "wx_ad_efficiency";
     let timestamp = Math.floor(Date.now() / 1000);
@@ -255,7 +255,7 @@ export function genToken(){
     return token;
 }
 
-export async function superView(aid, wxid){
+export async function superView(aid, wxid) {
     let url = "http://jiqimao.woa.com/eib/power_preview/bind_audience";
     let req_data = {
         "aid": aid,
@@ -271,14 +271,21 @@ export async function superView(aid, wxid){
         "token": genToken()
     }
 
-    let resp = await got( {method: 'post', url: url, body: JSON.stringify(req_data), decompress: false, headers: header_dict, timeout: 20000});
-    if (resp.statusCode == 200){
-        if (JSON.parse(resp.body).code === 0){
+    let resp = await got({
+        method: 'post',
+        url: url,
+        body: JSON.stringify(req_data),
+        decompress: false,
+        headers: header_dict,
+        timeout: 20000
+    });
+    if (resp.statusCode == 200) {
+        if (JSON.parse(resp.body).code === 0) {
             let rawData = resp.body;
             //this.logger.log(rawData);
             return true;
         }
-    }else {
+    } else {
         //this.logger.error(`$$$$ there is something wrong`);
     }
     return false;
@@ -292,7 +299,7 @@ function readImageFileToBase64(filePath) {
 
 //获取两图片文件的相似度
 export async function getSimilarity(srcPath, desPath) {
-    if (!fs.existsSync(srcPath) || !fs.existsSync(desPath)){
+    if (!fs.existsSync(srcPath) || !fs.existsSync(desPath)) {
         return "file not existed";
     }
     let url = "http://mt.woa.com/epcvat/similarity/compare_base64?alg=hist";
@@ -300,8 +307,8 @@ export async function getSimilarity(srcPath, desPath) {
         "image1": readImageFileToBase64(srcPath),
         "image2": readImageFileToBase64(desPath),
     }
-    let resp = await got({ method: 'post', url: url, body: JSON.stringify(req_data), decompress: false, timeout: 20000 });
-    if (JSON.parse(resp.body).rtn == 0){
+    let resp = await got({method: 'post', url: url, body: JSON.stringify(req_data), decompress: false, timeout: 20000});
+    if (JSON.parse(resp.body).rtn == 0) {
         return JSON.parse(resp.body).value;
     }
 }
@@ -316,7 +323,7 @@ export async function getDiff(srcPath, desPath) {
         "image1": readImageFileToBase64(srcPath),
         "image2": readImageFileToBase64(desPath),
     }
-    let resp = await got({ method: 'post', url: url, body: JSON.stringify(req_data), decompress: false, timeout: 30000 });
+    let resp = await got({method: 'post', url: url, body: JSON.stringify(req_data), decompress: false, timeout: 30000});
     if (JSON.parse(resp.body).rtn == 0) {
         return JSON.parse(resp.body).value;
     }
