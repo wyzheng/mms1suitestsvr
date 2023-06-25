@@ -19,16 +19,16 @@ module.exports = {
         [
             "jest-html-reporters",
             {
-                "pageTitle": "Jest Report",
-                "publicPath": `./static/res/${resPath}`,
-                "expand": true,
-                "inlineSource": true
+                pageTitle: "Jest Report",
+                publicPath: `./static/res/${resPath}`,
+                expand: true,
+                inlineSource: true
             }
         ],
         [
             "@tencent/jest-report-search/lib/report.js",
             {
-                "publicPath": `./static/res/${resPath}`
+                publicPath: `./static/res/${resPath}`
             }
         ]
     ]

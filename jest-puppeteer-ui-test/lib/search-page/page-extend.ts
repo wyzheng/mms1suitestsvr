@@ -1,4 +1,5 @@
-import Puppeteer, {devices, HTTPRequest, Page} from "puppeteer";
+import { devices, HTTPRequest, Page, Browser } from "puppeteer";
+import puppeteer from "puppeteer";
 import {CaseCTx, PageJsapi, WebSearchResponse} from "./interfaces/web-search-page";
 import {Page as WebSearchPage, PageConfig} from '@tencent/web-search-puppeteer-page';
 import {PageAssetService} from "./service/page-asset.service";
@@ -17,7 +18,7 @@ import {readFile} from 'fs-extra';
 const proxy_svr = "shenzhen-mmhttpproxy.woa.com:11113";
 
 export class PageExtend {
-    public browser: Puppeteer.Browser;
+    public browser: Browser;
     private assetService = new PageAssetService();
     public url: string;
     public searchRes: WebSearchResponse;
@@ -35,7 +36,7 @@ export class PageExtend {
     }
 
     public async allowBrowser() {
-        this.browser = await Puppeteer.launch({
+        this.browser = await puppeteer.launch({
             args: [
                 '--no-sandbox',
                 '--ignore-certificate-errors',
