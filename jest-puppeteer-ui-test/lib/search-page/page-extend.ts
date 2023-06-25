@@ -102,11 +102,11 @@ export class PageExtend {
         const page = await (await this.allowBrowser()).newPage();
         this.logger.log(`alloc page end: ${key}`);
 
+
         const webSearchPage = new WebSearchPage(page);
         if (isSuperview) {
             await webSearchPage.instance.waitForTimeout(30000);
         }
-
         this.webSearchPage = webSearchPage;
 
         webSearchPage.extInfo.set(
@@ -124,7 +124,7 @@ export class PageExtend {
         await webSearchPage.markResourceCheckpoint();
         await webSearchPage.markBridgeEventCheckpoint(PageJsapi[pageCtx.page]);
         const htmlContent = await this.assetService.fetchEntryHtmlContent(context);
-        this.logger.log(`mark page html: ${htmlContent}`);
+        //this.logger.log(`mark page html: ${htmlContent}`);
 
         await webSearchPage.init(<string>htmlContent, pageConfig, {
             requestInterceptor: this.requestInterceptor.bind(this),

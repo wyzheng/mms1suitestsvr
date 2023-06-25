@@ -13,7 +13,7 @@
     "log4js": "^6.6.1",
     "minimist": "^1.2.6",
     "node-fetch": "^3.2.10",
-    "puppeteer": "^18.1.0",
+    "puppeteer": "^20.7.3",
     "request": "^2.88.2",
     "sha1": "^1.1.1",
     "strip-js": "^1.2.0",
@@ -24,7 +24,7 @@
   },
   "devDependencies": {
     "@nestjs/config": "^2.2.0",
-    "@tencent/web-search-puppeteer-page": "0.0.1-alpha.5",
+    "@tencent/web-search-puppeteer-page": "0.0.1-alpha.6",
     "@tencent/wesearch-report-analyze": "0.0.1-alpha.2",
     "@tencent/jest-report-search": "0.0.3",
     "@types/fs-extra": "^9.0.13",
