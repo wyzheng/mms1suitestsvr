@@ -32,4 +32,5 @@ RUN npm config set registry https://mirrors.tencent.com/npm/ \
 
 WORKDIR /home/qspace/mms1suitestsvr/bin
 
-CMD ["bash", "-c", "./mms1suitestsvr"]
+#CMD ["bash", "-c", "./mms1suitestsvr"]
+CMD ["/bin/bash"]
