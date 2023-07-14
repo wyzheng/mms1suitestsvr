@@ -576,8 +576,8 @@ export const tabClass = {
 export function stickersClass(id) {
   return{
     box: `div.stickers-all`, //召回
-    title: `div.stickers-all div.search-block__hd div.search-block__title div.search-block__title span`,
-    more: `div.stickers-all div.search-block__hd div.search-block__title div.more__item`,
+    title: `div.stickers-all div.search-block__hd div.search-block__title span`,
+    more: `div.stickers-all div.search-block__hd div.more__item`,
     stickersAll: `div.stickers-all div.stickers-all__inner div.stickers-all__wrap div.sticker-all__item`,
     stickersItem: `div.stickers-all div.stickers-all__inner div.stickers-all__wrap div.sticker-all__item:nth-of-type(${id}) div.sticker-all__item-inner`,
     stickersTag: `div.stickers-all div.stickers-all__inner div.stickers-all__wrap div.sticker-all__item:nth-of-type(${id}) span.album-tag`,
@@ -710,4 +710,51 @@ export const channelCardClass = {
   controlPlayer: 'div.search_result div.service-search-block-container div.slide-inner > div:nth-child(2) div.control_play',
   date: `div.search_result div.service-search-block-container div.slide-inner > div:nth-child(2) div.datetime`,
   like: `div.search_result div.service-search-block-container div.slide-inner > div:nth-child(2) span.play-mask__text`
+}
+
+export const gaokaoCardClass = {
+  box: `div.search_result div.service-search-container`,
+  poi: `div.search_result div.service-search-container div.default-sub-header div.poi span.poi-title`,
+  window: `div.weui-half-screen-dialog`,
+  part1: `div.search_result div.service-search-container div.service-search-block-body div:nth-child(1)`,
+
+  part2: `div.search_result div.service-search-container div.service-search-block-body div:nth-child(2)`,
+  part2_sub1: `div.search_result div.service-search-container div.service-search-block-body div:nth-child(2) div.service-search-block-container div.slide-inner > div:nth-child(1) div.info`,
+  part3: `div.search_result div.service-search-container div.service-search-block-body div:nth-child(3)`,
+}
+
+export const shebaoCardClass = {
+  box: `div.search_result div.service-search-container`,
+  titile: `div.search_result div.service-search-container div.title-with-poi`,
+  poi: `div.search_result div.service-search-container div.poi span.poi-title`,
+  poi_dialog: `div.app div.weui-half-screen-dialog`,
+  desc: `div.search_result div.service-search-container div.safe-spacer`,
+  desc_link: `div.search_result div.service-search-container div.safe-spacer span.desc-action`,
+  service_button: `div.search_result div.service-search-container div.service-search-block-body div:nth-child(1)`,
+  service_button_item1: `div.search_result div.service-search-container div.service-search-block-body div:nth-child(1) div.ui-menu a:nth-child(1)`,
+  service_button_item2: `div.search_result div.service-search-container div.service-search-block-body div:nth-child(1) div.ui-menu a:nth-child(2)`,
+  service_button_item3: `div.search_result div.service-search-container div.service-search-block-body div:nth-child(1) div.ui-menu a:nth-child(3)`,
+  account: `div.search_result div.service-search-container div.service-search-block-body div:nth-child(2)`,
+  account_item1: `div.search_result div.service-search-container div.service-search-block-body div:nth-child(2) div.ui-column div:nth-child(1)`,
+  account_item2: `div.search_result div.service-search-container div.service-search-block-body div:nth-child(2) div.ui-column div:nth-child(2)`,
+  account_item3: `div.search_result div.service-search-container div.service-search-block-body div:nth-child(2) div.ui-column div:nth-child(3)`,
+  other_service: `div.search_result div.service-search-container div.service-search-block-body div:nth-child(3)`,
+  other_service_item1: `div.search_result div.service-search-container div.service-search-block-body div:nth-child(3) div.ui-column div:nth-child(1)`,
+  other_service_item2: `div.search_result div.service-search-container div.service-search-block-body div:nth-child(3) div.ui-column div:nth-child(2)`,
+  other_service_item3: `div.search_result div.service-search-container div.service-search-block-body div:nth-child(3) div.ui-column div:nth-child(3)`,
+  other_service_item4: `div.search_result div.service-search-container div.service-search-block-body div:nth-child(3) div.ui-column div:nth-child(4)`
+}
+
+export const holidayCardClass = {
+  box: `div.search_result div.service-search-container`,
+  title: `div.search_result div.service-search-container div.title`,
+  subtitle: `div.search_result div.service-search-container div.subTitle`,
+  month_picker: `div.search_result div.service-search-container div.calendar-picker div.curr`,
+  month_picker_left: `div.search_result div.service-search-container div.calendar-picker div.prev`,
+  month_picker_right: `div.search_result div.service-search-container div.calendar-picker div.next`,
+  calendar: `div.search_result div.service-search-container div.scroll-view`,
+  date_picked: `div.search_result div.service-search-container div.scroll-view table div.active`,
+  day_picker1: `div.search_result div.service-search-container div.scroll-view div.scroll-content div:nth-child(2) table tbody tr:nth-child(2) td:nth-child(1)`,
+  day_picker2: `div.search_result div.service-search-container div.scroll-view div.scroll-content div:nth-child(2) table tbody tr:nth-child(4) td:nth-child(4)`,
+  day_picker3: `div.search_result div.service-search-container div.scroll-view div.scroll-content div:nth-child(2) table tbody tr:nth-child(7) td:nth-child(7)`,
 }
