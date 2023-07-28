@@ -1,11 +1,13 @@
 package handler
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"git.woa.com/wego/wego2/xhttp"
 	"git.woa.com/wego/wego2/xlog"
 	huge "github.com/dablelv/go-huge-util"
+	"io/ioutil"
 	"mms1suitestsvr/config"
 	"mms1suitestsvr/dao"
 	"mms1suitestsvr/model"
@@ -285,6 +287,114 @@ func GetTestSuiteTaskDetail(w http.ResponseWriter, r *http.Request) {
 	resp.Data = taskCaseArr
 	resp.Ret = define.E_SUCCESS
 	resp.Message = "get all test cases!"
+
+	ww.MarshalJSON(resp)
+	return
+}
+
+type RequestBody struct {
+	ProxyUrl string      `json:"proxy_url"`
+	ReqData  interface{} `json:"req_data"`
+}
+
+type ResponseBody struct {
+	Ret  int         `json:"ret"`
+	Data interface{} `json:"data"`
+	Msg  string      `json:"msg"`
+}
+
+// GetSearchResp for w1w 获取搜一搜后台模块回包用
+func GetSearchResp(w http.ResponseWriter, r *http.Request) {
+	ww := w.(*xhttp.ResponseWriter)
+	resp := websvr.CommResp{}
+	xlog.Debugf("[Handler] w1wInterface: deal with a request.")
+
+	body, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		xlog.Errorf("[w1wInterface] Unmarshal request error: %v", err)
+		resp.Ret = define.E_FAILED
+		resp.Message = "request param read error"
+		ww.MarshalJSON(resp)
+		return
+	}
+	r.Body.Close()
+
+	// 获取请求体
+	var reqBody RequestBody
+	err = json.Unmarshal(body, &reqBody)
+	if err != nil {
+		xlog.Errorf("[w1wInterface] Unmarshal request error: %v", err)
+		resp.Ret = define.E_FAILED
+		resp.Message = "Unmarshal request error"
+		ww.MarshalJSON(resp)
+		return
+	}
+	xlog.Debugf("[w1wInterface] create HTTP request body: %v", reqBody)
+
+	url := fmt.Sprintf("http://11.179.149.250:8142/modules/%v", reqBody.ProxyUrl)
+	xlog.Debugf("[w1wInterface] create HTTP request: %v", url)
+
+	messageBytes, _ := json.Marshal(reqBody.ReqData)
+	reader := bytes.NewReader(messageBytes)
+
+	request, err := http.NewRequest("POST", url, reader)
+	if err != nil {
+		xlog.Errorf("[w1wInterface] failed to create HTTP request: %v", err)
+		resp.Ret = define.E_FAILED
+		resp.Message = "post request error"
+		ww.MarshalJSON(resp)
+		return
+	}
+	request.Header.Set("Content-Type", "application/json")
+	client := &http.Client{}
+	resp1, err := client.Do(request)
+
+	if err != nil {
+		xlog.Errorf("[w1wInterface] failed to post HTTP request: %v", err)
+		resp.Ret = define.E_FAILED
+		resp.Message = "post request error"
+		ww.MarshalJSON(resp)
+		return
+	}
+	defer resp1.Body.Close()
+
+	respBody, err := ioutil.ReadAll(resp1.Body)
+	if err != nil {
+		xlog.Errorf("[w1wInterface] failed to read HTTP response body: %v", err)
+		resp.Ret = define.E_FAILED
+		resp.Message = "read request error"
+		resp.Data = string(respBody)
+		ww.MarshalJSON(resp)
+		return
+	}
+
+	// 兼容请求失败
+	if resp1.StatusCode != http.StatusOK {
+		xlog.Errorf("[w1wInterface] HTTP request failed with status code %d", resp1.StatusCode)
+		resp.Ret = resp1.StatusCode
+		resp.Message = "post request error"
+		resp.Data = string(respBody)
+		ww.MarshalJSON(resp)
+		return
+	}
+
+	response := ResponseBody{}
+
+	json.Unmarshal(respBody, &response)
+	xlog.Debugf("[w1wInterface] get request resp: %v", string(respBody))
+
+	if response.Ret != 0 {
+		xlog.Errorf("[w1wInterface] HTTP request failed with status code %d", response.Ret)
+		resp.Ret = response.Ret
+		resp.Message = response.Msg
+		resp.Data = response.Data
+		ww.MarshalJSON(resp)
+		return
+	}
+
+	resp.Ret = define.E_SUCCESS
+	resp.Message = "get resp success"
+	resp.Data = string(respBody)
 
 	ww.MarshalJSON(resp)
 	return
