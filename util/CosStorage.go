@@ -10,7 +10,10 @@ import (
 	"mms1suitestsvr/config"
 	"net/http"
 	"net/url"
+	"os"
+	"path"
 	"strings"
+	"sync"
 )
 
 var cosConfig *config.CosConfig
@@ -121,5 +124,89 @@ func SetInCos(key string, contextStr []byte) error {
 		xlog.Errorf("SetInCos error, err is %v", err)
 		return err
 	}
+	return nil
+}
+
+func download(wg *sync.WaitGroup, c *cos.Client, keysCh <-chan []string) {
+	defer wg.Done()
+	for keys := range keysCh {
+		key := keys[0]
+		filename := keys[1]
+		_, err := c.Object.GetToFile(context.Background(), key, filename, nil)
+		if err != nil {
+			fmt.Println(err)
+		}
+	}
+}
+
+// BatchDownloadFromCos 批量下载文件 prefix 不需要右边的斜杠，localDir需要右面的斜杠
+func BatchDownloadFromCos(prefix string, localDir string) error {
+	out, err := GetPolarisIpPort()
+	if err != nil {
+		xlog.Errorf("[GetFileFromCos]GetPolarisIpPort error, error is %v", err)
+		return err
+	}
+	urlProxy := fmt.Sprintf("http://%s", out)
+	xlog.Debugf("GetPolarisIpPort is %s", urlProxy)
+
+	u, _ := url.Parse(urlProxy) // 设置IP和PORT
+	b := &cos.BaseURL{
+		BucketURL: u,
+	}
+	client := cos.NewClient(b, &http.Client{
+		Transport: &cos.AuthorizationTransport{
+			SecretID:  cosConfig.SecretID,
+			SecretKey: cosConfig.SecretKey,
+		},
+	})
+	client.Host = cosConfig.Host // 设置HOST
+
+	// 多线程执行
+	keysCh := make(chan []string, 3)
+	var wg sync.WaitGroup
+	threadpool := 3
+	for i := 0; i < threadpool; i++ {
+		wg.Add(1)
+		go download(&wg, client, keysCh)
+	}
+	isTruncated := true
+	marker := ""
+	for isTruncated {
+		opt := &cos.BucketGetOptions{
+			Prefix:       prefix,
+			Marker:       marker,
+			EncodingType: "url", // url 编码
+		}
+		// 列出目录
+		v, _, err := client.Bucket.Get(context.Background(), opt)
+		if err != nil {
+			fmt.Println(err)
+			break
+		}
+		for _, c := range v.Contents {
+			key, _ := cos.DecodeURIComponent(c.Key) //EncodingType: "url"，先对 key 进行 url decode
+			fileKey := strings.ReplaceAll(key, "s1s_test/latest", "")
+			fmt.Printf(fileKey)
+			localFile := ""
+			if key[0] == '/' {
+				localFile = localDir + fileKey
+			} else {
+				localFile = localDir + "/" + fileKey
+			}
+			if _, err := os.Stat(path.Dir(localFile)); err != nil && os.IsNotExist(err) {
+				os.MkdirAll(path.Dir(localFile), os.ModePerm)
+			}
+			// 以/结尾的key（目录文件）不需要下载
+			if strings.HasSuffix(localFile, "/") {
+				continue
+			}
+			keysCh <- []string{key, localFile}
+		}
+		marker, _ = cos.DecodeURIComponent(v.NextMarker) // EncodingType: "url"，先对 NextMarker 进行 url decode
+		isTruncated = v.IsTruncated
+	}
+	close(keysCh)
+	wg.Wait()
+
 	return nil
 }

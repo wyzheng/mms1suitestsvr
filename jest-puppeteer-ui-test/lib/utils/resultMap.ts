@@ -758,3 +758,8 @@ export const holidayCardClass = {
   day_picker2: `div.search_result div.service-search-container div.scroll-view div.scroll-content div:nth-child(2) table tbody tr:nth-child(4) td:nth-child(4)`,
   day_picker3: `div.search_result div.service-search-container div.scroll-view div.scroll-content div:nth-child(2) table tbody tr:nth-child(7) td:nth-child(7)`,
 }
+
+//混排结果
+export const searchRes = {
+  first_box: `div.search_data > div > div:nth-child(1)`
+}
