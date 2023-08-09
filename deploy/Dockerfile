@@ -27,7 +27,8 @@ WORKDIR /home/qspace/mms1suitestsvr/bin/jest-puppeteer-ui-test
 
 
 RUN npm config set registry https://mirrors.tencent.com/npm/ \
-    && npm install --force\
+    && npm install puppeteer --force\
+    && npm install\
     && npm install jest
 
 WORKDIR /home/qspace/mms1suitestsvr/bin
