@@ -506,15 +506,14 @@ export function feedbackDialogClass(id){
   }
 }
 
-
 //商品品专
 export const wxGoodAd = {
-  header: `div.ui-zone-ad__hd div.ad-goods-header__bg`,
+  header: `div.ui-zone-ad__hd`,
   feedback: `div.ui-zone-ad__hd div.ad-goods-header__complaint-entry`,
   complaint: "div.complaint-content",
   feedback_mask: 'div.mask.ad-complaint-popover',
-  title: "#search_result > div:nth-child(4) > div > div.exposure-block.search_result_block.box-without-card-style > div > div.ui-zone-ad__bd > div.ui-zone-ad__bd-slot > div > div.service-search-block-body > div:nth-child(1) > div.service-search-item-content-wrapper > div > div.ad-sub-header__slot.ad-sub-header__slot--without-title.ad-sub-header__slot--without-padding > div > div.hd-title-wrapper > div > h2 > span.ellipsis_1",
-  tag: `#search_result > div:nth-child(4) > div > div.exposure-block.search_result_block.box-without-card-style > div > div.ui-zone-ad__bd > div.ui-zone-ad__bd-slot > div > div.service-search-block-body > div:nth-child(1) > div.service-search-item-content-wrapper > div > div.ad-sub-header__slot.ad-sub-header__slot--without-title.ad-sub-header__slot--without-padding > div > div.hd-title-wrapper > div > h2 > span.ui-tags.hd-ui-tags.ui-tags-vertical-align`,
+  title: "#search_result > div.search_data > div > div.exposure-block.search_result_block.box-without-card-style > div > div.ui-zone-ad__bd > div.ui-zone-ad__bd-slot > div > div.service-search-block-body > div:nth-child(1) > div > div > div.ad-sub-header__slot.ad-sub-header__slot--without-title.ad-sub-header__slot--without-padding > div > div > div.hd-title-wrapper > div > h2 > span.ellipsis_1",
+  tag: `#search_result > div.search_data > div > div.exposure-block.search_result_block.box-without-card-style > div > div.ui-zone-ad__bd > div.ui-zone-ad__bd-slot > div > div.service-search-block-body > div:nth-child(1) > div > div > div.ad-sub-header__slot.ad-sub-header__slot--without-title.ad-sub-header__slot--without-padding > div > div > div.hd-title-wrapper > div > h2 > span.ui-tags.hd-ui-tags.ui-tags-vertical-align`,
   headSpan: 'div.ad-sub-header__slot div.hd-title-content h2.hd-title span',
 
   firstGood: 'div.ui-zone-ad__bd div.ad-sub-header div.ad-goods-info',
@@ -762,4 +761,30 @@ export const holidayCardClass = {
 //混排结果
 export const searchRes = {
   first_box: `div.search_data > div > div:nth-child(1)`
+}
+
+export const UinCardClass = {
+  box: `div.service-search-container`,
+  title_hihtlight: `div.service-search-container div.hd-title-content h2 em`,
+  weapp: `div.service-search-container div.zone-accounts div.zone-weapp`,
+  account: `div.service-search-container div.zone-accounts div.zone-accounts`,
+  more: `div.service-search-container div.zone-accounts div.account-action`,
+}
+
+export const MajorCardClass = {
+  box: `div.service-search-container`,
+  title_hihtlight: `div.service-search-container div.big-card-header h2`,
+  body: `div.service-search-container div.service-search-block-body`,
+  desc: `div.service-search-container div.service-search-block-body div.service-search-item:nth-child(1)`,
+  panel_1: `div.service-search-container div.service-search-block-body div.service-search-item:nth-child(2)`,
+  panel_1_title: `div.service-search-container div.service-search-block-body div.service-search-item:nth-child(2) div.ui-section-title span`,
+  panel_1_content: `div.service-search-container div.service-search-block-body div.service-search-item:nth-child(2) div.text-infos`,
+  panel_2: `div.service-search-container div.service-search-block-body div.service-search-item:nth-child(3)`,
+  panel_2_title: `div.service-search-container div.service-search-block-body div.service-search-item:nth-child(3) div.ui-section-title span`,
+  panel_2_content: `div.service-search-container div.service-search-block-body div.service-search-item:nth-child(3) div.text-infos`,
+  panel_2_more: `div.service-search-container div.service-search-block-body div.service-search-item:nth-child(3) div.text-infos-action`,
+  desc_basic: `div.service-search-container div.service-search-block-body div.service-search-item:nth-child(1) div.default-sub-header:nth-child(1)`,
+  desc_content: `div.service-search-container div.service-search-block-body div.service-search-item:nth-child(1) div.default-sub-header:nth-child(2)`,
+  desc_more: `div.service-search-container div.service-search-block-body div.service-search-item:nth-child(1) div.default-sub-header:nth-child(2) span.more-link`,
+  source: `div.service-search-container div.block__source`,
 }
